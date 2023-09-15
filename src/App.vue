@@ -1,10 +1,9 @@
 <template>
   <v-app>
-    <home/>
+    <router-view></router-view>
   </v-app>
 </template>
 
 <script lang="ts" setup>
-  //
-import Home from "@/views/Home.vue";
+
 </script>
