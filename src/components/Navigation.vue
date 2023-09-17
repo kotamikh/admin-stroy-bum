@@ -2,7 +2,8 @@
   <v-navigation-drawer expand-on-hover
                        rail
                        style="height: fit-content; top: 150px"
-                       class="position-absolute"
+                       class="position-absolute bg-blue-lighten-3"
+
   >
     <v-list density="comfortable" nav>
       <v-list-item prepend-icon="mdi-image" title="Галерея" :to="{path: '/gallery'}"></v-list-item>
