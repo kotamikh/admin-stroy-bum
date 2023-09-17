@@ -7,7 +7,10 @@
         />
         <h1>Страница администратора</h1>
       </div>
-      <v-btn append-icon="mdi-exit-to-app">Выйти</v-btn>
+      <v-btn
+          class="button"
+          append-icon="mdi-exit-to-app">Выйти
+      </v-btn>
     </div>
     <navigation/>
     <div class="content">

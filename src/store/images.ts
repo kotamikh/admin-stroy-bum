@@ -23,14 +23,15 @@ export const useImagesStore = defineStore('images', () => {
   }
 
   const addImage = (file: File) => {
-    fetch(BASE_URL + `?name=siding`, {
+    fetch(BASE_URL + `?name=${file.name}`, {
       method: "POST",
       body: file
     }).then(() => getAllImages())
   }
 
-  const deleteImage = (name: string) => {
-    fetch(BASE_URL + `?name=${ name }.jpg`, {
+  const deleteImage = (image: string) => {
+    const name = image.replace(YANDEX_CLOUD, '')
+    fetch(BASE_URL + `?name=${ name }`, {
       method: "DELETE",
     }).then(() => getAllImages())
   }

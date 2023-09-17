@@ -1,11 +1,9 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="gallery-wrapper">
     <h2>Галерея</h2>
-    <v-btn @click="store.deleteImage('lion')"
-class="mb-6">Delete</v-btn>
-    <v-row >
+    <v-row>
       <v-col
-        cols="3">
+          cols="3">
         <v-img src="@/assets/add-img.jpeg"
                cover
                aspect-ratio="1"
@@ -13,16 +11,24 @@ class="mb-6">Delete</v-btn>
         />
       </v-col>
       <v-col
-        v-for="i in store.images"
-        :key="i"
-        class="d-flex child-flex"
-        cols="3"
+          v-for="i in store.images"
+          :key="i"
+          class="d-flex child-flex"
+          cols="3"
       >
         <v-img
-          aspect-ratio="1"
-          cover
-          :src="i"
-        ></v-img>
+            aspect-ratio="1"
+            cover
+            :src="i"
+            class="position-relative"
+        >
+          <v-btn @click="store.deleteImage(i)"
+                 variant="tonal"
+                 size="small"
+                 color="white"
+                 class="delete-btn button"><v-icon size="x-large" icon="mdi-delete"/>
+          </v-btn>
+        </v-img>
       </v-col>
     </v-row>
   </div>
@@ -50,4 +56,9 @@ store.getAllImages()
 
 
 <style scoped lang="sass">
+.delete-btn
+  position: absolute
+  right: 2px
+  top: 2px
+  background-color: white
 </style>
