@@ -2,7 +2,7 @@
   <v-navigation-drawer expand-on-hover
                        rail
                        style="height: fit-content; top: 150px"
-                       class="position-absolute bg-blue-lighten-3"
+                       class="position-absolute bg-blue-grey-lighten-5"
 
   >
     <v-list density="comfortable" nav>

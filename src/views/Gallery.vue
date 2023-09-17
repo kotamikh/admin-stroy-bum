@@ -1,7 +1,7 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="gallery-wrapper">
     <h2>Галерея</h2>
-    <v-btn @click="deleteImage('frog')"
+    <v-btn @click="store.deleteImage('lion')"
 class="mb-6">Delete</v-btn>
     <v-row >
       <v-col
@@ -13,7 +13,7 @@ class="mb-6">Delete</v-btn>
         />
       </v-col>
       <v-col
-        v-for="i in images"
+        v-for="i in store.images"
         :key="i"
         class="d-flex child-flex"
         cols="3"
@@ -30,9 +30,9 @@ class="mb-6">Delete</v-btn>
 
 <script setup lang="ts">
 import { useFileDialog } from "@vueuse/core";
-import { ref } from "vue";
+import { useImagesStore } from "@/store/images";
 
-const images = ref<Array<string>>([])
+const store = useImagesStore()
 
 const { files, open, reset, onChange } = useFileDialog({
   accept: "image/*"
@@ -41,35 +41,11 @@ const { files, open, reset, onChange } = useFileDialog({
 onChange((files) => {
   if (files) {
     const file = files[0]
-    fetch("http://192.168.0.2:8000/api/v1/images?name=girl", {
-      method: "POST",
-      body: file
-    }).then(response => {
-      response.json().then(res => {
-        console.log(res.value)
-      })
-    })
+    store.addImage(file)
   }
 })
 
-const getAllImages = () => {
-  fetch("http://192.168.0.2:8000/api/v1/images", {
-    method: 'GET',
-  }).then(response => {
-    response.json().then(res => {
-      images.value = res
-
-    })
-  })
-}
-
-const deleteImage = (name: string) => {
-  fetch(`http://192.168.0.2:8000/api/v1/images?name=${name}.jpg`, {
-    method: "DELETE",
-  }).then(() => getAllImages())
-}
-
-getAllImages()
+store.getAllImages()
 </script>
 
 
