@@ -2,14 +2,25 @@
   <div class="gallery-wrapper">
     <h2>Галерея</h2>
     <v-row>
-      <v-col
-          cols="3">
-        <v-img src="@/assets/add-img.jpeg"
-               cover
-               aspect-ratio="1"
+      <v-hover v-slot="{ isHovering, props }">
+        <v-col class="add-img"
+               cols="3"
+               v-bind="props"
                @click="open"
-        />
-      </v-col>
+               >
+
+          <v-img src="@/assets/add-img.jpeg"
+                 cover
+                 aspect-ratio="1"
+          >
+            <v-overlay :model-value="isHovering"
+                       contained
+                       scrim="rgb(150, 150, 150)"
+                       class="justify-center font-weight-bold pt-15"
+            >Добавить изображение</v-overlay>
+          </v-img>
+        </v-col>
+      </v-hover>
       <v-col
           v-for="i in store.images"
           :key="i"
@@ -26,7 +37,8 @@
                  variant="tonal"
                  size="small"
                  color="white"
-                 class="delete-btn button"><v-icon size="x-large" icon="mdi-delete"/>
+                 class="delete-btn button">
+            <v-icon size="x-large" icon="mdi-delete"/>
           </v-btn>
         </v-img>
       </v-col>
