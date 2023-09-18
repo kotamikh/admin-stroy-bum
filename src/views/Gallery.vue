@@ -3,12 +3,10 @@
     <h2>Галерея</h2>
     <v-row>
       <v-hover v-slot="{ isHovering, props }">
-        <v-col class="add-img"
-               cols="3"
+        <v-col cols="3"
                @click="open"
                v-bind="props"
         >
-
           <v-img src="@/assets/add-img.avif"
                  cover
                  aspect-ratio="1"

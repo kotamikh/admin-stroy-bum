@@ -43,10 +43,11 @@
   flex-direction: column
 
   width: 20%
+  margin: 0 auto
+  padding: 10px 0
   min-width: 250px
   max-height: 380px
   position: relative
-  padding-bottom: 10px
 
   .marks
     left: 0
