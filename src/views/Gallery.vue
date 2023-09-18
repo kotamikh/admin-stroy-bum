@@ -5,8 +5,8 @@
       <v-hover v-slot="{ isHovering, props }">
         <v-col class="add-img"
                cols="3"
-               v-bind="props"
                @click="open"
+               v-bind="props"
         >
 
           <v-img src="@/assets/add-img.jpeg"
@@ -24,22 +24,21 @@
       </v-hover>
       <v-col v-for="i in store.images"
              :key="i"
-
-             class="d-flex child-flex"
              cols="3"
+             class="d-flex child-flex"
       >
         <v-hover v-slot="{ isHovering, props }">
           <v-img
-              aspect-ratio="1"
               cover
-              v-bind="props"
               :src="i"
+              v-bind="props"
+              aspect-ratio="1"
               class="position-relative"
           >
             <v-btn @click="store.deleteImage(i)"
-                   variant="tonal"
                    size="small"
                    color="white"
+                   variant="tonal"
                    class="delete-btn button">
               <v-icon size="x-large" icon="mdi-delete"/>
             </v-btn>

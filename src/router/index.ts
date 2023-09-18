@@ -1,4 +1,3 @@
-// Composables
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -12,9 +11,9 @@ const routes = [
         component: () => import('@/views/Gallery.vue')
       },
       {
-        path: 'products',
-        name: 'Products',
-        component: () => import('@/views/Products.vue')
+        path: 'categories',
+        name: 'Categories',
+        component: () => import('@/views/categoriesSelection.vue')
       }
     ],
   },
