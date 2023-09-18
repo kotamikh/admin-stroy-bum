@@ -15,7 +15,7 @@
                        contained
                        scrim="#5C8AAFFF"
                        class="justify-center align-center font-weight-bold"
-            ><p style="font-size: 18px">Добавить изображение</p>
+            ><div class="overlay-clue">ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
             </v-overlay>
           </v-img>
         </v-col>
@@ -75,6 +75,13 @@ store.getAllImages()
 
 
 <style scoped lang="sass">
+.overlay-clue
+  padding: 0 5px
+  font-size: 18px
+  color: #5C8AAFFF
+  border-radius: 2px
+  background-color: white
+
 .delete-btn
   top: 2px
   right: 2px

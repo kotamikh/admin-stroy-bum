@@ -28,9 +28,7 @@ import DefaultCard from "@/components/DefaultCard.vue";
 
 <style scoped lang="sass">
 .overlay-clue
-
   padding: 0 5px
-
   font-size: 18px
   color: #5C8AAFFF
   border-radius: 2px
