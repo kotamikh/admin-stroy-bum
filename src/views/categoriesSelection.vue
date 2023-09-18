@@ -1,16 +1,19 @@
 <template>
   <h2>Выбор категории</h2>
-  <ul class="categories">
-    <li v-for="(category, id) in categories"
+  <v-list class="categories">
+    <v-list-item v-for="(category, id) in categories"
         :key="id"
-        class="category"
+        width="300px"
+        height="80px"
+        class="d-flex text-wrap"
+        :to="{path: 'category'}"
     >
-      <a>
-        <img :src="category.image" alt="img" style="width: 3rem"/>
-        <h3>{{ category.text }}</h3>
-      </a>
-    </li>
-  </ul>
+      <template v-slot:prepend>
+        <img :src="category.image" alt="img" style="width: 3rem; margin-right: 10px"/>
+      </template>
+      <h3>{{ category.text }}</h3>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script setup lang="ts">
@@ -97,27 +100,7 @@ const categories = {
   gap: 20px
   display: flex
   flex-wrap: wrap
-  max-height: 450px
+  height: 450px
   flex-direction: column
   align-content: space-evenly
-
-  li
-    width: 250px
-    height: 85px
-    list-style: none
-    border-radius: 5px
-    border: 2px solid transparent
-
-    &:hover
-      border: 2px solid #E3DD5F
-
-    a
-      gap: 10px
-      display: flex
-      padding: 0 5px
-      width: inherit
-      height: inherit
-      cursor: pointer
-      align-items: center
-      font-size: calc((100vw - 320px) / (1280 - 320) * (16 - 14) + 14px)
 </style>

@@ -9,14 +9,14 @@
                v-bind="props"
         >
 
-          <v-img src="@/assets/add-img.jpeg"
+          <v-img src="@/assets/add-img.avif"
                  cover
                  aspect-ratio="1"
           >
             <v-overlay :model-value="isHovering"
                        contained
-                       scrim="rgb(150, 150, 150)"
-                       class="justify-center font-weight-bold pt-15"
+                       scrim="#5C8AAFFF"
+                       class="justify-center align-center font-weight-bold"
             ><p style="font-size: 18px">Добавить изображение</p>
             </v-overlay>
           </v-img>

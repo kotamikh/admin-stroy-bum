@@ -12,7 +12,7 @@ import { createApp } from 'vue'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
-import '@/assets/main.css'
+import '@/styles/main.css'
 
 const app = createApp(App)
 
