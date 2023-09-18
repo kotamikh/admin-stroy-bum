@@ -13,7 +13,7 @@ export const useImagesStore = defineStore('images', () => {
       method: 'GET',
     }).then(response => {
       response.json().then(res => {
-        let arrOfImages = []
+        let arrOfImages= []
         for (let r of res) {
           arrOfImages.push(YANDEX_CLOUD + `${ r }`)
         }
@@ -36,10 +36,17 @@ export const useImagesStore = defineStore('images', () => {
     }).then(() => getAllImages())
   }
 
+    const showName = (image: string) => {
+        const name = image.replace(YANDEX_CLOUD, '')
+        const file = new File([image], name)
+        return file.name
+    }
+
   return {
     images,
     getAllImages,
     addImage,
-    deleteImage
+    deleteImage,
+    showName
   }
 })
