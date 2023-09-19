@@ -6,6 +6,7 @@
         <v-card v-bind="props"
                 variant="outlined"
                 style="border: 1px solid white"
+                @click="router.push('/creation')"
         >
           <default-card/>
             <v-overlay :model-value="isHovering"
@@ -23,6 +24,7 @@
 
 <script setup lang="ts">
 import DefaultCard from "@/components/DefaultCard.vue";
+import router from "@/router";
 </script>
 
 

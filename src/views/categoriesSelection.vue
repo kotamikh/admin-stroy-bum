@@ -1,19 +1,22 @@
 <template>
-  <h2>Выбор категории</h2>
-  <v-list class="categories">
-    <v-list-item v-for="(category, id) in categories"
-        :key="id"
-        width="300px"
-        height="80px"
-        class="d-flex text-wrap"
-        :to="{path: 'category'}"
-    >
-      <template v-slot:prepend>
-        <img :src="category.image" alt="img" style="width: 3rem; margin-right: 10px"/>
-      </template>
-      <h3>{{ category.text }}</h3>
-    </v-list-item>
-  </v-list>
+  <router-view>
+      <h2>Выбор категории</h2>
+      <v-list class="categories">
+          <v-list-item v-for="(category, id) in categories"
+                       :key="id"
+                       :id="id"
+                       width="300px"
+                       height="80px"
+                       class="d-flex text-wrap"
+                       :to="{ name: 'Category', params: { id: category.path } }"
+          >
+              <template v-slot:prepend>
+                  <img :src="category.image" alt="img" style="width: 3rem; margin-right: 10px"/>
+              </template>
+              <h3>{{ category.text }}</h3>
+          </v-list-item>
+      </v-list>
+  </router-view>
 </template>
 
 <script setup lang="ts">
@@ -30,7 +33,11 @@ import foamSealant from '@/assets/categories/пена герметик.png'
 import waterDisposal from '@/assets/categories/водоотведение.png'
 import other from '@/assets/categories/прочее.png'
 
-const categories = {
+const categories: Record<string, {
+    text: string,
+    image: string,
+    path: string,
+}> = {
   siding: {
     text: 'Сайдинг',
     image: siding,

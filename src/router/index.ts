@@ -13,12 +13,17 @@ const routes = [
             {
                 path: 'categories',
                 name: 'Categories',
-                component: () => import('@/views/categoriesSelection.vue')
+                component: () => import('@/views/categoriesSelection.vue'),
             },
             {
-                path: 'category',
+                path: 'category/:id',
                 name: 'Category',
-                component: () => import('@/views/Category.vue')
+                component: () => import('@/views/category.vue')
+            },
+            {
+                path: 'creation',
+                name: 'Creation',
+                component: () => import('@/views/Creation.vue')
             }
         ]
     }
