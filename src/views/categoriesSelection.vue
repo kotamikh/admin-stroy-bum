@@ -4,16 +4,16 @@
       <v-list class="categories">
           <v-list-item v-for="(category, id) in categories"
                        :key="id"
-                       :id="id"
+                       :id="category.text"
                        width="300px"
                        height="80px"
                        class="d-flex text-wrap"
-                       :to="{ name: 'Category', params: { id: category.path } }"
+                       :to="{ name: 'Category', params: { text: category.text } }"
           >
               <template v-slot:prepend>
                   <img :src="category.image" alt="img" style="width: 3rem; margin-right: 10px"/>
               </template>
-              <h3>{{ category.text }}</h3>
+              <p class="text">{{ category.text }}</p>
           </v-list-item>
       </v-list>
   </router-view>
@@ -32,6 +32,7 @@ import ceilings from '@/assets/categories/потолки.png'
 import foamSealant from '@/assets/categories/пена герметик.png'
 import waterDisposal from '@/assets/categories/водоотведение.png'
 import other from '@/assets/categories/прочее.png'
+import { ca } from "vuetify/locale";
 
 const categories: Record<string, {
     text: string,
@@ -110,4 +111,8 @@ const categories: Record<string, {
   height: 450px
   flex-direction: column
   align-content: space-evenly
+
+  .text
+    font-size: 18px
+    font-weight: bold
 </style>

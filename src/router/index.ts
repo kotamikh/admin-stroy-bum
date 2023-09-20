@@ -16,9 +16,9 @@ const routes = [
                 component: () => import('@/views/categoriesSelection.vue'),
             },
             {
-                path: 'category/:id',
+                path: 'category/:text',
                 name: 'Category',
-                component: () => import('@/views/category.vue')
+                component: () => import('@/views/Category.vue')
             },
             {
                 path: 'creation',

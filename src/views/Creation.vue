@@ -3,7 +3,9 @@
     <div class="main-information">
       <div class="product-images">
         <div class="gallery-wrapper">
-          <button @click="moveToTop">
+          <button class="up-button"
+                  @click="moveToTop"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
               <path d="m12 10.8l-4.6 4.6L6 14l6-6l6 6l-1.4 1.4l-4.6-4.6Z"/>
             </svg>
@@ -12,35 +14,54 @@
             <div class="slider-track"
                  ref="track">
               <div v-for="image in 3"
-                   :key="image"></div>
+                   :key="image"
+                   class="gallery-img"
+              >
+                <v-icon icon="mdi-camera"
+                        size="x-large"
+                ></v-icon>
+              </div>
             </div>
           </div>
-          <button @click="moveToDown">
+          <button class="down-button"
+                  @click="moveToDown">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
               <path d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4l-6 6Z"/>
             </svg>
           </button>
         </div>
-        <div class="current-photo">
+        <div class="current-photo" @click="showDialog = true">
+          <v-icon icon="mdi-camera"
+                  size="100"
+          ></v-icon>
         </div>
+          <gallery-dialog v-model="showDialog"
+                          :show-dialog="showDialog"
+          />
       </div>
-      <div class="name-price">
-        <v-input>
+      <div class="product-information">
+        <div class="name">
+          <textarea type="text" placeholder="Наименование товара" class="input-name"/>
           <button class="fav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
               <path fill="#808080"
                     d="M223 57a58.07 58.07 0 0 0-81.92-.1L128 69.05l-13.09-12.19A58 58 0 0 0 33 139l89.35 90.66a8 8 0 0 0 11.4 0L223 139a58 58 0 0 0 0-82Zm-11.35 70.76L128 212.6l-83.7-84.92a42 42 0 0 1 59.4-59.4l.2.2l18.65 17.35a8 8 0 0 0 10.9 0l18.65-17.35l.2-.2a42 42 0 1 1 59.36 59.44Z"/>
             </svg>
           </button>
-        </v-input>
-        <p :class="`${product.stock === 1 ? 'in-stock' : 'on-order'}`">{{
-            product.stock === 1 ? 'В наличии' : 'Под заказ'
-          }}</p>
+        </div>
+        <div class="stock">
+          <p v-if="isStockDefault" class="in-stock">В наличии</p>
+          <p v-else>Под заказ</p>
+          <v-btn variant="outlined"
+                 size="small"
+                 color="#E3DD5F"
+                 @click="isStockDefault = !isStockDefault"
+          >Изменить
+          </v-btn>
+        </div>
         <div class="price">
-          <p v-if="product.discount !== 0" style="text-decoration: line-through; font-size: 0.9rem">{{ withoutDiscount }}
-            руб/шт.
-          </p>
-          <p style="color: var(--yellow); font-weight: bold">{{ 500 }} руб/шт.</p>
+          <p class="old-price"><input type="text" placeholder="старая цена"/> руб/шт.</p>
+          <p class="new-price"><input type="text" placeholder="новая цена"/> руб/шт.</p>
         </div>
         <button class="cart-btn">
           В корзину
@@ -53,58 +74,30 @@
     </div>
     <div class="additional-information">
       <div class="characteristics">
-        <h2>Характеристики:</h2>
-        <ul v-for="(characteristic, index) in product.characteristics"
-            :key="index">
-          <li>
-            <p class="left">
-              <span class="label">{{ characteristic[0] }}</span>
-            </p>
-            <span class="value">{{ characteristic[1] }}</span>
-          </li>
-        </ul>
+        <characteristics/>
       </div>
       <div class="description">
-        <h2>Описание:</h2>
-        <p>{{ product.description }}</p>
+        <h3>Описание:</h3>
+        <textarea class="input-description"></textarea>
       </div>
     </div>
   </div>
+  <v-btn color="#49AE66"
+         variant="outlined"
+         style="position: absolute; bottom: 50px; right: 140px"
+         prepend-icon="mdi-check">Готово
+  </v-btn>
 </template>
 
 <script setup lang="ts">
-import { IProduct } from "~/types/Product";
-import { useProductsStore } from "~/store/products";
 import { VNodeRef } from "@vue/runtime-core";
+import { ref } from "vue";
+import Characteristics from "@/components/Characteristics.vue";
+import GalleryDialog from "@/components/GalleryDialog.vue";
 
-const route = useRoute()
-const store = useProductsStore()
-
-const id = computed<number>(() => Number(route.params.id))
-const product = ref<IProduct>(store.getDefaultProduct())
-
-const result = await store.getProduct(id.value)
-if (result.ok) {
-  product.value = result.data
-}
-
-const withoutDiscount = computed(() => Math.ceil(500 / (100 - product.value.discount) * 100))
-
-const currentImageIndex = ref<number>(0)
-const currentImage = computed<string>(() => product.value.images[currentImageIndex.value] || store.getDefaultImage())
-
-const setCurrentImage = (index: number) => {
-  if (index < 0 || index >= product.value.images.length) return
-  currentImageIndex.value = index
-}
-
-const isCurrent = (index: number) => {
-  return currentImageIndex.value === index
-}
-
+const showDialog = ref(false)
 const track: VNodeRef = ref<VNodeRef | undefined>()
 const trackTranslate = ref(0)
-const translateLimit = -(product.value.images.length - 3) * 140
 
 const moveToTop = () => {
   if (trackTranslate.value < 0) {
@@ -114,20 +107,21 @@ const moveToTop = () => {
 }
 
 const moveToDown = () => {
-  if (trackTranslate.value > translateLimit) {
-    trackTranslate.value -= 140
-    track.value.style.transform = `translateY(${ trackTranslate.value }px)`
-  }
+  trackTranslate.value -= 140
+  track.value.style.transform = `translateY(${ trackTranslate.value }px)`
 }
+
+const isStockDefault = ref(true)
 </script>
 
 <style scoped lang="sass">
 .product-card
-  width: 90%
+  width: 100%
   margin: 70px auto
 
   .main-information
     display: flex
+    color: #808080
     margin-bottom: 70px
 
     .product-images
@@ -151,10 +145,6 @@ const moveToDown = () => {
           transform: translate(-50%, -50%)
 
           svg > path
-            fill: #dadada
-
-        .active
-          svg > path
             fill: #808080
 
         .up-button
@@ -164,6 +154,7 @@ const moveToDown = () => {
           bottom: -60px
 
         .slider-gallery
+          width: 100%
           height: 400px
           overflow: hidden
           align-self: center
@@ -171,21 +162,22 @@ const moveToDown = () => {
           .slider-track
             transition: all 0.2s ease
 
-          img
-            width: 100%
+          .gallery-img
+            display: flex
+            width: inherit
             height: 120px
-            object-fit: cover
             margin-bottom: 20px
-            border: 2px solid var(--middle-grey)
-
-          .current
-            border: 3px solid var(--yellow)
+            align-items: center
+            justify-content: center
+            background-color: #eeeeee
 
       .current-photo
         width: 400px
         height: 400px
         display: flex
         align-items: center
+        justify-content: center
+        background-color: #eeeeee
         border: 2px solid var(--middle-grey)
 
         img
@@ -193,39 +185,79 @@ const moveToDown = () => {
           height: 100%
           object-fit: contain
 
-    .name-price
+    .product-information
       gap: 20px
       display: flex
-      margin-left: 50px
+      margin-top: 30px
       flex-direction: column
 
-      h1
-        margin-bottom: 0
-        position: relative
+      .name
+        display: flex
+        align-items: center
+
+        .input-name
+          width: 400px
+          height: 80px
+          outline: none
+          padding: 10px
+          border: 1px dashed #555555
 
         .fav-btn
           border: none
           height: 32px
           padding: 0 10px
-          position: absolute
           background-color: transparent
 
-      p.in-stock
-        font-weight: bold
-        color: var(--green)
+      .stock
+        gap: 20px
+        display: flex
+        align-items: center
 
-      .price p
+        .in-stock
+          color: #49AE66
+          font-weight: bold
+
+      .price
+        gap: 10px
+        display: flex
+        flex-direction: column
         font-size: calc((100vw - 320px) / (1280 - 320) * (20 - 18) + 18px)
+
+        .old-price
+          font-size: 15px
+          text-decoration: line-through
+
+          input
+            width: 110px
+            outline: none
+            padding: 0 10px
+            border: 1px dashed #555555
+            text-decoration: line-through
+
+        .new-price
+          color: #E3DD5F
+          font-size: 20px
+          font-weight: bold
+
+          input
+            width: 130px
+            outline: none
+            color: #E3DD5F
+            padding: 0 10px
+            font-weight: bold
+            border: 1px dashed #555555
 
       .cart-btn
         gap: 5px
         border: none
         display: flex
+        color: #808080
         padding: 5px 10px
         border-radius: 5px
         width: fit-content
         align-items: center
-        background-color: var(--yellow)
+        margin: 10px 0
+        background-color: #E3DD5F
         font-size: calc((100vw - 320px) / (1280 - 320) * (20 - 18) + 18px)
 
   .additional-information
@@ -233,29 +265,16 @@ const moveToDown = () => {
     display: flex
     flex-direction: column
 
+    h3
+      margin-bottom: 20px
+
     .characteristics,
     .description
       font-size: calc((100vw - 320px) / (1280 - 320) * (18 - 16) + 16px)
 
-      ul
-        position: relative
-
-        .left
-          width: 40%
-          float: left
-          overflow: hidden
-          position: relative
-
-          span.label
-            font-weight: bold
-            position: relative
-            display: inline-block
-
-            &:after
-              content: ''
-              bottom: 0
-              left: 100%
-              right: -500px
-              position: absolute
-              border-bottom: 1px dotted #888
+      .input-description
+        width: 100%
+        height: 200px
+        outline: none
+        border: 1px dashed #555555
 </style>
