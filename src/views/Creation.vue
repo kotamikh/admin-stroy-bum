@@ -35,13 +35,15 @@
                   size="100"
           ></v-icon>
         </div>
-          <gallery-dialog v-model="showDialog"
-                          :show-dialog="showDialog"
-          />
+        <gallery-dialog v-model="showDialog"
+                        :show-dialog="showDialog"
+        />
       </div>
       <div class="product-information">
         <div class="name">
-          <textarea type="text" placeholder="Наименование товара" class="input-name"/>
+          <v-text-field label="Наименование товара"
+                        variant="underlined"
+                        color="#E3DD5F"></v-text-field>
           <button class="fav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
               <path fill="#808080"
@@ -50,18 +52,31 @@
           </button>
         </div>
         <div class="stock">
-          <p v-if="isStockDefault" class="in-stock">В наличии</p>
-          <p v-else>Под заказ</p>
-          <v-btn variant="outlined"
-                 size="small"
-                 color="#E3DD5F"
-                 @click="isStockDefault = !isStockDefault"
-          >Изменить
-          </v-btn>
+          <v-select
+            label="Наличие товара"
+            :items="['В наличии', 'Под заказ']"
+            variant="underlined"
+            color="#E3DD5F"></v-select>
         </div>
         <div class="price">
-          <p class="old-price"><input type="text" placeholder="старая цена"/> руб/шт.</p>
-          <p class="new-price"><input type="text" placeholder="новая цена"/> руб/шт.</p>
+          <div class="current-price">
+            <v-text-field label="Цена"
+                          variant="underlined"
+                          color="#E3DD5F"
+            ></v-text-field>
+            <p>руб/шт.</p>
+          </div>
+          <v-checkbox label="Есть скидка"
+                      v-model="enabled"
+                      hide-details
+          ></v-checkbox>
+          <div class="old-price" v-if="enabled">
+            <v-text-field label="Старая цена"
+                          variant="underlined"
+                          color="#E3DD5F"
+            ></v-text-field>
+            <p>руб/шт.</p>
+          </div>
         </div>
         <button class="cart-btn">
           В корзину
@@ -111,7 +126,7 @@ const moveToDown = () => {
   track.value.style.transform = `translateY(${ trackTranslate.value }px)`
 }
 
-const isStockDefault = ref(true)
+const enabled = ref(false)
 </script>
 
 <style scoped lang="sass">
@@ -186,21 +201,14 @@ const isStockDefault = ref(true)
           object-fit: contain
 
     .product-information
-      gap: 20px
+      gap: 10px
+      width: 40%
       display: flex
       margin-top: 30px
       flex-direction: column
 
       .name
         display: flex
-        align-items: center
-
-        .input-name
-          width: 400px
-          height: 80px
-          outline: none
-          padding: 10px
-          border: 1px dashed #555555
 
         .fav-btn
           border: none
@@ -208,44 +216,14 @@ const isStockDefault = ref(true)
           padding: 0 10px
           background-color: transparent
 
-      .stock
-        gap: 20px
-        display: flex
-        align-items: center
-
-        .in-stock
-          color: #49AE66
-          font-weight: bold
-
+      .stock,
       .price
-        gap: 10px
-        display: flex
-        flex-direction: column
-        font-size: calc((100vw - 320px) / (1280 - 320) * (20 - 18) + 18px)
+        width: 40%
 
+        .current-price,
         .old-price
-          font-size: 15px
-          text-decoration: line-through
-
-          input
-            width: 110px
-            outline: none
-            padding: 0 10px
-            border: 1px dashed #555555
-            text-decoration: line-through
-
-        .new-price
-          color: #E3DD5F
-          font-size: 20px
-          font-weight: bold
-
-          input
-            width: 130px
-            outline: none
-            color: #E3DD5F
-            padding: 0 10px
-            font-weight: bold
-            border: 1px dashed #555555
+          display: flex
+          align-items: center
 
       .cart-btn
         gap: 5px
