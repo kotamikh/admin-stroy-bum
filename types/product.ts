@@ -1,11 +1,11 @@
 export interface IProduct {
     name: string,
-    images: Array<string>
+    images: string[]
     price: number,
     stock: StockType,
     discount: number,
     description: string,
-    characteristics: Array<Array<string>>
+    characteristics: string[][]
 }
 
 export enum StockType {

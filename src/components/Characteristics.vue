@@ -9,11 +9,17 @@
     </v-btn>
   </h3>
   <ul>
-    <li class="list" v-for="char in characteristics">
-      <p class="left">
-        <span class="label"><input type="text" v-model="char[0]" placeholder="Характеристика"/></span>
-        <span class="value"><input type="text" v-model="char[1]" placeholder="Значение"/></span>
-      </p>
+    <li class="list-item" v-for="char in characteristics">
+        <span class="label"><v-text-field label="Характеристика"
+                                          variant="underlined"
+                                          color="#E3DD5F"
+                                          hide-details
+                                          v-model="char[0]"/></span>
+        <span class="value"><v-text-field label="Значение"
+                                          variant="underlined"
+                                          color="#E3DD5F"
+                                          hide-details
+                                          v-model="char[1]"/></span>
     </li>
   </ul>
 
@@ -41,8 +47,8 @@ ul
   list-style: none
   position: relative
 
-  .left
-    width: 60%
+  .list-item
+    width: 50%
     display: flex
     overflow: hidden
     position: relative
@@ -50,24 +56,25 @@ ul
     justify-content: space-between
 
     .label
+      width: 30%
       float: left
-      outline: none
-      font-weight: bold
+      display: flex
       position: relative
-      display: inline-block
-      border: 1px dashed #555555
+      align-items: flex-end
 
       &:after
         content: ''
         bottom: 0
         left: 100%
-        right: -275px
+        right: -230px
         position: absolute
         border-bottom: 1px dotted #888
 
-  .value
-    float: left
-    border: 1px dashed #555555
+    .value
+      width: 30%
+      float: left
+      display: flex
+      align-items: flex-end
 
   input
     outline: none

@@ -13,14 +13,24 @@
           <div class="slider-gallery">
             <div class="slider-track"
                  ref="track">
-              <div v-for="image in 3"
-                   :key="image"
-                   class="gallery-img"
-              >
-                <v-icon icon="mdi-camera"
-                        size="x-large"
+              <div v-if="productImages.length === 0"
+                   v-for="img in 3"
+                   :key="img"
+                   class="default-img"
+                   style="background-color: #eeeeee">
+                <v-icon
+                    icon="mdi-camera"
+                    size="x-large"
                 ></v-icon>
               </div>
+              <img v-else
+                   v-for="(image, index) in productImages"
+                   :src="image"
+                   :key="index"
+                   alt="image"
+                   :class="[{ current : isCurrent(index)  }, 'image' ]"
+                   @click="currentImageIndex = index"
+              />
             </div>
           </div>
           <button class="down-button"
@@ -31,19 +41,29 @@
           </button>
         </div>
         <div class="current-photo" @click="showDialog = true">
-          <v-icon icon="mdi-camera"
-                  size="100"
-          ></v-icon>
+          <div v-if="productImages.length === 0"
+               class="default-img">
+            <v-icon
+                icon="mdi-camera"
+                size="100"
+            ></v-icon>
+          </div>
+          <v-img v-else
+                 class="image"
+                 :src="productImages[currentImageIndex]"
+          />
         </div>
         <gallery-dialog v-model="showDialog"
-                        :show-dialog="showDialog"
+                        @update:show="showDialog = false"
+                        :product-images="productImages"
+                        @update:images="onChange"
         />
       </div>
       <div class="product-information">
         <div class="name">
           <v-text-field label="Наименование товара"
                         variant="underlined"
-                        color="#E3DD5F"></v-text-field>
+                        color="#E3DD5F"/>
           <button class="fav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
               <path fill="#808080"
@@ -53,28 +73,28 @@
         </div>
         <div class="stock">
           <v-select
-            label="Наличие товара"
-            :items="['В наличии', 'Под заказ']"
-            variant="underlined"
-            color="#E3DD5F"></v-select>
+              label="Наличие товара"
+              :items="['В наличии', 'Под заказ']"
+              variant="underlined"
+              color="#E3DD5F"/>
         </div>
         <div class="price">
           <div class="current-price">
             <v-text-field label="Цена"
                           variant="underlined"
                           color="#E3DD5F"
-            ></v-text-field>
+            />
             <p>руб/шт.</p>
           </div>
           <v-checkbox label="Есть скидка"
                       v-model="enabled"
                       hide-details
-          ></v-checkbox>
+          />
           <div class="old-price" v-if="enabled">
             <v-text-field label="Старая цена"
                           variant="underlined"
                           color="#E3DD5F"
-            ></v-text-field>
+            />
             <p>руб/шт.</p>
           </div>
         </div>
@@ -93,7 +113,10 @@
       </div>
       <div class="description">
         <h3>Описание:</h3>
-        <textarea class="input-description"></textarea>
+        <v-text-field
+            variant="filled"
+            color="#E3DD5F"
+            class="input-description"></v-text-field>
       </div>
     </div>
   </div>
@@ -111,8 +134,20 @@ import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 
 const showDialog = ref(false)
+
+const productImages = ref<Array<string>>([])
+const currentImageIndex = ref<number>(0)
+
+const isCurrent = (index: number) => {
+  return index === currentImageIndex.value
+}
+
 const track: VNodeRef = ref<VNodeRef | undefined>()
 const trackTranslate = ref(0)
+
+const countLimit = () => {
+  return -(productImages.value.length - 3) * 140
+}
 
 const moveToTop = () => {
   if (trackTranslate.value < 0) {
@@ -122,11 +157,17 @@ const moveToTop = () => {
 }
 
 const moveToDown = () => {
-  trackTranslate.value -= 140
-  track.value.style.transform = `translateY(${ trackTranslate.value }px)`
+  if (trackTranslate.value > countLimit()) {
+    trackTranslate.value -= 140
+    track.value.style.transform = `translateY(${ trackTranslate.value }px)`
+  }
 }
 
 const enabled = ref(false)
+
+const onChange = (data: Array<string>) => {
+  productImages.value = JSON.parse(JSON.stringify(data)).data
+}
 </script>
 
 <style scoped lang="sass">
@@ -138,17 +179,16 @@ const enabled = ref(false)
     display: flex
     color: #808080
     margin-bottom: 70px
+    justify-content: space-between
 
     .product-images
       gap: 20px
-      width: 60%
-      height: 400px
+      height: 450px
       display: flex
 
       .gallery-wrapper
-        width: 20%
         display: flex
-        height: 400px
+        height: 450px
         position: relative
 
         .up-button,
@@ -169,36 +209,57 @@ const enabled = ref(false)
           bottom: -60px
 
         .slider-gallery
-          width: 100%
-          height: 400px
+          width: 150px
+          height: 450px
+          padding: 15px
           overflow: hidden
           align-self: center
 
           .slider-track
             transition: all 0.2s ease
 
-          .gallery-img
-            display: flex
-            width: inherit
-            height: 120px
-            margin-bottom: 20px
-            align-items: center
-            justify-content: center
-            background-color: #eeeeee
+            .default-img
+              display: flex
+              width: 100%
+              height: 130px
+              border-radius: 5px
+              align-items: center
+              margin-bottom: 15px
+              justify-content: center
+
+            .image
+              display: flex
+              padding: 2%
+              width: 100%
+              height: 130px
+              border-radius: 5px
+              object-fit: contain
+              margin-bottom: 15px
+              align-items: center
+              justify-content: center
+              transition: scale 0.2s ease
+
+            .current
+              transform: scale(1.2)
+              border: 1.5px solid rgba(128, 128, 128, 0.4)
 
       .current-photo
-        width: 400px
-        height: 400px
         display: flex
+        width: 450px
+        height: 450px
+        padding: 2%
+        border-radius: 10px
         align-items: center
         justify-content: center
-        background-color: #eeeeee
-        border: 2px solid var(--middle-grey)
+        border: 2px solid rgba(128, 128, 128, 0.4)
 
-        img
-          width: 100%
-          height: 100%
-          object-fit: contain
+        .default-img
+          display: flex
+          width: 400px
+          height: 400px
+          align-items: center
+          justify-content: center
+          background-color: #eeeeee
 
     .product-information
       gap: 10px
@@ -253,6 +314,4 @@ const enabled = ref(false)
       .input-description
         width: 100%
         height: 200px
-        outline: none
-        border: 1px dashed #555555
 </style>
