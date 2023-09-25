@@ -23,43 +23,23 @@
                                           v-model="char[1]"/></span>
       </li>
     </ul>
-<!--    <v-col class="text-right">-->
-<!--      <v-btn v-if="characteristics.length !== 0"-->
-<!--             variant="outlined"-->
-<!--             color="#E3DD5F"-->
-<!--             @click="emit('update:characteristics', characteristics)"-->
-<!--      >-->
-<!--        <v-icon icon="mdi-check-bold"-->
-<!--        />-->
-<!--        <v-tooltip-->
-<!--            activator="parent"-->
-<!--            location="end"-->
-<!--            color="#E3DD5F"-->
-<!--            variant="danger"-->
-<!--            style="&#45;&#45;v-theme-surface-variant: rgba(255, 255, 255, 0.7)"-->
-<!--        ><b>Все характеристики готовы</b></v-tooltip>-->
-<!--      </v-btn>-->
-<!--    </v-col>-->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useVModel } from '@vueuse/core'
 
 const props = defineProps<{
-  characteristics: Array<Array<string>>
+  modelValue: Array<Array<string>>
 }>()
 
-const emit = defineEmits(['update:characteristics'])
+const emit = defineEmits(['update:modelValue'])
 
-const data = useVModel(props, 'characteristics', emit)
+const data = useVModel(props, 'modelValue', emit, { deep: true })
 
 const createChar = () => {
   return (['', ''])
 }
-
-const characteristics = ref<Array<Array<string>>>([])
 
 const addChar = () => {
   let newChar = createChar()

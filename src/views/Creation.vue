@@ -65,7 +65,7 @@
           <v-text-field label="Наименование товара"
                         variant="underlined"
                         color="#E3DD5F"
-                        v-model="productName"/>
+                        v-model="product.name"/>
           <button class="fav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
               <path fill="#808080"
@@ -79,14 +79,14 @@
               :items="['В наличии', 'Под заказ']"
               variant="underlined"
               color="#E3DD5F"
-              v-model="productStock"/>
+              v-model="product.stock"/>
         </div>
         <div class="price">
           <div class="current-price">
             <v-text-field label="Цена"
                           variant="underlined"
                           color="#E3DD5F"
-                          v-model="productPrice"
+                          v-model="product.price"
             />
             <p>руб/шт.</p>
           </div>
@@ -95,10 +95,10 @@
                       hide-details
           />
           <div class="old-price" v-if="enabled">
-            <v-text-field label="Старая цена"
+            <v-text-field label="Скидка"
                           variant="underlined"
                           color="#E3DD5F"
-                          v-model="productOldPrice"
+                          v-model="product.discount"
             />
             <p>руб/шт.</p>
           </div>
@@ -114,9 +114,7 @@
     </div>
     <div class="additional-information">
       <div class="characteristics">
-        <characteristics :characteristics="productCharacteristics"
-                         @update:characteristics="onUpdateChar"
-        />
+        <characteristics v-model="product.characteristics"/>
       </div>
       <div class="description">
         <h3>Описание:</h3>
@@ -124,7 +122,7 @@
             variant="filled"
             color="#E3DD5F"
             class="input-description"
-            v-model="productDescription"></v-text-field>
+            v-model="product.description"></v-text-field>
       </div>
     </div>
   </div>
@@ -139,17 +137,20 @@
 
 <script setup lang="ts">
 import { VNodeRef } from "@vue/runtime-core";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
-import { IProduct } from "../../types/product";
+import { IProduct, StockType } from "../../types/product";
 
-const productName = ref('')
-const productStock = ref()
-const productPrice = ref()
-const productOldPrice = ref()
-const productCharacteristics = ref()
-const productDescription = ref('')
+const product = reactive<IProduct>({
+  name: '',
+  images: [],
+  stock: StockType.OnOrder,
+  price: 0,
+  discount: 0,
+  description: '',
+  characteristics: []
+})
 
 const showDialog = ref(false)
 
@@ -187,21 +188,8 @@ const onUpdateImages = (data: Array<string>) => {
   productImages.value = JSON.parse(JSON.stringify(data)).data
 }
 
-const onUpdateChar = (data: Array<Array<string>>) => {
-  productCharacteristics.value = data
-}
-
 const createNewCard = () => {
-  const newProduct: IProduct = {
-    name: productName.value,
-    images: productImages.value,
-    price: productPrice.value,
-    stock: productStock.value,
-    oldPrice: productOldPrice.value,
-    description: productDescription.value,
-    characteristics: productCharacteristics.value
-  }
-  console.log(newProduct, productCharacteristics.value)
+  console.log(JSON.parse(JSON.stringify(product)))
 }
 </script>
 
