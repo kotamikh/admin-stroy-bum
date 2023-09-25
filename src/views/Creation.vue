@@ -30,6 +30,7 @@
                    alt="image"
                    :class="[{ current : isCurrent(index)  }, 'image' ]"
                    @click="currentImageIndex = index"
+
               />
             </div>
           </div>
@@ -56,14 +57,15 @@
         <gallery-dialog v-model="showDialog"
                         @update:show="showDialog = false"
                         :product-images="productImages"
-                        @update:images="onChange"
+                        @update:images="onUpdateImages"
         />
       </div>
       <div class="product-information">
         <div class="name">
           <v-text-field label="Наименование товара"
                         variant="underlined"
-                        color="#E3DD5F"/>
+                        color="#E3DD5F"
+                        v-model="productName"/>
           <button class="fav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
               <path fill="#808080"
@@ -76,13 +78,15 @@
               label="Наличие товара"
               :items="['В наличии', 'Под заказ']"
               variant="underlined"
-              color="#E3DD5F"/>
+              color="#E3DD5F"
+              v-model="productStock"/>
         </div>
         <div class="price">
           <div class="current-price">
             <v-text-field label="Цена"
                           variant="underlined"
                           color="#E3DD5F"
+                          v-model="productPrice"
             />
             <p>руб/шт.</p>
           </div>
@@ -94,6 +98,7 @@
             <v-text-field label="Старая цена"
                           variant="underlined"
                           color="#E3DD5F"
+                          v-model="productOldPrice"
             />
             <p>руб/шт.</p>
           </div>
@@ -109,22 +114,27 @@
     </div>
     <div class="additional-information">
       <div class="characteristics">
-        <characteristics/>
+        <characteristics :characteristics="productCharacteristics"
+                         @update:characteristics="onUpdateChar"
+        />
       </div>
       <div class="description">
         <h3>Описание:</h3>
         <v-text-field
             variant="filled"
             color="#E3DD5F"
-            class="input-description"></v-text-field>
+            class="input-description"
+            v-model="productDescription"></v-text-field>
       </div>
     </div>
   </div>
-  <v-btn color="#49AE66"
+  <v-btn
+         color="#49AE66"
          variant="outlined"
-         style="position: absolute; bottom: 50px; right: 140px"
-         prepend-icon="mdi-check">Готово
-  </v-btn>
+         style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
+         prepend-icon="mdi-check"
+         @click="createNewCard"
+  >Готово</v-btn>
 </template>
 
 <script setup lang="ts">
@@ -132,6 +142,14 @@ import { VNodeRef } from "@vue/runtime-core";
 import { ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
+import { IProduct } from "../../types/product";
+
+const productName = ref('')
+const productStock = ref()
+const productPrice = ref()
+const productOldPrice = ref()
+const productCharacteristics = ref()
+const productDescription = ref('')
 
 const showDialog = ref(false)
 
@@ -165,8 +183,25 @@ const moveToDown = () => {
 
 const enabled = ref(false)
 
-const onChange = (data: Array<string>) => {
+const onUpdateImages = (data: Array<string>) => {
   productImages.value = JSON.parse(JSON.stringify(data)).data
+}
+
+const onUpdateChar = (data: Array<Array<string>>) => {
+  productCharacteristics.value = data
+}
+
+const createNewCard = () => {
+  const newProduct: IProduct = {
+    name: productName.value,
+    images: productImages.value,
+    price: productPrice.value,
+    stock: productStock.value,
+    oldPrice: productOldPrice.value,
+    description: productDescription.value,
+    characteristics: productCharacteristics.value
+  }
+  console.log(newProduct, productCharacteristics.value)
 }
 </script>
 

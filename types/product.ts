@@ -1,9 +1,9 @@
 export interface IProduct {
     name: string,
-    images: string[]
+    images: string[],
     price: number,
-    stock: StockType,
-    discount: number,
+    stock: string,
+    oldPrice: number,
     description: string,
     characteristics: string[][]
 }

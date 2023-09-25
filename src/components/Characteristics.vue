@@ -1,82 +1,112 @@
 <template>
-  <h3>Характеристики:
-    <v-btn variant="outlined"
-           size="small"
-           class="ml-4"
-           color="#E3DD5F"
-           @click="addChar"
-    >Добавить
-    </v-btn>
-  </h3>
-  <ul>
-    <li class="list-item" v-for="char in characteristics">
-        <span class="label"><v-text-field label="Характеристика"
-                                          variant="underlined"
-                                          color="#E3DD5F"
-                                          hide-details
-                                          v-model="char[0]"/></span>
+  <div class="characteristics">
+    <h3>Характеристики:
+      <v-btn variant="outlined"
+             size="small"
+             class="ml-4"
+             color="#E3DD5F"
+             @click="addChar"
+      >Добавить
+      </v-btn>
+    </h3>
+    <ul>
+      <li class="list-item" v-for="char in data">
+      <span class="label"><v-text-field label="Характеристика"
+                                        variant="underlined"
+                                        color="#E3DD5F"
+                                        hide-details
+                                        v-model="char[0]"/></span>
         <span class="value"><v-text-field label="Значение"
                                           variant="underlined"
                                           color="#E3DD5F"
                                           hide-details
                                           v-model="char[1]"/></span>
-    </li>
-  </ul>
-
+      </li>
+    </ul>
+<!--    <v-col class="text-right">-->
+<!--      <v-btn v-if="characteristics.length !== 0"-->
+<!--             variant="outlined"-->
+<!--             color="#E3DD5F"-->
+<!--             @click="emit('update:characteristics', characteristics)"-->
+<!--      >-->
+<!--        <v-icon icon="mdi-check-bold"-->
+<!--        />-->
+<!--        <v-tooltip-->
+<!--            activator="parent"-->
+<!--            location="end"-->
+<!--            color="#E3DD5F"-->
+<!--            variant="danger"-->
+<!--            style="&#45;&#45;v-theme-surface-variant: rgba(255, 255, 255, 0.7)"-->
+<!--        ><b>Все характеристики готовы</b></v-tooltip>-->
+<!--      </v-btn>-->
+<!--    </v-col>-->
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useVModel } from '@vueuse/core'
 
-const char = ref(['', ''])
+const props = defineProps<{
+  characteristics: Array<Array<string>>
+}>()
 
-const characteristics = ref([char])
+const emit = defineEmits(['update:characteristics'])
+
+const data = useVModel(props, 'characteristics', emit)
+
+const createChar = () => {
+  return (['', ''])
+}
+
+const characteristics = ref<Array<Array<string>>>([])
 
 const addChar = () => {
-  characteristics.value.push(char)
+  let newChar = createChar()
+  data.value.push(newChar)
+  console.log(data.value)
 }
 
 </script>
 
 <style scoped lang="sass">
-h3
-  margin-bottom: 20px
+.characteristics
+  width: 55%
 
-ul
-  width: 100%
-  list-style: none
-  position: relative
-
-  .list-item
-    width: 50%
-    display: flex
-    overflow: hidden
-    position: relative
+  h3
     margin-bottom: 20px
-    justify-content: space-between
 
-    .label
-      width: 30%
-      float: left
+  ul
+    width: 100%
+    list-style: none
+    position: relative
+
+    .list-item
+      width: 100%
       display: flex
+      overflow: hidden
       position: relative
-      align-items: flex-end
+      margin-bottom: 20px
+      justify-content: space-between
 
-      &:after
-        content: ''
-        bottom: 0
-        left: 100%
-        right: -230px
-        position: absolute
-        border-bottom: 1px dotted #888
+      .label
+        width: 30%
+        float: left
+        display: flex
+        position: relative
+        align-items: flex-end
 
-    .value
-      width: 30%
-      float: left
-      display: flex
-      align-items: flex-end
+        &:after
+          content: ''
+          bottom: 0
+          left: 100%
+          right: -250px
+          position: absolute
+          border-bottom: 1px dotted #888
 
-  input
-    outline: none
-    padding: 5px
+      .value
+        width: 30%
+        float: left
+        display: flex
+        align-items: flex-end
 </style>
