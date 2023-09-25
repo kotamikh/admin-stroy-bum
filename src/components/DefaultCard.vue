@@ -93,12 +93,12 @@
     .product-name
       width: 100px
       height: 25px
-      border: 1px dashed #555555
+      border: 1px solid #8cb6ce
 
     .product-stock
       width: 150px
       height: 25px
-      border: 1px dashed #555555
+      border: 1px solid #8cb6ce
 
   .price-cart
     gap: 10%
@@ -119,7 +119,7 @@
         p
           width: 40px
           height: 25px
-          border: 1px dashed #555555
+          border: 1px solid #8cb6ce
 
     .cart-btn
       border: none
