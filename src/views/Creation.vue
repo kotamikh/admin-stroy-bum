@@ -98,9 +98,13 @@
             <v-text-field label="Скидка"
                           variant="underlined"
                           color="#E3DD5F"
+                          class="discount"
                           v-model="product.discount"
-            />
-            <p>руб/шт.</p>
+                          hide-details
+            >
+              <p class="percent">%</p>
+            </v-text-field>
+            <p class="price-count">Старая цена: {{ Math.ceil(product.price / (100 - product.discount) * 100) }}</p>
           </div>
         </div>
         <button class="cart-btn">
@@ -127,12 +131,13 @@
     </div>
   </div>
   <v-btn
-         color="#49AE66"
-         variant="outlined"
-         style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
-         prepend-icon="mdi-check"
-         @click="createNewCard"
-  >Готово</v-btn>
+      color="#49AE66"
+      variant="outlined"
+      style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
+      prepend-icon="mdi-check"
+      @click="createNewCard"
+  >Готово
+  </v-btn>
 </template>
 
 <script setup lang="ts">
@@ -300,14 +305,31 @@ const createNewCard = () => {
           padding: 0 10px
           background-color: transparent
 
-      .stock,
-      .price
+      .stock
         width: 40%
 
-        .current-price,
-        .old-price
-          display: flex
-          align-items: center
+      .current-price
+        width: 40%
+        display: flex
+        align-items: center
+
+      .old-price
+        gap: 20px
+        width: 50%
+        display: flex
+        position: relative
+        align-content: flex-end
+
+        .discount
+          width: 15%
+          max-width: 70px
+
+        .percent
+          right: 0
+          position: absolute
+
+        .price-count
+          align-self: flex-end
 
       .cart-btn
         gap: 5px

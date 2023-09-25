@@ -82,7 +82,7 @@ const addChar = () => {
           left: 100%
           right: -250px
           position: absolute
-          border-bottom: 1px dotted #888
+          border-bottom: 1px dashed #a9a9a9
 
       .value
         width: 30%
