@@ -1,15 +1,15 @@
 <template>
   <h2>{{ text }}</h2>
   <div class="cards">
-  <default-card/>
-  <product-card v-for="[ id, product ]  in useProductsStore().products"
-                    :key="id"
-                    :id="id"
-                    :name="product.name"
-                    :images="product.images"
-                    :price="product.price"
-                    :stock="product.stock"
-                    :discount="product.discount"/>
+    <default-card class="card"/>
+    <product-card v-for="[ id, product ]  in useProductsStore().products"
+                  :key="id"
+                  :id="id"
+                  :name="product.name"
+                  :images="product.images"
+                  :price="product.price"
+                  :stock="product.stock"
+                  :discount="product.discount"/>
   </div>
 </template>
 
@@ -32,4 +32,5 @@ useProductsStore().loadAll(0, 10)
   display: flex
   flex-wrap: wrap
   justify-content: center
+
 </style>

@@ -2,10 +2,11 @@
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props"
             variant="outlined"
-            style="border: 1px solid white"
+            class="product-card"
+            style="border: 3px solid #eeeeee; border-radius: 0"
             @click="router.push('/creation')"
     >
-      <div class="product-card">
+      <div>
         <div class="marks">
           <svg class="fav-mark" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 256 256">
             <path
@@ -39,7 +40,8 @@
                  scrim="#C8C8C8B3"
                  class="justify-center align-center font-weight-bold"
       >
-        <div class="overlay-clue">ДОБАВИТЬ ТОВАР</div>
+          <v-btn  variant="flat"
+                  color="#E3DD5F">ДОБАВИТЬ ТОВАР</v-btn>
       </v-overlay>
     </v-card>
   </v-hover>
@@ -51,24 +53,11 @@ import router from "@/router";
 </script>
 
 <style scoped lang="sass">
-.overlay-clue
-  color: #808080
-  padding: 0 5px
-  font-size: 18px
-  border-radius: 2px
-  background-color: rgba(227, 221, 95, 0.85)
-
 .product-card
   display: flex
-  margin: 0 auto
   padding: 10px 0
   position: relative
   flex-direction: column
-
-  width: 18%
-  min-width: 220px
-  max-width: 280px
-  max-height: 380px
 
   .marks
     left: 0
