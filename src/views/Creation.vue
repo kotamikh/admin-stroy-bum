@@ -76,7 +76,7 @@
         <div class="stock">
           <v-select
               label="Наличие товара"
-              :items="[{title:'в наличии', value: 1}]"
+              :items="[{title:'В наличии', value: 1}, {title:'Под заказ', value: 0}]"
               variant="underlined"
               color="#E3DD5F"
               v-model="product.stock"/>
@@ -84,9 +84,9 @@
         <div class="price">
           <div class="current-price">
             <v-text-field label="Цена"
-                          type="number"
                           variant="underlined"
                           color="#E3DD5F"
+                          class="w-33"
                           v-model.number="product.price"
             />
             <p>руб/шт.</p>
@@ -106,7 +106,7 @@
             >
               <p class="percent">%</p>
             </v-text-field>
-            <p class="price-count">Старая цена: {{ Math.ceil(product.price / (100 - product.discount) * 100) }}</p>
+            <p class="price-count">Старая цена: {{ Math.ceil(product.price / (100 - product.discount) * 100) }} руб/шт.</p>
           </div>
         </div>
         <button class="cart-btn">
@@ -137,7 +137,7 @@
       variant="outlined"
       style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
       prepend-icon="mdi-check"
-      @click="useProductsStore().createNewCard"
+      @click="useProductsStore().createNewCard(product)"
   >Готово
   </v-btn>
 </template>
@@ -147,13 +147,13 @@ import { VNodeRef } from "@vue/runtime-core";
 import { reactive, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
-import { IProduct, StockType } from "../../types/product";
+import { IProductDto, StockType } from "../../types/product";
 import { useProductsStore } from "@/store/products";
 
-const product = reactive<IProduct>({
+const product = reactive<IProductDto>({
   name: '',
   images: [],
-  stock: StockType.OnOrder,
+  stock: StockType.InStock,
   price: 0,
   discount: 0,
   description: '',
@@ -310,19 +310,19 @@ const onUpdateImages = (data: Array<string>) => {
         width: 40%
 
       .current-price
-        width: 40%
+        width: 30%
         display: flex
         align-items: center
 
       .old-price
         gap: 20px
-        width: 50%
+        width: 70%
         display: flex
         position: relative
         align-content: flex-end
 
         .discount
-          width: 15%
+          width: 25%
           max-width: 70px
 
         .percent

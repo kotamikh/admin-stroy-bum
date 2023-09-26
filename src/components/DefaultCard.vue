@@ -60,14 +60,15 @@ import router from "@/router";
 
 .product-card
   display: flex
-  flex-direction: column
-
-  width: 20%
   margin: 0 auto
   padding: 10px 0
-  min-width: 250px
-  max-height: 380px
   position: relative
+  flex-direction: column
+
+  width: 18%
+  min-width: 220px
+  max-width: 280px
+  max-height: 380px
 
   .marks
     left: 0

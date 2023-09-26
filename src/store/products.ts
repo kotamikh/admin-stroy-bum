@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
-import { IProduct } from "../../types/product";
-import { useFetch } from "@vueuse/core";
+import { IProduct, IProductDto } from "../../types/product";
+
 
 const BASE_URL = "http://192.168.0.2:8000"
 
@@ -11,46 +11,35 @@ const ROUTES = {
 export const useProductsStore = defineStore('cardsStore', () => {
   const products: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
 
-  const loadAll = async (offset: number, limit: number): Promise<boolean> => {
-    const { data, error} = await useFetch<IProduct[]>(ROUTES.products, {
-      method: 'GET',
-      params: {
-        offset: offset,
-        limit: limit,
-      }
+  const loadAll = (offset: number, limit: number) => {
+    const params = {offset: offset.toString(), limit: limit.toString()}
+
+    fetch(ROUTES.products + '?' + new URLSearchParams(params),{
+      method: 'GET'
+    }).then(response => {
+      response.json().then(res => {
+        products.value.clear()
+        for (const r of res) {
+          products.value.set(r.id, r)
+        }
+      })
     })
-
-    if (error.value) {
-      //alert("Ошибка смотри в консоль")
-      console.log(error.value)
-      return false
-    }
-
-    if (data.value) {
-      products.value.clear()
-      for (const p of data.value) {
-        products.value.set(p.id, p)
-      }
-    }
-    return true
+      .catch((e) => {
+        console.log('Error: ' + e.message);
+        console.log(e.response);
+      })
   }
 
-  const createNewCard = async (product: IProduct): Promise<boolean> => {
-    const { error } = await useFetch(ROUTES.products, {
+  const createNewCard = (product: IProductDto) => {
+    fetch(ROUTES.products, {
       method: 'POST',
       body: JSON.stringify(product),
-    })
-
-    if (error.value) {
-      alert("Ошибка смотри в консоль")
-      console.log(error.value)
-      return false
-    }
-
-    return true
+    }).then(() => loadAll(0, 10))
   }
 
   return {
+    products,
     createNewCard,
+    loadAll
   }
 })
