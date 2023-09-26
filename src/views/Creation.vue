@@ -76,7 +76,7 @@
         <div class="stock">
           <v-select
               label="Наличие товара"
-              :items="['В наличии', 'Под заказ']"
+              :items="[{title:'в наличии', value: 1}]"
               variant="underlined"
               color="#E3DD5F"
               v-model="product.stock"/>
@@ -84,9 +84,10 @@
         <div class="price">
           <div class="current-price">
             <v-text-field label="Цена"
+                          type="number"
                           variant="underlined"
                           color="#E3DD5F"
-                          v-model="product.price"
+                          v-model.number="product.price"
             />
             <p>руб/шт.</p>
           </div>
@@ -96,10 +97,11 @@
           />
           <div class="old-price" v-if="enabled">
             <v-text-field label="Скидка"
+                          type="number"
                           variant="underlined"
                           color="#E3DD5F"
                           class="discount"
-                          v-model="product.discount"
+                          v-model.number="product.discount"
                           hide-details
             >
               <p class="percent">%</p>
@@ -135,7 +137,7 @@
       variant="outlined"
       style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
       prepend-icon="mdi-check"
-      @click="createNewCard"
+      @click="useProductsStore().createNewCard"
   >Готово
   </v-btn>
 </template>
@@ -146,6 +148,7 @@ import { reactive, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { IProduct, StockType } from "../../types/product";
+import { useProductsStore } from "@/store/products";
 
 const product = reactive<IProduct>({
   name: '',
@@ -193,9 +196,7 @@ const onUpdateImages = (data: Array<string>) => {
   productImages.value = JSON.parse(JSON.stringify(data)).data
 }
 
-const createNewCard = () => {
-  console.log(JSON.parse(JSON.stringify(product)))
-}
+
 </script>
 
 <style scoped lang="sass">
