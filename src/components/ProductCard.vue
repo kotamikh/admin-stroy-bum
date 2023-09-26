@@ -34,7 +34,7 @@
       <v-overlay :model-value="isHovering"
                  contained
                  scrim="#C8C8C8B3"
-                 class="justify-center align-center font-weight-bold"
+                 class="justify-center pt-15 font-weight-bold"
       >
         <div class="overlay-clue">
           <v-btn variant="flat"
@@ -43,7 +43,9 @@
           >ИЗМЕНИТЬ</v-btn>
           <v-btn variant="flat"
                  color="8C8C8CFF"
-                 prepend-icon="mdi-trash-can-outline">УДАЛИТЬ</v-btn>
+                 prepend-icon="mdi-trash-can-outline"
+                 @click="useProductsStore().deleteCard(id)"
+          >УДАЛИТЬ</v-btn>
         </div>
       </v-overlay>
     </v-card>
@@ -54,6 +56,8 @@
 import { IProduct, StockType } from "../../types/product";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import defaultImg from '@/assets/default-image.jpeg'
+import { useProductsStore } from "@/store/products";
 
 export interface Props extends IProduct {
   id: number,
@@ -67,7 +71,7 @@ export interface Props extends IProduct {
 const props = withDefaults(defineProps<Props>(), {
   id: 0,
   name: 'unknown',
-  images: () => ['unknown'],
+  images: () => [defaultImg],
   price: 0,
   stock: StockType.OnOrder,
   discount: 0

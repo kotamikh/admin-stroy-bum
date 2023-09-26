@@ -41,6 +41,7 @@
                  class="justify-center align-center font-weight-bold"
       >
           <v-btn  variant="flat"
+                  prepend-icon="mdi-plus"
                   color="#E3DD5F">ДОБАВИТЬ ТОВАР</v-btn>
       </v-overlay>
     </v-card>

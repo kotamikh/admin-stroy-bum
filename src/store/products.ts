@@ -34,12 +34,27 @@ export const useProductsStore = defineStore('cardsStore', () => {
     fetch(ROUTES.products, {
       method: 'POST',
       body: JSON.stringify(product),
-    }).then(() => loadAll(0, 10))
+    }).then(() => loadAll(0, 30))
+      .catch((e) => {
+        console.log('Error: ' + e.message);
+        console.log(e.response);
+      })
+  }
+
+  const deleteCard = (id: number) => {
+  fetch(ROUTES.products + `?id=${id}`, {
+    method: 'DELETE',
+  }).then(() => loadAll(0, 30))
+    .catch((e) => {
+      console.log('Error: ' + e.message);
+      console.log(e.response);
+    })
   }
 
   return {
     products,
     createNewCard,
-    loadAll
+    loadAll,
+    deleteCard
   }
 })

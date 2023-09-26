@@ -22,7 +22,7 @@ import ProductCard from "@/components/ProductCard.vue";
 const route = useRoute()
 const { text } = route.params
 
-useProductsStore().loadAll(0, 10)
+useProductsStore().loadAll(0, 30)
 </script>
 
 
