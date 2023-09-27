@@ -31,6 +31,7 @@ export const useProductsStore = defineStore('cardsStore', () => {
   }
 
   const createNewCard = (product: IProductDto) => {
+    console.log(product)
     fetch(ROUTES.products, {
       method: 'POST',
       body: JSON.stringify(product),

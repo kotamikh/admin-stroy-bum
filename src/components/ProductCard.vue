@@ -1,6 +1,6 @@
 <template>
-  <v-hover v-slot="{ isHovering, props }">
-    <v-card v-bind="props"
+  <v-hover v-slot="{ isHovering, props: hoverProps }">
+    <v-card v-bind="hoverProps"
             variant="outlined"
             class="product-card"
             style="border: 1px solid white">
@@ -14,7 +14,7 @@
           <div class="discount-mark" v-if="discount !== 0">скидка {{ discount }}%</div>
         </div>
         <div class="img-holder">
-          <img :src="images[0]" class="product-img" alt="product-img"/>
+          <img :src="mainImage" class="product-img" alt="product-img"/>
         </div>
         <div class="name-stock">
           <p class="product-name">{{ name }}</p>
@@ -71,12 +71,13 @@ export interface Props extends IProduct {
 const props = withDefaults(defineProps<Props>(), {
   id: 0,
   name: 'unknown',
-  images: () => [defaultImg],
+  images: () => [],
   price: 0,
   stock: StockType.OnOrder,
   discount: 0
 });
 
+const mainImage = props.images.length === 0 ? defaultImg : props.images[0]
 const countDiscount = computed(() => Math.ceil(props.price / (100 - props.discount) * 100))
 
 const router = useRouter()

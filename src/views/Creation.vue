@@ -13,7 +13,7 @@
           <div class="slider-gallery">
             <div class="slider-track"
                  ref="track">
-              <div v-if="productImages.length === 0"
+              <div v-if="product.images.length === 0"
                    v-for="img in 3"
                    :key="img"
                    class="default-img"
@@ -24,7 +24,7 @@
                 ></v-icon>
               </div>
               <img v-else
-                   v-for="(image, index) in productImages"
+                   v-for="(image, index) in product.images"
                    :src="image"
                    :key="index"
                    alt="image"
@@ -42,7 +42,7 @@
           </button>
         </div>
         <div class="current-photo" @click="showDialog = true">
-          <div v-if="productImages.length === 0"
+          <div v-if="product.images.length === 0"
                class="default-img">
             <v-icon
                 icon="mdi-camera"
@@ -51,12 +51,12 @@
           </div>
           <v-img v-else
                  class="image"
-                 :src="productImages[currentImageIndex]"
+                 :src="product.images[currentImageIndex]"
           />
         </div>
         <gallery-dialog v-model="showDialog"
                         @update:show="showDialog = false"
-                        :product-images="productImages"
+                        :product-images="product.images"
                         @update:images="onUpdateImages"
         />
       </div>
@@ -137,7 +137,7 @@
       variant="outlined"
       style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
       prepend-icon="mdi-check"
-      @click="useProductsStore().createNewCard(product)"
+      @click="createCard"
   >Готово
   </v-btn>
 </template>
@@ -149,6 +149,7 @@ import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { IProductDto, StockType } from "../../types/product";
 import { useProductsStore } from "@/store/products";
+import router from "@/router";
 
 const product = reactive<IProductDto>({
   name: '',
@@ -162,7 +163,6 @@ const product = reactive<IProductDto>({
 
 const showDialog = ref(false)
 
-const productImages = ref<Array<string>>([])
 const currentImageIndex = ref<number>(0)
 
 const isCurrent = (index: number) => {
@@ -173,7 +173,7 @@ const track: VNodeRef = ref<VNodeRef | undefined>()
 const trackTranslate = ref(0)
 
 const countLimit = () => {
-  return -(productImages.value.length - 3) * 140
+  return -(product.images.length - 3) * 140
 }
 
 const moveToTop = () => {
@@ -193,9 +193,13 @@ const moveToDown = () => {
 const enabled = ref(false)
 
 const onUpdateImages = (data: Array<string>) => {
-  productImages.value = JSON.parse(JSON.stringify(data)).data
+  product.images = JSON.parse(JSON.stringify(data)).data
 }
 
+const createCard = () => {
+  router.push('/categories')
+  useProductsStore().createNewCard(product)
+}
 
 </script>
 
