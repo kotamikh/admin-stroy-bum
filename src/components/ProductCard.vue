@@ -39,7 +39,7 @@
           <v-btn variant="flat"
                  color="#E3DD5F"
                  prepend-icon="mdi-lead-pencil"
-                 :to="`/creation/${product.id}`"
+                 :to="`/creation/${id}`"
           >ИЗМЕНИТЬ</v-btn>
           <v-btn variant="flat"
                  color="8C8C8CFF"
@@ -60,7 +60,6 @@ import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
 
 export interface Props extends IProduct {
-  product: IProduct,
   id: number,
   name: string,
   images: Array<string>,

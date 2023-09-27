@@ -6,9 +6,9 @@
 
   >
     <v-list density="comfortable" nav>
-      <v-list-item prepend-icon="mdi-image" title="Галерея" :to="{path: '/gallery'}"></v-list-item>
       <v-list-item prepend-icon="mdi-plus-box-multiple" title="Добавить/удалить товары" :to="{path: '/categories'}">
       </v-list-item>
+      <v-list-item prepend-icon="mdi-image" title="Галерея" :to="{path: '/gallery'}"></v-list-item>
       <v-list-item prepend-icon="mdi-message" title="Заказы и сообщения"></v-list-item>
       <v-list-item prepend-icon="mdi-star-cog" title="Редактировать главную страницу"></v-list-item>
     </v-list>

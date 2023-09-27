@@ -144,23 +144,24 @@
 
 <script setup lang="ts">
 import { VNodeRef } from "@vue/runtime-core";
-import { onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { IProduct, StockType } from "../../types/product";
 import { useProductsStore } from "@/store/products";
 import router from "@/router";
+import * as path from "path";
+import { useRoute } from "vue-router";
 
-interface Props {
-  product?: IProduct
+let currentProduct
+const route = useRoute()
+const editMode = ref(false)
+
+if (route.path !== '/creation') {
+  editMode.value = true
+  let productId = Number(route.params.id)
+  currentProduct = JSON.parse(JSON.stringify(useProductsStore().products.get(productId)))
 }
-
-const props = defineProps<Props>()
-console.log(props)
-
-onMounted(() => {
-  console.log(props)
-})
 
 const product = reactive<IProduct>(Object.assign({
   name: '',
@@ -170,7 +171,7 @@ const product = reactive<IProduct>(Object.assign({
   discount: 0,
   description: '',
   characteristics: []
-}, props.product))
+}, currentProduct))
 
 const showDialog = ref(false)
 

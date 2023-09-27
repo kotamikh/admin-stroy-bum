@@ -5,7 +5,6 @@
     <product-card v-for="[ id, product ] in useProductsStore().products"
                   :key="id"
                   :id="id"
-                  :product="product"
                   :name="product.name"
                   :images="product.images"
                   :price="product.price"
