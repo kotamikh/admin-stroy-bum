@@ -144,14 +144,25 @@
 
 <script setup lang="ts">
 import { VNodeRef } from "@vue/runtime-core";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
-import { IProductDto, StockType } from "../../types/product";
+import { IProduct, StockType } from "../../types/product";
 import { useProductsStore } from "@/store/products";
 import router from "@/router";
 
-const product = reactive<IProductDto>({
+interface Props {
+  product?: IProduct
+}
+
+const props = defineProps<Props>()
+console.log(props)
+
+onMounted(() => {
+  console.log(props)
+})
+
+const product = reactive<IProduct>(Object.assign({
   name: '',
   images: [],
   stock: StockType.InStock,
@@ -159,7 +170,7 @@ const product = reactive<IProductDto>({
   discount: 0,
   description: '',
   characteristics: []
-})
+}, props.product))
 
 const showDialog = ref(false)
 

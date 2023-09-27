@@ -2,10 +2,9 @@
   <v-hover v-slot="{ isHovering, props: hoverProps }">
     <v-card v-bind="hoverProps"
             variant="outlined"
-            class="product-card"
             style="border: 1px solid white">
-      <div
-           @click="goToProductPage">
+      <div @click="goToProductPage"
+           class="product-card">
         <div class="marks">
           <svg class="fav-mark" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 256 256">
             <path
@@ -34,12 +33,13 @@
       <v-overlay :model-value="isHovering"
                  contained
                  scrim="#C8C8C8B3"
-                 class="justify-center pt-15 font-weight-bold"
+                 class="justify-center pt-16 font-weight-bold"
       >
         <div class="overlay-clue">
           <v-btn variant="flat"
                  color="#E3DD5F"
-          prepend-icon="mdi-lead-pencil"
+                 prepend-icon="mdi-lead-pencil"
+                 :to="`/creation/${product.id}`"
           >ИЗМЕНИТЬ</v-btn>
           <v-btn variant="flat"
                  color="8C8C8CFF"
@@ -60,6 +60,7 @@ import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
 
 export interface Props extends IProduct {
+  product: IProduct,
   id: number,
   name: string,
   images: Array<string>,
@@ -102,12 +103,10 @@ const goToProductPage = () => {
   display: flex
   flex-direction: column
 
-  width: 18%
-  min-width: 220px
-  max-width: 280px
-  max-height: 380px
+  width: 260px
+  height: 355px
+  padding: 10px 0
   position: relative
-  padding-bottom: 10px
 
   .marks
     left: 0
@@ -161,7 +160,6 @@ const goToProductPage = () => {
     color: #49AE66
 
   .price-cart
-    gap: 10%
     display: flex
     margin-top: auto
     align-items: flex-end
@@ -172,6 +170,7 @@ const goToProductPage = () => {
       cursor: pointer
       padding: 5px 10px
       color: #555555
+      min-width: 40%
       border-radius: 5px
       background-color: #E3DD5F
 </style>

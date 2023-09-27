@@ -55,6 +55,7 @@ import router from "@/router";
 
 <style scoped lang="sass">
 .product-card
+  height: 355px
   display: flex
   padding: 10px 0
   position: relative

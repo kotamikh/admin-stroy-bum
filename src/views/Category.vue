@@ -2,9 +2,10 @@
   <h2>{{ text }}</h2>
   <div class="cards">
     <default-card class="card"/>
-    <product-card v-for="[ id, product ]  in useProductsStore().products"
+    <product-card v-for="[ id, product ] in useProductsStore().products"
                   :key="id"
                   :id="id"
+                  :product="product"
                   :name="product.name"
                   :images="product.images"
                   :price="product.price"
@@ -32,5 +33,4 @@ useProductsStore().loadAll(0, 30)
   display: flex
   flex-wrap: wrap
   justify-content: center
-
 </style>
