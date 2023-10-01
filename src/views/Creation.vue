@@ -19,8 +19,8 @@
                    class="default-img"
                    style="background-color: #eeeeee">
                 <v-icon
-                    icon="mdi-camera"
-                    size="x-large"
+                  icon="mdi-camera"
+                  size="x-large"
                 ></v-icon>
               </div>
               <img v-else
@@ -45,8 +45,8 @@
           <div v-if="product.images.length === 0"
                class="default-img">
             <v-icon
-                icon="mdi-camera"
-                size="100"
+              icon="mdi-camera"
+              size="100"
             ></v-icon>
           </div>
           <v-img v-else
@@ -61,25 +61,18 @@
         />
       </div>
       <div class="product-information">
-        <div class="name">
-          <v-text-field label="Наименование товара"
-                        variant="underlined"
-                        color="#E3DD5F"
-                        v-model="product.name"/>
-          <button class="fav-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
-              <path fill="#808080"
-                    d="M223 57a58.07 58.07 0 0 0-81.92-.1L128 69.05l-13.09-12.19A58 58 0 0 0 33 139l89.35 90.66a8 8 0 0 0 11.4 0L223 139a58 58 0 0 0 0-82Zm-11.35 70.76L128 212.6l-83.7-84.92a42 42 0 0 1 59.4-59.4l.2.2l18.65 17.35a8 8 0 0 0 10.9 0l18.65-17.35l.2-.2a42 42 0 1 1 59.36 59.44Z"/>
-            </svg>
-          </button>
-        </div>
+        <v-text-field label="Наименование товара"
+                      variant="underlined"
+                      color="#E3DD5F"
+                      hide-details
+                      v-model="product.name"/>
         <div class="stock">
           <v-select
-              label="Наличие товара"
-              :items="[{title:'В наличии', value: 1}, {title:'Под заказ', value: 0}]"
-              variant="underlined"
-              color="#E3DD5F"
-              v-model="product.stock"/>
+            label="Наличие товара"
+            :items="[{title:'В наличии', value: 1}, {title:'Под заказ', value: 0}]"
+            variant="underlined"
+            color="#E3DD5F"
+            v-model="product.stock"/>
         </div>
         <div class="price">
           <div class="current-price">
@@ -106,16 +99,10 @@
             >
               <p class="percent">%</p>
             </v-text-field>
-            <p class="price-count">Старая цена: {{ Math.ceil(product.price / (100 - product.discount) * 100) }} руб/шт.</p>
+            <p class="price-count">Старая цена: {{ Math.ceil(product.price / (100 - product.discount) * 100) }}
+              руб/шт.</p>
           </div>
         </div>
-        <button class="cart-btn">
-          В корзину
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
-            <path fill="#808080"
-                  d="M96 216a16 16 0 1 1-16-16a16 16 0 0 1 16 16Zm88-16a16 16 0 1 0 16 16a16 16 0 0 0-16-16Zm47.65-125.65l-28.53 92.71A23.89 23.89 0 0 1 180.18 184H84.07A24.11 24.11 0 0 1 61 166.59L24.82 40H8a8 8 0 0 1 0-16h16.82a16.08 16.08 0 0 1 15.39 11.6L48.32 64H224a8 8 0 0 1 7.65 10.35ZM213.17 80H52.89l23.49 82.2a8 8 0 0 0 7.69 5.8h96.11a8 8 0 0 0 7.65-5.65Z"/>
-          </svg>
-        </button>
       </div>
     </div>
     <div class="additional-information">
@@ -125,19 +112,19 @@
       <div class="description">
         <h3>Описание:</h3>
         <v-text-field
-            variant="filled"
-            color="#E3DD5F"
-            class="input-description"
-            v-model="product.description"></v-text-field>
+          variant="filled"
+          color="#E3DD5F"
+          class="input-description"
+          v-model="product.description"></v-text-field>
       </div>
     </div>
   </div>
   <v-btn
-      color="#49AE66"
-      variant="outlined"
-      style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
-      prepend-icon="mdi-check"
-      @click="createCard"
+    color="#49AE66"
+    variant="outlined"
+    style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
+    prepend-icon="mdi-check"
+    @click="createCard"
   >Готово
   </v-btn>
 </template>
@@ -313,15 +300,6 @@ const createCard = () => {
       margin-top: 30px
       flex-direction: column
 
-      .name
-        display: flex
-
-        .fav-btn
-          border: none
-          height: 32px
-          padding: 0 10px
-          background-color: transparent
-
       .stock
         width: 40%
 
@@ -347,19 +325,6 @@ const createCard = () => {
 
         .price-count
           align-self: flex-end
-
-      .cart-btn
-        gap: 5px
-        border: none
-        display: flex
-        color: #808080
-        padding: 5px 10px
-        border-radius: 5px
-        width: fit-content
-        align-items: center
-        margin: 10px 0
-        background-color: #E3DD5F
-        font-size: calc((100vw - 320px) / (1280 - 320) * (20 - 18) + 18px)
 
   .additional-information
     gap: 30px
