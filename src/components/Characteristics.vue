@@ -44,7 +44,6 @@ const createChar = () => {
 const addChar = () => {
   let newChar = createChar()
   data.value.push(newChar)
-  console.log(data.value)
 }
 
 </script>

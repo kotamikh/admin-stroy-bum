@@ -8,8 +8,6 @@
                v-bind="props"
         >
           <v-img src="@/assets/add-img.avif"
-                 cover
-                 aspect-ratio="1"
           >
             <v-overlay :model-value="isHovering"
                        contained
@@ -23,15 +21,12 @@
       <v-col v-for="i in store.images"
              :key="i"
              cols="3"
-             class="d-flex child-flex"
       >
         <v-hover v-slot="{ isHovering, props }">
           <v-img
-              cover
               :src="i"
               v-bind="props"
-              aspect-ratio="1"
-              class="position-relative"
+              class="image"
           >
             <v-btn @click="store.deleteImage(i)"
                    size="small"
@@ -82,10 +77,15 @@ store.getAllImages()
   border-radius: 2px
   background-color: white
 
-.delete-btn
-  top: 2px
-  right: 2px
-  z-index: 9999
-  position: absolute
-  background-color: white
+img
+  width: 100%
+  height: 100%
+  object-fit: cover
+
+  .delete-btn
+    top: 2px
+    right: 2px
+    z-index: 9999
+    position: absolute
+    background-color: white
 </style>

@@ -39,7 +39,7 @@
           <v-btn variant="flat"
                  color="#E3DD5F"
                  prepend-icon="mdi-lead-pencil"
-                 :to="`/creation/${id}`"
+                 :to="{name: 'Creation', params: { id: id }}"
           >ИЗМЕНИТЬ</v-btn>
           <v-btn variant="flat"
                  color="8C8C8CFF"

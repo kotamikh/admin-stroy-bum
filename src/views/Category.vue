@@ -1,16 +1,21 @@
 <template>
+  <router-view>
   <h2>{{ text }}</h2>
   <div class="cards">
-    <default-card class="card"/>
-    <product-card v-for="[ id, product ] in useProductsStore().products"
-                  :key="id"
-                  :id="id"
-                  :name="product.name"
-                  :images="product.images"
-                  :price="product.price"
-                  :stock="product.stock"
-                  :discount="product.discount"/>
+    <default-card class="card" :category-name="text"/>
+    <product-card
+      v-for="[id, product] in useProductsStore().products"
+      :key="id"
+      :id="id"
+      :name="product.name"
+      :images="product.images"
+      :price="product.price"
+      :stock="product.stock"
+      :discount="product.discount"
+      :category-name="text"
+    />
   </div>
+  </router-view>
 </template>
 
 <script setup lang="ts">
@@ -20,11 +25,11 @@ import { useProductsStore } from "@/store/products";
 import ProductCard from "@/components/ProductCard.vue";
 
 const route = useRoute()
-const { text } = route.params
+const text = route.params.text.toString()
 
 useProductsStore().loadAll(0, 30)
+console.log(useProductsStore().products)
 </script>
-
 
 <style scoped lang="sass">
 .cards

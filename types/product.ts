@@ -5,7 +5,9 @@ export interface IProductDto {
     stock: StockType,
     discount: number,
     description: string,
-    characteristics: string[][]
+    characteristics: string[][],
+    subject_id: number,
+    brand_id: number
 }
 
 export interface IProduct extends IProductDto {

@@ -3,7 +3,7 @@
     <div class="dialog">
       <h3>Выберите фото товара</h3>
       <v-row>
-        <v-col v-for="i in store.images"
+        <v-col v-for="i in useImagesStore().images"
                :key="i"
                cols="3"
                class="gallery"
@@ -26,7 +26,7 @@
                          contained
                          scrim="rgb(30, 30, 30)"
                          class="justify-center align-center font-weight-bold"
-              ><p style="color: white; font-size: 18px">{{ store.showName(i) }}</p>
+              ><p style="color: white; font-size: 18px">{{ useImagesStore().showName(i) }}</p>
               </v-overlay>
             </v-img>
           </v-hover>
@@ -48,8 +48,8 @@ import { ref } from "vue";
 const props = defineProps(['showDialog', 'productImages'])
 const emit = defineEmits(['update:show', 'update:images'])
 
-const store = useImagesStore()
-store.getAllImages()
+const imagesStore = useImagesStore()
+imagesStore.getAllImages()
 
 const selectedImages = ref<Array<string>>([])
 const isImageSelected = (i: string) => {
