@@ -21,10 +21,9 @@ const routes = [
         component: () => import("@/views/Category.vue")
       },
       {
-        path: "creation/:text",
+        path: "creation/:text/:id?",
         name: "Creation",
         component: () => import("@/views/Creation.vue"),
-        alias: "creation/:id"
       },
     ],
   },

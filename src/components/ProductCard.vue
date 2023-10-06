@@ -39,7 +39,7 @@
           <v-btn variant="flat"
                  color="#E3DD5F"
                  prepend-icon="mdi-lead-pencil"
-                 :to="{name: 'Creation', params: { id: id }}"
+                 :to="{name: 'Creation', params: {text: props.categoryName, id: props.id}}"
           >ИЗМЕНИТЬ</v-btn>
           <v-btn variant="flat"
                  color="8C8C8CFF"
@@ -65,7 +65,8 @@ export interface Props extends IProduct {
   images: Array<string>,
   price: number,
   stock: StockType,
-  discount: number
+  discount: number,
+  categoryName: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -74,7 +75,8 @@ const props = withDefaults(defineProps<Props>(), {
   images: () => [],
   price: 0,
   stock: StockType.OnOrder,
-  discount: 0
+  discount: 0,
+  categoryName: 'unknown'
 });
 
 const mainImage = props.images.length === 0 ? defaultImg : props.images[0]

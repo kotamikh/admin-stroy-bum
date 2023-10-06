@@ -27,8 +27,10 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
 
   const findCategoryId = (categoryName: string) => {
     let categories = getAllCategories()
-    let currentCategory = categories.filter(cat => cat.name === categoryName)
-    return currentCategory[0].id
+    let currentCategory = categories.find(cat => cat.name === categoryName)
+    if (currentCategory) {
+      return currentCategory.id
+    }
   }
   const deleteCategory = () => {};
 

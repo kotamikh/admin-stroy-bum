@@ -1,9 +1,9 @@
 export interface ICategory {
-  id: Number;
-  name: String;
+  id: number;
+  name: string;
 }
 
 export interface IBrand {
-  id: Number;
-  name: String;
+  id: number;
+  name: string;
 }

@@ -10,10 +10,15 @@ const ROUTES = {
 export const useProductsStore = defineStore("cardsStore", () => {
   const products: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>());
 
-  const loadAll = (offset: number, limit: number) => {
-    const params = { offset: offset.toString(), limit: limit.toString() };
-
-    fetch(ROUTES.products + "?" + new URLSearchParams(params), {
+  const loadAll = (offset: number, limit: number, subject?: number, brand?: number) => {
+    const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
+    if (subject) {
+      params.append('subject', subject.toString())
+    }
+    if (brand) {
+      params.append('brand', brand.toString())
+    }
+    fetch(ROUTES.products + "?" + params, {
       method: "GET",
     })
       .then((response) => {

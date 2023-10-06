@@ -187,8 +187,10 @@ import { useRoute } from "vue-router";
 let currentProduct;
 const route = useRoute();
 let isEdit = false;
+console.log(route.params.id)
 
 if (route.params.id) {
+  console.log(route.params.id)
   isEdit = true;
   let productId = Number(route.params.id);
   currentProduct = JSON.parse(
@@ -219,7 +221,7 @@ const showDialog = ref(false);
 
 const currentImageIndex = ref<number>(0);
 
-const discountExist = ref(false);
+const discountExist = ref(product.discount !== 0)
 
 const isCurrent = (index: number) => {
   return index === currentImageIndex.value;
