@@ -7,7 +7,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   const categories: Ref<Map<number, ICategory>> = ref(new Map<number, ICategory>());
   const brands = ref<Array<IBrand>>([])
 
-  const getAllCategories = (): ICategory[] => {
+  const getAllCategories = (): Map<number, ICategory> => {
     fetch("http://192.168.0.2:8000/api/v1/subjects", {
       method: "GET",
     }).then((response) => {
@@ -16,14 +16,12 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
           for (const r of res) {
               categories.value.set(r.id, r);
           }
-          console.log(categories.value)
-          return categories.value
       }).catch((e) => {
           console.log("Error: " + e.message)
           console.log(e.response)
       })
     })
-    return []
+    return categories.value
   }
 
   const insertCategory = (category: ICategoryDto) => {
@@ -38,11 +36,14 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
 
   const findCategoryId = (categoryName: string) => {
     let categories = getAllCategories()
-    let currentCategory = categories.find(cat => cat.name === categoryName)
-    if (currentCategory) {
-      return currentCategory.id
+    for (let [key, value] of categories.entries()) {
+      if (value.name === categoryName) {
+        console.log(key)
+        return key
+      }
     }
   }
+
   const deleteCategory = (id: number) => {
     fetch("http://192.168.0.2:8000/api/v1/subjects" + `?id=${id}`, {
       method: "DELETE"

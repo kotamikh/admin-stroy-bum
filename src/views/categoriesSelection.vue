@@ -42,10 +42,11 @@
         :id="category.id"
         :name="category.name"
         :image="category.image"
+        :category="category"
         width="300px"
         height="80px"
         class="category"
-        @click="selectCategory(category.name)"
+        @click="selectCategory(category)"
       >
         <template v-slot:prepend>
           <img
@@ -73,7 +74,7 @@ import { ref } from "vue";
 import router from "@/router";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { reactive } from "vue";
-import { ICategoryDto } from "../../types/categoriesBrands";
+import { ICategory, ICategoryDto } from "../../types/categoriesBrands";
 
 const category = reactive<ICategoryDto>({
   name: "",
@@ -100,8 +101,8 @@ const insertCategory = () => {
 
 useCategoriesBrandsStore().getAllCategories();
 
-const selectCategory = (categoryName: string) => {
-  router.push({ name: 'Category', params: { text: categoryName }})
+const selectCategory = (category: ICategory) => {
+  router.push({ name: 'Category', params: { text: category.name }})
 }
 // import siding from "@/assets/categories/сайдинг.png";
 // import additionalElements from "@/assets/categories/доборные элементы.png";
