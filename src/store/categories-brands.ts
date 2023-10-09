@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import { IBrand, ICategory } from "types/categoriesBrands";
+import { IBrand, ICategory, ICategoryDto } from "types/categoriesBrands";
 import { ref } from "vue";
+import { Ref } from "vue/dist/vue";
 
 export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
-  const categories = ref<Array<ICategory>>([])
+  const categories: Ref<Map<number, ICategory>> = ref(new Map<number, ICategory>());
   const brands = ref<Array<IBrand>>([])
 
   const getAllCategories = (): ICategory[] => {
@@ -11,17 +12,27 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
       method: "GET",
     }).then((response) => {
       response.json().then((res) => {
-        categories.value = res
-      }).catch(e => console.log(e))
+        categories.value.clear()
+          for (const r of res) {
+              categories.value.set(r.id, r);
+          }
+          console.log(categories.value)
+          return categories.value
+      }).catch((e) => {
+          console.log("Error: " + e.message)
+          console.log(e.response)
+      })
     })
-    return categories.value
+    return []
   }
 
-  const insertCategory = (name: string) => {
-    fetch("http://192.168.0.2:8000/api/v1/subjects" + `?name=${name}`, {
+  const insertCategory = (category: ICategoryDto) => {
+    fetch("http://192.168.0.2:8000/api/v1/subjects", {
       method: "POST",
+      body: JSON.stringify(category)
     }).then(() => {
       getAllCategories()
+      console.log(JSON.stringify(category))
     })
   }
 
@@ -32,7 +43,15 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
       return currentCategory.id
     }
   }
-  const deleteCategory = () => {};
+  const deleteCategory = (id: number) => {
+    fetch("http://192.168.0.2:8000/api/v1/subjects" + `?id=${id}`, {
+      method: "DELETE"
+    }).then(() =>  getAllCategories())
+        .catch((e) => {
+            console.log("Error: " + e.message);
+            console.log(e.response);
+        })
+  };
 
   const getAllBrands = () => {
     fetch("http://192.168.0.2:8000/api/v1/brands", {
@@ -46,8 +65,9 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   }
 
   const insertBrand = (name: string) => {
-    fetch("http://192.168.0.2:8000/api/v1/brands" + `?name=${name}`, {
+    fetch("http://192.168.0.2:8000/api/v1/brands", {
       method: "POST",
+      body: name
     }).then(() => {
       getAllBrands()
     })

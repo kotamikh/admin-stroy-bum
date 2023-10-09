@@ -2,25 +2,30 @@
     <h2>Выбор категории</h2>
     <v-list class="categories">
       <v-btn
-        @click="dialog = true"
+        @click="categoryDialog = true"
         prepend-icon="mdi-plus"
         variant="tonal"
         width="fit-content"
-        >Добавить категорию</v-btn
-      >
-      <v-dialog width="500" v-model="dialog">
+        >Добавить категорию</v-btn>
+      <v-dialog width="500" v-model="categoryDialog">
         <v-card>
           <v-card-text class="d-flex align-center">
-            <v-btn variant="tonal" class="d-flex">
-              <v-file-input
-                class="fileInput d-flex justify-center"
-                style="width: inherit"
-              ></v-file-input>
-            </v-btn>
+              <v-btn variant="tonal"
+                     @click="imageDialog = true"
+              ><v-icon icon="mdi-paperclip"/></v-btn>
+            <v-img v-if="category.image"
+            :src="category.image"
+            ></v-img>
+            <gallery-dialog
+              v-model="imageDialog"
+              @update:show="imageDialog = false"
+              :product-images="category.image"
+              @update:images="onUpdateImages"
+            />
             <v-text-field
               style="width: 70%; margin-left: 30px"
               label="Название категории"
-              v-model="categoryName"
+              v-model="category.name"
               @keyup.enter="insertCategory"
               variant="underlined"
             ></v-text-field>
@@ -32,8 +37,11 @@
         </v-card>
       </v-dialog>
       <v-list-item
-        v-for="category in useCategoriesBrandsStore().categories"
-        :id="category.name"
+        v-for="[id, category] in useCategoriesBrandsStore().categories"
+        :key="id"
+        :id="category.id"
+        :name="category.name"
+        :image="category.image"
         width="300px"
         height="80px"
         class="category"
@@ -51,7 +59,7 @@
           <v-btn
             variant="tonal"
             class="hidden"
-            @click="useCategoriesBrandsStore().deleteCategory"
+            @click="useCategoriesBrandsStore().deleteCategory(category.id)"
             ><v-icon icon="mdi-delete"
           /></v-btn>
         </div>
@@ -63,13 +71,31 @@
 import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import { ref } from "vue";
 import router from "@/router";
+import GalleryDialog from "@/components/GalleryDialog.vue";
+import { reactive } from "vue";
+import { ICategoryDto } from "../../types/categoriesBrands";
 
-const dialog = ref(false);
-const categoryName = ref("");
+const category = reactive<ICategoryDto>({
+  name: "",
+  image: ""
+})
+
+const onUpdateImages = (data: string) => {
+  if (JSON.parse(JSON.stringify(data)).data.length === 1) {
+    category.image = JSON.parse(JSON.stringify(data)).data[0]
+  }
+  else {
+   alert('Выберите одно изображение')
+  }
+};
+
+const categoryDialog = ref(false);
+const imageDialog = ref(false)
 
 const insertCategory = () => {
-  dialog.value = false;
-  useCategoriesBrandsStore().insertCategory(categoryName.value);
+  categoryDialog.value = false;
+  console.log(category)
+  useCategoriesBrandsStore().insertCategory(category);
 };
 
 useCategoriesBrandsStore().getAllCategories();
@@ -185,13 +211,4 @@ const selectCategory = (categoryName: string) => {
       .hidden
         opacity: 100%
         visibility: visible
-
-.fileInput
-  ::v-deep
-    .v-input__control
-      display: none
-    .v-input__details
-      display: none
-    .v-input__prepend
-      margin: 0
 </style>

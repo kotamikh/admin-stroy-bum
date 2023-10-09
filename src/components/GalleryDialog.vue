@@ -74,10 +74,12 @@ const sendImagesToPage = () => {
 <style scoped lang="sass">
 .dialog
   width: 100%
-  padding: 20px 30px
   margin: 0 auto
-  background-color: white
+  overflow-y: scroll
+  padding: 20px 30px
   border-radius: 10px
+  background-color: white
+
 
   h3
     margin-bottom: 20px

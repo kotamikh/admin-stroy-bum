@@ -32,7 +32,7 @@ export const useProductsStore = defineStore("cardsStore", () => {
       .catch((e) => {
         console.log("Error: " + e.message);
         console.log(e.response);
-      });
+      })
   };
 
   const insertCard = (product: IProductDto, isEdit: boolean) => {
@@ -58,7 +58,7 @@ export const useProductsStore = defineStore("cardsStore", () => {
       .catch((e) => {
         console.log("Error: " + e.message);
         console.log(e.response);
-      });
+      })
   };
 
   return {
