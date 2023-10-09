@@ -211,7 +211,7 @@ const product = reactive<IProduct>(
           description: "",
           characteristics: [],
           subject_id: subjectId,
-          brand_id: 0
+          brand_id: null
         },
         currentProduct
     )

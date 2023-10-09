@@ -30,7 +30,7 @@ const text = route.params.text.toString()
 const categoryId = useCategoriesBrandsStore().findCategoryId(text)
 
 useProductsStore().loadAll(0, 30, categoryId)
-console.log(useProductsStore().products)
+
 </script>
 
 <style scoped lang="sass">

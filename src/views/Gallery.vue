@@ -77,15 +77,11 @@ store.getAllImages()
   border-radius: 2px
   background-color: white
 
-img
-  width: 100%
-  height: 100%
-  object-fit: cover
 
-  .delete-btn
-    top: 2px
-    right: 2px
-    z-index: 9999
-    position: absolute
-    background-color: white
+.delete-btn
+  top: 2px
+  right: 2px
+  z-index: 9999
+  position: absolute
+  background-color: white
 </style>
