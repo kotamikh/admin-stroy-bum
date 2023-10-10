@@ -95,8 +95,9 @@ const imageDialog = ref(false)
 
 const insertCategory = () => {
   categoryDialog.value = false;
-  console.log(category)
   useCategoriesBrandsStore().insertCategory(category);
+  category.name = ""
+  category.image = ""
 };
 
 useCategoriesBrandsStore().getAllCategories();

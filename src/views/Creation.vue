@@ -187,7 +187,6 @@ import { useRoute } from "vue-router";
 let currentProduct;
 const route = useRoute();
 let isEdit = false;
-console.log(route.params.id)
 
 if (route.params.id) {
   console.log(route.params.id)
@@ -257,8 +256,10 @@ const brandName = ref("");
 
 const insertBrand = () => {
   if (brandName.value) {
-    dialog.value = false
     useCategoriesBrandsStore().insertBrand(brandName.value)
+    dialog.value = false
+    brandName.value = ""
+    console.log(useCategoriesBrandsStore().brands)
   }
 }
 

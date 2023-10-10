@@ -30,7 +30,6 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
       body: JSON.stringify(category)
     }).then(() => {
       getAllCategories()
-      console.log(JSON.stringify(category))
     })
   }
 
@@ -38,7 +37,6 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
     let categories = getAllCategories()
     for (let [key, value] of categories.entries()) {
       if (value.name === categoryName) {
-        console.log(key)
         return key
       }
     }
@@ -54,21 +52,25 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
         })
   };
 
-  const getAllBrands = () => {
+  const getAllBrands = (): IBrand[] => {
     fetch("http://192.168.0.2:8000/api/v1/brands", {
       method: "GET",
     }).then((response) => {
       response.json().then((res) => {
         brands.value = res
+        console.log(brands.value)
         return brands.value
       })
     })
+    return []
   }
 
   const insertBrand = (name: string) => {
     fetch("http://192.168.0.2:8000/api/v1/brands", {
       method: "POST",
-      body: name
+      body: JSON.stringify({
+        name: name
+      })
     }).then(() => {
       getAllBrands()
     })
