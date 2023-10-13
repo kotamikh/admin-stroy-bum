@@ -58,7 +58,6 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
     }).then((response) => {
       response.json().then((res) => {
         brands.value = res
-        console.log(brands.value)
         return brands.value
       })
     })
@@ -76,28 +75,15 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
     })
   }
 
-  // const getBrandsBySubject = (category: string): IBrand[] => {
-  //   const categories = getAllCategories()
-  //   console.log(category, categories)
-  //   let currentCategory = categories.filter(cat => cat.name === category)
-  //   console.log(currentCategory)
-  //   if (currentCategory) {
-  //     fetch(
-  //       "http://192.168.0.2:8000/api/v1/brands-by-subject" +
-  //       `?subject_id=${currentCategory.id}`,
-  //       {
-  //         method: "GET",
-  //       }
-  //     ).then((response) => {
-  //       console.log(response)
-  //       response.json().then((res) => {
-  //        let brandsArray = addBrand.concat(res)
-  //         console.log(brandsArray)
-  //       })
-  //     })
-  //   }
-  //   return brands.value = addBrand
-  // }
+  const deleteBrand = (id: number) => {
+    fetch("http://192.168.0.2:8000/api/v1/brands" + `?id=${id}`, {
+      method: "DELETE"
+    }).then(() =>  getAllBrands())
+        .catch((e) => {
+          console.log("Error: " + e.message);
+          console.log(e.response);
+        })
+  }
 
 
   return {
@@ -108,6 +94,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
     findCategoryId,
     deleteCategory,
     getAllBrands,
-    insertBrand
+    insertBrand,
+    deleteBrand
   };
 });

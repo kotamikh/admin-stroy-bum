@@ -5,7 +5,7 @@
       variant="outlined"
       class="product-card"
       style="border: 3px solid #eeeeee; border-radius: 0"
-      @click="router.push({name: 'Creation', params: { text: prop.categoryName }})">
+      @click.stop="router.push({name: 'Creation', params: { text: prop.categoryName }})">
       <div>
         <div class="marks">
           <svg

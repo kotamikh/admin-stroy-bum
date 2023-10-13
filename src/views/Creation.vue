@@ -46,7 +46,7 @@
             </svg>
           </button>
         </div>
-        <div class="current-photo" @click="showDialog = true">
+        <div class="current-photo" @click="galleryDialog = true">
           <div v-if="product.images.length === 0" class="default-img">
             <v-icon icon="mdi-camera" size="100"></v-icon>
           </div>
@@ -57,8 +57,8 @@
           />
         </div>
         <gallery-dialog
-            v-model="showDialog"
-            @update:show="showDialog = false"
+            v-model="galleryDialog"
+            @update:show="galleryDialog = false"
             :product-images="product.images"
             @update:images="onUpdateImages"
         />
@@ -81,11 +81,19 @@
             color="#E3DD5F"
         >
           <template #append>
-            <v-btn variant="tonal"
-                   @click="dialog = true"
-            >Добавить бренд
-            </v-btn>
-            <v-dialog width="500" v-model="dialog">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <v-btn variant="tonal"
+                     size="small"
+                     @click="newBrandDialog = true"
+              >Добавить бренд
+              </v-btn>
+              <v-btn variant="tonal"
+                     size="small"
+                     @click="deleteBrandDialog = true"
+              >Удалить бренд
+              </v-btn>
+            </div>
+            <v-dialog width="500" v-model="newBrandDialog">
               <v-card>
                 <v-card-text class="d-flex align-center">
                   <v-text-field label="Название бренда" v-model="brandName" variant="underlined"></v-text-field>
@@ -94,6 +102,25 @@
                   <v-spacer></v-spacer>
                   <v-btn text="Готово" @click="insertBrand"></v-btn>
                 </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog width="500" v-model="deleteBrandDialog">
+              <v-card class="pa-5">
+                <v-card-title>Выберите бренд для удаления</v-card-title>
+                <v-list>
+                  <template v-for="brand in useCategoriesBrandsStore().brands"
+                            :key="brand.id"
+                  >
+                    <v-list-item
+                        :value="brand.id"
+                        v-text="brand.name"
+                        style="cursor: pointer"
+                        color="grey"
+                        @click="makeSelected(brand)"
+                    ></v-list-item>
+                  </template>
+                </v-list>
+                <v-btn class="ml-auto" variant="tonal" width="fit-content" @click="useCategoriesBrandsStore().deleteBrand(brandIdToDelete)">Удалить "{{ brandToDelete }}"</v-btn>
               </v-card>
             </v-dialog>
           </template>
@@ -183,6 +210,7 @@ import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import router from "@/router";
 import * as path from "path";
 import { useRoute } from "vue-router";
+import { IBrand } from "../../types/categoriesBrands";
 
 let currentProduct;
 const route = useRoute();
@@ -216,7 +244,7 @@ const product = reactive<IProduct>(
     )
 );
 
-const showDialog = ref(false);
+const galleryDialog = ref(false);
 
 const currentImageIndex = ref<number>(0);
 
@@ -251,13 +279,21 @@ const onUpdateImages = (data: Array<string>) => {
   product.images = JSON.parse(JSON.stringify(data)).data;
 };
 
-const dialog = ref(false);
-const brandName = ref("");
+const newBrandDialog = ref(false)
+const deleteBrandDialog = ref(false)
+const brandName = ref("")
+const brandToDelete = ref("")
+const brandIdToDelete = ref()
+
+const makeSelected = (brand: IBrand) => {
+  brandToDelete.value = brand.name
+  brandIdToDelete.value = brand.id
+}
 
 const insertBrand = () => {
   if (brandName.value) {
     useCategoriesBrandsStore().insertBrand(brandName.value)
-    dialog.value = false
+    newBrandDialog.value = false
     brandName.value = ""
     console.log(useCategoriesBrandsStore().brands)
   }
@@ -266,7 +302,6 @@ const insertBrand = () => {
 useCategoriesBrandsStore().getAllBrands()
 
 const createCard = () => {
-  console.log(product)
   useProductsStore().insertCard(product, isEdit);
   router.push({ name: "Category", params: { text: route.params.text } });
 }
