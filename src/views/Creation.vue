@@ -60,6 +60,7 @@
             v-model="galleryDialog"
             @update:show="galleryDialog = false"
             :product-images="product.images"
+            :edit="isEdit"
             @update:images="onUpdateImages"
         />
       </div>
@@ -216,12 +217,15 @@ import * as path from "path";
 import { useRoute } from "vue-router";
 import { IBrand } from "../../types/categoriesBrands";
 
+window.onbeforeunload = function() {
+    return "Перезагрузить сайт? Изменения могут не сохраниться"
+}
+
 let currentProduct;
 const route = useRoute();
 let isEdit = false;
 
 if (route.params.id) {
-  console.log(route.params.id)
   isEdit = true;
   let productId = Number(route.params.id);
   currentProduct = JSON.parse(

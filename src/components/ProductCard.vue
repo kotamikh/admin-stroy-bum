@@ -133,8 +133,8 @@ const goToProductPage = () => {
       background-color: rgba(0, 48, 120, 0.04)
 
     .discount-mark
-      top: 5px
-      left: 5px
+      top: 3px
+      left: 3px
       font-size: 14px
       padding: 3px 10px
       text-align: center
@@ -143,8 +143,8 @@ const goToProductPage = () => {
       background-color: #E3DD5F
 
     .fav-mark
+      top: 3px
       right: 3px
-      bottom: 3px
       cursor: pointer
       position: absolute
       fill: #808080

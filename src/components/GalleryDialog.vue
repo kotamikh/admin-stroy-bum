@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="1100" max-height="100%" v-model="props.showDialog">
+  <v-dialog class="d-flex" width="1100" max-height="100%" v-model="props.showDialog">
     <div class="dialog">
       <h3>Выберите фото</h3>
       <v-row>
@@ -10,12 +10,12 @@
         >
           <v-hover v-slot="{ isHovering, props }">
             <v-img
-              contain
-              :src="i"
-              v-bind="props"
-              aspect-ratio="1"
-              :class="[ isImageSelected(i) ? 'chosen image' : 'image']"
-              @click="toggleSelected(i)">
+                contain
+                :src="i"
+                v-bind="props"
+                aspect-ratio="1"
+                :class="[ isImageSelected(i) ? 'chosen image' : 'image']"
+                @click="toggleSelected(i)">
               <v-icon icon="mdi-check-circle"
                       v-if="isImageSelected(i)"
                       color="#E3DD5F"
@@ -32,12 +32,14 @@
           </v-hover>
         </v-col>
       </v-row>
-      <v-btn color="#49AE66"
-             variant="outlined"
-             class="mt-8"
-             prepend-icon="mdi-check"
-             @click="sendImagesToPage">Готово</v-btn>
     </div>
+    <v-spacer></v-spacer>
+    <v-btn color="#49AE66"
+           variant="outlined"
+           class="done-btn"
+           prepend-icon="mdi-check"
+           @click="sendImagesToPage">Готово
+    </v-btn>
   </v-dialog>
 </template>
 
@@ -45,13 +47,19 @@
 import { useImagesStore } from "@/store/images";
 import { ref } from "vue";
 
-const props = defineProps(['showDialog', 'productImages', 'categoryImage', 'limit'])
+const props = defineProps(['showDialog', 'productImages', 'edit', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
 imagesStore.getAllImages()
 
 const selectedImages = ref<Array<string>>([])
+if (props.edit) {
+  for (let i  = 0; i < props.productImages.length; i++) {
+    selectedImages.value.push(props.productImages[i])
+  }
+}
+
 const isImageSelected = (i: string) => {
   return selectedImages.value.includes(i)
 }
@@ -59,17 +67,15 @@ const isImageSelected = (i: string) => {
 const toggleSelected = (i: string) => {
   if (isImageSelected(i)) {
     selectedImages.value = selectedImages.value.filter(item => item !== i)
-  }
-  else if (props.limit) {
+  } else if (props.limit) {
     selectedImages.value = [i]
-  }
-  else {
+  } else {
     selectedImages.value.push(i)
   }
 }
 
 const sendImagesToPage = () => {
-  emit('update:images', {data: selectedImages.value})
+  emit('update:images', { data: selectedImages.value })
   emit('update:show')
 }
 </script>
@@ -82,7 +88,6 @@ const sendImagesToPage = () => {
   padding: 20px 30px
   border-radius: 10px
   background-color: white
-
 
   h3
     margin-bottom: 20px
@@ -97,4 +102,11 @@ const sendImagesToPage = () => {
       position: absolute
       top: 5px
       right: 5px
+
+.done-btn
+  top: 3%
+  right: 5%
+  position: fixed
+  width: max-content
+  background-color: white
 </style>
