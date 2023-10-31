@@ -3,12 +3,19 @@ import { IBrand, ICategory, ICategoryDto } from "types/categoriesBrands";
 import { ref } from "vue";
 import { Ref } from "vue/dist/vue";
 
+const BASE_URL = "http://localhost:8000"
+
+const ROUTES = {
+  subjects: BASE_URL + "/api/v1/subjects",
+  brands: BASE_URL + "/api/v1/brands"
+}
+
 export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   const categories: Ref<Map<number, ICategory>> = ref(new Map<number, ICategory>());
   const brands = ref<Array<IBrand>>([])
 
   const getAllCategories = (): Map<number, ICategory> => {
-    fetch("http://192.168.0.2:8000/api/v1/subjects", {
+    fetch(ROUTES.subjects, {
       method: "GET",
     }).then((response) => {
       response.json().then((res) => {
@@ -25,7 +32,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   }
 
   const insertCategory = (category: ICategoryDto) => {
-    fetch("http://192.168.0.2:8000/api/v1/subjects", {
+    fetch(ROUTES.subjects, {
       method: "POST",
       body: JSON.stringify(category)
     }).then(() => {
@@ -43,7 +50,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   }
 
   const deleteCategory = (id: number) => {
-    fetch("http://192.168.0.2:8000/api/v1/subjects" + `?id=${id}`, {
+    fetch(ROUTES.subjects + `?id=${id}`, {
       method: "DELETE"
     }).then(() =>  getAllCategories())
         .catch((e) => {
@@ -53,7 +60,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   };
 
   const getAllBrands = (): IBrand[] => {
-    fetch("http://192.168.0.2:8000/api/v1/brands", {
+    fetch(ROUTES.brands, {
       method: "GET",
     }).then((response) => {
       response.json().then((res) => {
@@ -65,7 +72,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   }
 
   const insertBrand = (name: string) => {
-    fetch("http://192.168.0.2:8000/api/v1/brands", {
+    fetch(ROUTES.brands, {
       method: "POST",
       body: JSON.stringify({
         name: name
@@ -76,7 +83,7 @@ export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
   }
 
   const deleteBrand = (id: number) => {
-    fetch("http://192.168.0.2:8000/api/v1/brands" + `?id=${id}`, {
+    fetch(ROUTES.brands + `?id=${id}`, {
       method: "DELETE"
     }).then(() =>  getAllBrands())
         .catch((e) => {

@@ -2,7 +2,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-const BASE_URL = "http://192.168.0.2:8000/api/v1/images";
+const BASE_URL = "http://localhost:8000/api/v1/images";
 const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
 
 export const useImagesStore = defineStore("images", () => {
@@ -13,6 +13,7 @@ export const useImagesStore = defineStore("images", () => {
       method: "GET",
     }).then((response) => {
       response.json().then((res) => {
+        console.log(res)
         let arrOfImages = [];
         for (let r of res) {
           arrOfImages.push(YANDEX_CLOUD + `${r}`);

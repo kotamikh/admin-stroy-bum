@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 import { IProduct, IProductDto } from "../../types/product";
 
-const BASE_URL = "http://192.168.0.2:8000";
+const BASE_URL = "http://localhost:8000";
 
 const ROUTES = {
   products: BASE_URL + "/api/v1/products",

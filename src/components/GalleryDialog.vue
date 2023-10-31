@@ -1,7 +1,7 @@
 <template>
   <v-dialog width="1100" max-height="100%" v-model="props.showDialog">
     <div class="dialog">
-      <h3>Выберите фото товара</h3>
+      <h3>Выберите фото</h3>
       <v-row>
         <v-col v-for="i in useImagesStore().images"
                :key="i"
@@ -45,7 +45,7 @@
 import { useImagesStore } from "@/store/images";
 import { ref } from "vue";
 
-const props = defineProps(['showDialog', 'productImages'])
+const props = defineProps(['showDialog', 'productImages', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
@@ -59,6 +59,9 @@ const isImageSelected = (i: string) => {
 const toggleSelected = (i: string) => {
   if (isImageSelected(i)) {
     selectedImages.value = selectedImages.value.filter(item => item !== i)
+  }
+  else if (props.limit) {
+    selectedImages.value = [i]
   }
   else {
     selectedImages.value.push(i)

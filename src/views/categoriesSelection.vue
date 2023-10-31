@@ -15,15 +15,17 @@
               ><v-icon icon="mdi-paperclip"/></v-btn>
             <v-img v-if="category.image"
             :src="category.image"
+            style="margin: 0 15px; width: 30px"
             ></v-img>
             <gallery-dialog
               v-model="imageDialog"
               @update:show="imageDialog = false"
-              :product-images="category.image"
+              :category-image="category.image"
+              :limit="1"
               @update:images="onUpdateImages"
             />
             <v-text-field
-              style="width: 70%; margin-left: 30px"
+              style="width: 70%"
               label="Название категории"
               v-model="category.name"
               @keyup.enter="insertCategory"

@@ -9,6 +9,7 @@
       </div>
       <v-btn
           class="button"
+          variant="tonal"
           append-icon="mdi-exit-to-app">Выйти
       </v-btn>
     </div>
