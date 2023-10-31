@@ -21,6 +21,7 @@
                                           color="#E3DD5F"
                                           hide-details
                                           v-model="char[1]"/></span>
+          <v-icon class="delete-icon" icon="mdi-close-circle-outline" @click="deleteChar(char)"></v-icon>
       </li>
     </ul>
   </div>
@@ -42,15 +43,21 @@ const createChar = () => {
 }
 
 const addChar = () => {
-  let newChar = createChar()
-  data.value.push(newChar)
+  if (!data.value.length || !data.value[data.value.length - 1].includes('')) {
+      let newChar = createChar()
+      data.value.push(newChar)
+  }
+}
+
+const deleteChar = (char: string[]) => {
+  data.value = data.value.filter(el => el !== char)
 }
 
 </script>
 
 <style scoped lang="sass">
 .characteristics
-  width: 55%
+  width: 60%
 
   h3
     margin-bottom: 20px
@@ -69,7 +76,7 @@ const addChar = () => {
       justify-content: space-between
 
       .label
-        width: 30%
+        width: 40%
         float: left
         display: flex
         position: relative
@@ -79,13 +86,19 @@ const addChar = () => {
           content: ''
           bottom: 0
           left: 100%
-          right: -250px
+          right: -135px
           position: absolute
           border-bottom: 1px dashed #a9a9a9
 
       .value
-        width: 30%
+        width: 40%
         float: left
         display: flex
         align-items: flex-end
+
+      .delete-icon
+        right: 0
+        top: 10px
+        cursor: pointer
+        position: absolute
 </style>

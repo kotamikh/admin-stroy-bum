@@ -68,63 +68,66 @@
             label="Наименование товара"
             variant="underlined"
             color="#E3DD5F"
-            hide-details
             v-model="product.name"
+            :rules="[required]"
         />
-        <v-select
-            label="Имя бренда"
-            :items="useCategoriesBrandsStore().brands"
-            v-model="product.brand_id"
-            item-title="name"
-            item-value="id"
-            variant="underlined"
-            color="#E3DD5F"
-        >
-          <template #append>
-            <div style="display: flex; flex-direction: column; gap: 10px">
-              <v-btn variant="tonal"
-                     size="small"
-                     @click="newBrandDialog = true"
-              >Добавить бренд
+        <div class="brands">
+          <v-select
+              label="Имя бренда"
+              :items="useCategoriesBrandsStore().brands"
+              v-model="product.brand_id"
+              item-title="name"
+              item-value="id"
+              variant="underlined"
+              color="#E3DD5F"
+              :rules="[required]"
+          >
+          </v-select>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <v-btn variant="tonal"
+                   size="small"
+                   @click="newBrandDialog = true"
+            >Добавить бренд
+            </v-btn>
+            <v-btn variant="tonal"
+                   size="small"
+                   @click="deleteBrandDialog = true"
+            >Удалить бренд
+            </v-btn>
+          </div>
+          <v-dialog width="500" v-model="newBrandDialog">
+            <v-card>
+              <v-card-text class="d-flex align-center">
+                <v-text-field label="Название бренда" v-model="brandName" variant="underlined"></v-text-field>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text="Готово" @click="insertBrand"></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog width="500" v-model="deleteBrandDialog">
+            <v-card class="pa-5">
+              <v-card-title>Выберите бренд для удаления</v-card-title>
+              <v-list>
+                <template v-for="brand in useCategoriesBrandsStore().brands"
+                          :key="brand.id"
+                >
+                  <v-list-item
+                      :value="brand.id"
+                      v-text="brand.name"
+                      style="cursor: pointer"
+                      color="grey"
+                      @click="toDelete(brand)"
+                  ></v-list-item>
+                </template>
+              </v-list>
+              <v-btn class="ml-auto" variant="tonal" width="fit-content"
+                     @click="useCategoriesBrandsStore().deleteBrand(brandIdToDelete)">Удалить {{ brandToDelete }}
               </v-btn>
-              <v-btn variant="tonal"
-                     size="small"
-                     @click="deleteBrandDialog = true"
-              >Удалить бренд
-              </v-btn>
-            </div>
-            <v-dialog width="500" v-model="newBrandDialog">
-              <v-card>
-                <v-card-text class="d-flex align-center">
-                  <v-text-field label="Название бренда" v-model="brandName" variant="underlined"></v-text-field>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn text="Готово" @click="insertBrand"></v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <v-dialog width="500" v-model="deleteBrandDialog">
-              <v-card class="pa-5">
-                <v-card-title>Выберите бренд для удаления</v-card-title>
-                <v-list>
-                  <template v-for="brand in useCategoriesBrandsStore().brands"
-                            :key="brand.id"
-                  >
-                    <v-list-item
-                        :value="brand.id"
-                        v-text="brand.name"
-                        style="cursor: pointer"
-                        color="grey"
-                        @click="makeSelected(brand)"
-                    ></v-list-item>
-                  </template>
-                </v-list>
-                <v-btn class="ml-auto" variant="tonal" width="fit-content" @click="useCategoriesBrandsStore().deleteBrand(brandIdToDelete)">Удалить "{{ brandToDelete }}"</v-btn>
-              </v-card>
-            </v-dialog>
-          </template>
-        </v-select>
+            </v-card>
+          </v-dialog>
+        </div>
         <div class="stock">
           <v-select
               label="Наличие товара"
@@ -144,6 +147,7 @@
                 variant="underlined"
                 color="#E3DD5F"
                 class="w-33"
+                :rules="[required]"
                 v-model.number="product.price"
             />
             <p>руб/шт.</p>
@@ -285,25 +289,31 @@ const brandName = ref("")
 const brandToDelete = ref("")
 const brandIdToDelete = ref()
 
-const makeSelected = (brand: IBrand) => {
-  brandToDelete.value = brand.name
-  brandIdToDelete.value = brand.id
-}
-
 const insertBrand = () => {
   if (brandName.value) {
     useCategoriesBrandsStore().insertBrand(brandName.value)
     newBrandDialog.value = false
     brandName.value = ""
-    console.log(useCategoriesBrandsStore().brands)
   }
+}
+
+const toDelete = (brand: IBrand) => {
+  brandToDelete.value = brand.name
+  brandIdToDelete.value = brand.id
 }
 
 useCategoriesBrandsStore().getAllBrands()
 
+const required = (v: string) => {
+  return !!v || 'Заполните поле'
+}
 const createCard = () => {
-  useProductsStore().insertCard(product, isEdit);
-  router.push({ name: "Category", params: { text: route.params.text } });
+  if (product.name && product.price && product.brand_id) {
+    useProductsStore().insertCard(product, isEdit);
+    router.push({ name: "Category", params: { text: route.params.text } });
+  } else {
+    alert("Необходимо заполнить обязательные поля")
+  }
 }
 </script>
 
@@ -399,11 +409,12 @@ const createCard = () => {
           background-color: #eeeeee
 
     .product-information
-      gap: 10px
       width: 40%
-      display: flex
-      margin-top: 30px
-      flex-direction: column
+
+      .brands
+        gap: 20px
+        display: flex
+        margin: 20px 0
 
       .stock
         width: 40%
