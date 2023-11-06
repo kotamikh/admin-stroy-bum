@@ -105,7 +105,7 @@ const sendImagesToPage = () => {
 
 .done-btn
   top: 3%
-  right: 5%
+  right: -12%
   position: fixed
   width: max-content
   background-color: white

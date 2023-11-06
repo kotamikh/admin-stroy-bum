@@ -9,13 +9,15 @@
         >Добавить категорию</v-btn>
       <v-dialog width="500" v-model="categoryDialog">
         <v-card>
-          <v-card-text class="d-flex align-center">
+          <v-card-text class="d-flex justify-space-between align-center">
               <v-btn variant="tonal"
+                     class="mr-4"
                      @click="imageDialog = true"
               ><v-icon icon="mdi-paperclip"/></v-btn>
             <v-img v-if="category.image"
             :src="category.image"
-            style="margin: 0 15px; width: 30px"
+            width="20px"
+            class="mr-4"
             ></v-img>
             <gallery-dialog
               v-model="imageDialog"
@@ -25,7 +27,7 @@
               @update:images="onUpdateImages"
             />
             <v-text-field
-              style="width: 70%"
+              style="width: 60%"
               label="Название категории"
               v-model="category.name"
               @keyup.enter="insertCategory"
@@ -198,11 +200,14 @@ const selectCategory = (category: ICategory) => {
   flex-wrap: wrap
   max-height: 500px
   flex-direction: column
+
   .category
     display: flex
+
     .text
       font-size: 18px
       font-weight: bold
+
     .hidden
       top: 23px
       right: 5px
