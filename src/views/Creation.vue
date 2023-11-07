@@ -215,7 +215,7 @@ import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import router from "@/router";
 import * as path from "path";
 import { useRoute } from "vue-router";
-import { IBrand } from "../../types/categoriesBrands";
+import { IBrand } from "../../types/categoryBrand";
 
 window.onbeforeunload = function() {
     return "Перезагрузить сайт? Изменения могут не сохраниться"

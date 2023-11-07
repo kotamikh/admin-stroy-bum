@@ -64,7 +64,7 @@
           <v-btn
             variant="tonal"
             class="hidden"
-            @click="useCategoriesBrandsStore().deleteCategory(category.id)"
+            @click.stop="useCategoriesBrandsStore().deleteCategory(category.id)"
             ><v-icon icon="mdi-delete"
           /></v-btn>
         </div>
@@ -78,7 +78,7 @@ import { ref } from "vue";
 import router from "@/router";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { reactive } from "vue";
-import { ICategory, ICategoryDto } from "../../types/categoriesBrands";
+import { ICategory, ICategoryDto } from "../../types/categoryBrand";
 
 const category = reactive<ICategoryDto>({
   name: "",

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { IBrand, ICategory, ICategoryDto } from "types/categoriesBrands";
+import { IBrand, ICategory, ICategoryDto } from "../../types/categoryBrand";
 import { ref } from "vue";
 import { Ref } from "vue/dist/vue";
 
