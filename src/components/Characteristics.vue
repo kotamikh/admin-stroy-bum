@@ -15,6 +15,7 @@
                                         variant="underlined"
                                         color="#E3DD5F"
                                         hide-details
+                                        autofocus
                                         v-model="char[0]"/></span>
         <span class="value"><v-text-field label="Значение"
                                           variant="underlined"

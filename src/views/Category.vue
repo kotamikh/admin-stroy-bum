@@ -26,13 +26,13 @@ import { useProductsStore } from "@/store/products";
 import ProductCard from "@/components/ProductCard.vue";
 import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import router from "@/router";
+import { computed } from "vue";
 
 const route = useRoute()
 const text = route.params.text.toString()
 const categoryId = useCategoriesBrandsStore().findCategoryId(text)
 
 useProductsStore().loadAll(0, 30, categoryId)
-
 </script>
 
 <style scoped lang="sass">

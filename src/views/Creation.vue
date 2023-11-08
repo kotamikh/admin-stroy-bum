@@ -76,7 +76,7 @@
           <v-select
               label="Имя бренда"
               :items="useCategoriesBrandsStore().brands"
-              v-model="product.brand_id"
+              v-model="product.brand"
               item-title="name"
               item-value="id"
               variant="underlined"
@@ -162,6 +162,7 @@
             <v-text-field
                 label="Скидка"
                 type="number"
+                autofocus
                 variant="underlined"
                 color="#E3DD5F"
                 class="discount"
@@ -245,8 +246,8 @@ const product = reactive<IProduct>(
           discount: 0,
           description: "",
           characteristics: [],
-          subject_id: subjectId,
-          brand_id: null
+          subject: subjectId,
+          brand: null
         },
         currentProduct
     )
@@ -312,7 +313,7 @@ const required = (v: string) => {
   return !!v || 'Заполните поле'
 }
 const createCard = () => {
-  if (product.name && product.price && product.brand_id) {
+  if (product.name && product.price && product.brand) {
     useProductsStore().insertCard(product, isEdit);
     router.push({ name: "Category", params: { text: route.params.text } });
   } else {

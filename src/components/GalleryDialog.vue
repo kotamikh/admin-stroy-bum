@@ -34,10 +34,8 @@
       </v-row>
     </div>
     <v-spacer></v-spacer>
-    <v-btn color="#49AE66"
-           variant="outlined"
+    <v-btn variant="outlined"
            class="done-btn"
-           prepend-icon="mdi-check"
            @click="sendImagesToPage">Готово
     </v-btn>
   </v-dialog>
@@ -104,9 +102,10 @@ const sendImagesToPage = () => {
       right: 5px
 
 .done-btn
-  top: 3%
-  right: -12%
+  bottom: 3%
+  width: 100%
+  height: 60px
+  color: white
   position: fixed
-  width: max-content
-  background-color: white
+  background-color: #bfdce8
 </style>

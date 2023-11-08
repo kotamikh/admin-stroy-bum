@@ -6,8 +6,8 @@ export interface IProductDto {
     discount: number,
     description: string,
     characteristics: string[][],
-    subject_id: number,
-    brand_id: number
+    subject: number,
+    brand: number
 }
 
 export interface IProduct extends IProductDto {

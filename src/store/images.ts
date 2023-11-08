@@ -1,41 +1,31 @@
 // const для ссылки
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { IFolder, IFolderDto } from "../../types/galleryFolder";
+import { IFolder} from "../../types/galleryFolder";
 
 const BASE_URL = "http://localhost:8000/api/v1/images";
 const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
 
 export const useImagesStore = defineStore("images", () => {
-    const images = ref<Array<string>>([]);
+    const images = ref<Array<string>>([])
+    const folderImages = ref<Array<string>>([])
     const folders = ref<Array<IFolder>>([])
 
     const getFolders = () => {
       fetch(BASE_URL + `/folders`, {
         method: "GET"
       }).then((response) => {
-        response.json().then((res: Array<IFolderDto>) => {
-          let nesting = 1
-          let allFolders = new Map<number, IFolder>()
-          findFolderNames(res)
-          console.log(findFolderNames(res), res)
-
-          function findFolderNames(obj: IFolderDto[]) {
-            for (let o of obj) {
-              if (!o.nested) {
-                let images: string[] = getImagesByFolder(o.name)
-                allFolders.set(nesting, { ...o, images })
-              } else {
-                let images: string[] = getImagesByFolder(o.name)
-                allFolders.set(nesting, { ...o, images })
-                nesting++
-                findFolderNames(o.nested)
-              }
-            }
-            return allFolders
+        response.json().then((res: Array<IFolder>) => {
+          folders.value = []
+          for (let r of res) {
+            getImagesByFolder(r.name)
+            r.images = folderImages.value
+            console.log(r.images)
+            folders.value.push(r)
           }
         })
       })
+      return folders.value
     }
 
     const getImagesByFolder = (folderName: string): string[] => {
@@ -43,15 +33,17 @@ export const useImagesStore = defineStore("images", () => {
         method: "GET"
       }).then((response) => {
         response.json().then((res: Array<string>) => {
-          let arrOfImages = [];
+          folderImages.value = [];
           for (let r of res) {
-            r = r.replace(folderName, YANDEX_CLOUD)
-            arrOfImages.push(r)
+            r = r.replace(folderName + '/', YANDEX_CLOUD)
+            folderImages.value.push(r)
           }
-          images.value = arrOfImages
+          console.log(folderImages.value)
+          return folderImages.value
         })
       })
-      return images.value
+      console.log(folderImages.value)
+      return folderImages.value
     }
 
     const getAllImages = () => {
@@ -91,6 +83,7 @@ export const useImagesStore = defineStore("images", () => {
     return {
       images,
       folders,
+      folderImages,
       getFolders,
       getImagesByFolder,
       getAllImages,
