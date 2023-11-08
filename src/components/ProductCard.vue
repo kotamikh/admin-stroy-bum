@@ -42,7 +42,7 @@
           <v-btn variant="flat"
                  color="8C8C8CFF"
                  prepend-icon="mdi-trash-can-outline"
-                 @click="useProductsStore().deleteCard(id)"
+                 @click="confirmDelete(id)"
           >УДАЛИТЬ
           </v-btn>
         </div>
@@ -54,7 +54,6 @@
 <script setup lang="ts">
 import { IProduct, StockType } from "../../types/product";
 import { computed } from "vue";
-import { useRouter } from "vue-router";
 import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
 
@@ -81,11 +80,11 @@ const props = withDefaults(defineProps<Props>(), {
 const mainImage = props.images.length === 0 ? defaultImg : props.images[0]
 const countDiscount = computed(() => Math.ceil(props.price / (100 - props.discount) * 100))
 
-const router = useRouter()
-const goToProductPage = () => {
-  router.push({
-    path: "product/" + props.id,
-  })
+const confirmDelete = (id: number) => {
+  let confirmation = confirm("Хотите удалить этот товар?")
+  if (confirmation) {
+    useProductsStore().deleteCard(id)
+  }
 }
 </script>
 
@@ -109,7 +108,7 @@ const goToProductPage = () => {
 
   padding: 10px
   width: 235px
-  height: 390px
+  height: 395px
   cursor: pointer
   position: relative
   background-color: white
