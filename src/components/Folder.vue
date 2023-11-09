@@ -1,47 +1,34 @@
 <template>
-  <div class="folders-box">
+  <div class="folders-box" @click.stop="onClick">
     <span class="folder"
-          @click="addToPath(name)"
     >{{ name }}</span>
-      <div class="list-item" @click="addToPath(name)" v-for="(item, index) in nested" :key="index">
-          <recursive-folder
-            v-bind="{
-            name: item.name,
-            nested: item.nested
-          }"
-          />
+      <div class="list-item" v-for="(item, index) in nested" :key="index">
+          <recursive-folder :name="item.name" :nested="item.nested" @custom="onCustom"/>
       </div>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: "recursive-folder",
-  props: {
-    name: {
-      type: String,
-      required: true
-    },
-    nested: {
-      type: Array,
-      default: () => []
-    },
-    path: {
-      type: String,
-      value: ''
-    }
-  }
+  name: "recursive-folder"
 }
 </script>
 <script setup lang="ts">
-import { ref } from "vue";
+const emit = defineEmits(['custom'])
 
-const emit = defineEmits(['pathFolders'])
-const path = ref<string>('')
+interface Props {
+  name: string,
+  nested: any[],
+  path: string,
+}
+const props = defineProps<Props>()
 
-const addToPath = (pathName: string) => {
-  path.value += '/' + pathName
-  console.log(path.value)
+const onClick = () => {
+  emit('custom', props.name)
+}
+
+const onCustom = (path: string) => {
+  emit('custom', props.name + '/' + path)
 }
 
 </script>

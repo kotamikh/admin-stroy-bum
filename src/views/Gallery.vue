@@ -2,11 +2,7 @@
   <h2>Галерея</h2>
   <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #bfdce8">
     <div v-for="(item, index) in folders" :key="index">
-      <Folder v-bind="{
-            name: item.name,
-            nested: item.nested
-          }"
-      >{{ item.name }}
+      <Folder :name="item.name" :nested="item.nested" @custom="onCustom">{{ item.name }}
       </Folder>
       <v-row v-if="selectedFolder = item.name"
              style="top: 0; left: 110%; width: 60vw"
@@ -76,6 +72,10 @@ onChange((files) => {
     store.addImage(file)
   }
 })
+
+const onCustom = (path: string) => {
+  console.log(path)
+}
 
 // store.getAllImages()
 store.getFolders()
