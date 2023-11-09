@@ -1,17 +1,15 @@
 <template>
-  <v-list-item>
+  <div class="folders-box">
     <span class="folder">{{ name }}</span>
-    <v-list class="nested" v-if="nested">
-      <div v-for="(item, index) in nested" :key="index">
-        <recursive-folder
-          v-bind="{
+      <div class="list-item" v-for="(item, index) in nested" :key="index">
+          <recursive-folder
+            v-bind="{
             name: item.name,
             nested: item.nested
           }"
-        />
+          />
       </div>
-    </v-list>
-  </v-list-item>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,8 +35,16 @@ export default {
 
 <style scoped lang="sass">
 .folder
+  padding: 10px
+  width: 100%
+  height: 100%
+  display: block
   font-weight: bold
+  padding-inline-start: 15px
 
-.nested > div
-  border-bottom: 1px solid grey
+  &:hover
+    background-color: #bfdce8
+
+.list-item
+  padding-inline-start: 15px
 </style>

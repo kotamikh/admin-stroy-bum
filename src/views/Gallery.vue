@@ -1,7 +1,7 @@
 <template xmlns="http://www.w3.org/1999/html">
   <h2>Галерея</h2>
-  <v-navigation-drawer style="height: fit-content; top: 150px; left: 120px; position: absolute">
-    <div v-for="(item, index) in folders" :key="index" class="folders pa-0">
+  <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #bfdce8">
+    <div v-for="(item, index) in folders" :key="index">
       <Folder v-bind="{
             name: item.name,
             nested: item.nested
@@ -52,8 +52,7 @@
         </v-col>
       </v-row>
     </div>
-  </v-navigation-drawer>
-
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -85,9 +84,6 @@ store.getFolders()
 
 
 <style scoped lang="sass">
-.folders
-  border: 1px solid grey
-
 .overlay-clue
   padding: 0 5px
   color: #5C8AAFFF

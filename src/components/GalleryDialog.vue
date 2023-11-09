@@ -18,7 +18,7 @@
                 @click="toggleSelected(i)">
               <v-icon icon="mdi-check-circle"
                       v-if="isImageSelected(i)"
-                      color="#E3DD5F"
+                      color="#bfdce8"
                       size="large"
                       class="image-icon"
               ></v-icon>
@@ -83,7 +83,7 @@ const sendImagesToPage = () => {
   width: 100%
   margin: 0 auto
   overflow-y: scroll
-  padding: 20px 30px
+  padding: 20px 30px 80px
   border-radius: 10px
   background-color: white
 
@@ -94,7 +94,7 @@ const sendImagesToPage = () => {
     display: flex
 
     .image.chosen
-      border: 3px solid #E3DD5F
+      border: 3px solid #bfdce8
 
     .image-icon
       position: absolute
@@ -102,10 +102,11 @@ const sendImagesToPage = () => {
       right: 5px
 
 .done-btn
-  bottom: 3%
-  width: 100%
+  bottom: 1%
+  width: 95%
   height: 60px
   color: white
   position: fixed
+  align-self: center
   background-color: #bfdce8
 </style>
