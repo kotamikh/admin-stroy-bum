@@ -6,7 +6,6 @@
             name: item.name,
             nested: item.nested
           }"
-              @click="selectedFolder = item.name"
       >{{ item.name }}
       </Folder>
       <v-row v-if="selectedFolder = item.name"

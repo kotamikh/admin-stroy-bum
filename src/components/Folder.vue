@@ -1,7 +1,9 @@
 <template>
   <div class="folders-box">
-    <span class="folder">{{ name }}</span>
-      <div class="list-item" v-for="(item, index) in nested" :key="index">
+    <span class="folder"
+          @click="addToPath(name)"
+    >{{ name }}</span>
+      <div class="list-item" @click="addToPath(name)" v-for="(item, index) in nested" :key="index">
           <recursive-folder
             v-bind="{
             name: item.name,
@@ -29,6 +31,17 @@ export default {
       value: ''
     }
   }
+}
+</script>
+<script setup lang="ts">
+import { ref } from "vue";
+
+const emit = defineEmits(['pathFolders'])
+const path = ref<string>('')
+
+const addToPath = (pathName: string) => {
+  path.value += '/' + pathName
+  console.log(path.value)
 }
 
 </script>
