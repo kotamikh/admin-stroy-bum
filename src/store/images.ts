@@ -18,9 +18,6 @@ export const useImagesStore = defineStore("images", () => {
         response.json().then((res: Array<IFolder>) => {
           folders.value = []
           for (let r of res) {
-            getImagesByFolder(r.name)
-            r.images = folderImages.value
-            console.log(r.images)
             folders.value.push(r)
           }
         })
@@ -28,21 +25,21 @@ export const useImagesStore = defineStore("images", () => {
       return folders.value
     }
 
-    const getImagesByFolder = (folderName: string): string[] => {
+    const getImagesByFolder = (folderName: string) => {
       fetch(BASE_URL + `?path=${ folderName }`, {
         method: "GET"
       }).then((response) => {
         response.json().then((res: Array<string>) => {
           folderImages.value = [];
           for (let r of res) {
-            r = r.replace(folderName + '/', YANDEX_CLOUD)
-            folderImages.value.push(r)
+            if (!r.endsWith('/')) {
+              console.log(r)
+              r = YANDEX_CLOUD + r
+              folderImages.value.push(r)
+            }
           }
-          console.log(folderImages.value)
-          return folderImages.value
         })
       })
-      console.log(folderImages.value)
       return folderImages.value
     }
 
@@ -68,16 +65,19 @@ export const useImagesStore = defineStore("images", () => {
     };
 
     const deleteImage = (image: string) => {
+      console.log(image)
       const name = image.replace(YANDEX_CLOUD, "");
+      let folderArray = name.split('/')
+      let folderName = folderArray.splice(folderArray.length - 1).join(',')
+
       fetch(BASE_URL + `?name=${ name }`, {
         method: "DELETE",
-      }).then(() => getAllImages());
+      }).then(() => getImagesByFolder(folderName));
     };
 
     const showName = (image: string) => {
-      const name = image.replace(YANDEX_CLOUD, "");
-      const file = new File([image], name);
-      return file.name;
+      const name = image.split('/');
+      return name[name.length - 1];
     };
 
     return {

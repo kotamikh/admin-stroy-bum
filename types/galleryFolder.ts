@@ -1,8 +1,5 @@
-export interface IFolderDto {
+export interface IFolder {
   name: string,
-  nested: IFolderDto[] | null,
+  nested: IFolder[] | null,
 }
 
-export interface IFolder extends IFolderDto {
-  images: string[]
-}

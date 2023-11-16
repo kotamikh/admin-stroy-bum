@@ -83,7 +83,7 @@ const countDiscount = computed(() => Math.ceil(props.price / (100 - props.discou
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить этот товар?")
   if (confirmation) {
-    useProductsStore().deleteCard(id)
+     useProductsStore().deleteCard(id)
   }
 }
 </script>

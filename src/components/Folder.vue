@@ -3,7 +3,7 @@
     <span class="folder"
     >{{ name }}</span>
       <div class="list-item" v-for="(item, index) in nested" :key="index">
-          <recursive-folder :name="item.name" :nested="item.nested" @custom="onCustom"/>
+          <recursive-folder :name="item.name" :nested="item.nested" @addFolders="onAddFolder"/>
       </div>
   </div>
 </template>
@@ -14,21 +14,23 @@ export default {
 }
 </script>
 <script setup lang="ts">
-const emit = defineEmits(['custom'])
+import { IFolder } from "../../types/galleryFolder";
+
+const emit = defineEmits(['addFolders'])
 
 interface Props {
   name: string,
-  nested: any[],
+  nested: IFolder[] | null,
   path: string,
 }
 const props = defineProps<Props>()
 
 const onClick = () => {
-  emit('custom', props.name)
+  emit('addFolders', props.name)
 }
 
-const onCustom = (path: string) => {
-  emit('custom', props.name + '/' + path)
+const onAddFolder = (path: string) => {
+  emit('addFolders', props.name + '/' + path)
 }
 
 </script>

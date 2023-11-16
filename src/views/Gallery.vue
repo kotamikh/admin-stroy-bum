@@ -2,9 +2,10 @@
   <h2>Галерея</h2>
   <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #bfdce8">
     <div v-for="(item, index) in folders" :key="index">
-      <Folder :name="item.name" :nested="item.nested" @custom="onCustom">{{ item.name }}
+      <Folder :name="item.name" :nested="item.nested" @click="selectedFolder = item.name" @addFolders="onCustom">
+        {{ item.name }}
       </Folder>
-      <v-row v-if="selectedFolder = item.name"
+      <v-row v-if="selectedFolder === item.name"
              style="top: 0; left: 110%; width: 60vw"
              class="position-absolute d-flex">
         <v-hover v-slot="{ isHovering, props }">
@@ -24,12 +25,14 @@
             </v-img>
           </v-col>
         </v-hover>
-        <v-col v-for="i in store.images"
+        <v-col v-for="i in folderImages"
                :key="i"
                cols="3">
           <v-hover v-slot="{ isHovering, props }">
-            <v-img :src="i">
-              <v-btn @click="store.deleteImage(i)"
+            <v-img :src="i"
+                   v-bind="props"
+                   style="aspect-ratio: 1 / 1;">
+              <v-btn @click="confirmDelete(i)"
                      size="small"
                      color="white"
                      variant="tonal"
@@ -40,7 +43,7 @@
                          contained
                          scrim="rgb(30, 30, 30)"
                          class="justify-center align-center font-weight-bold"
-              ><p style="color: white; font-size: 18px">{{ store.showName(i) }}</p>
+              ><p style="color: white; font-size: 18px; text-align: center">{{ store.showName(i) }}</p>
               </v-overlay>
             </v-img>
           </v-hover>
@@ -59,8 +62,9 @@ import Folder from "@/components/Folder.vue";
 const store = useImagesStore()
 
 const folders = computed(() => store.folders)
-console.log(folders)
+const folderImages = computed(() => store.folderImages)
 const selectedFolder = ref('')
+console.log(folderImages)
 
 const { files, open, reset, onChange } = useFileDialog({
   accept: "image/*"
@@ -74,11 +78,20 @@ onChange((files) => {
 })
 
 const onCustom = (path: string) => {
-  console.log(path)
+  path = path.split('/').join(',')
+
+  store.getImagesByFolder(path)
+  console.log(path, store.getImagesByFolder(path))
 }
 
-// store.getAllImages()
 store.getFolders()
+
+const confirmDelete = (i: string) => {
+  let confirmation = confirm("Хотите удалить эту картинку?")
+  if (confirmation) {
+    store.deleteImage(i)
+  }
+}
 </script>
 
 
@@ -86,6 +99,7 @@ store.getFolders()
 .overlay-clue
   padding: 0 5px
   color: #5C8AAFFF
+  text-align: center
   border-radius: 2px
   background-color: white
 
