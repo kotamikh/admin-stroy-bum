@@ -3,7 +3,7 @@
     <div class="dialog">
       <h3>Выберите фото</h3>
       <v-row>
-        <v-col v-for="i in useImagesStore().images"
+        <v-col v-for="i in useImagesStore().folderImages"
                :key="i"
                cols="3"
                class="gallery"
@@ -44,14 +44,17 @@
 <script setup lang="ts">
 import { useImagesStore } from "@/store/images";
 import { ref } from "vue";
+import { useRoute } from "vue-router";
 
 const props = defineProps(['showDialog', 'productImages', 'edit', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
-imagesStore.getAllImages()
+const route = useRoute()
+imagesStore.getImagesByFolder('Товары,' + route.params.text.toString())
 
 const selectedImages = ref<Array<string>>([])
+
 if (props.edit) {
   for (let i  = 0; i < props.productImages.length; i++) {
     selectedImages.value.push(props.productImages[i])
@@ -93,8 +96,10 @@ const sendImagesToPage = () => {
   .gallery
     display: flex
 
-    .image.chosen
-      border: 3px solid #bfdce8
+    .image
+      text-align: center
+      .chosen
+        border: 3px solid #bfdce8
 
     .image-icon
       position: absolute

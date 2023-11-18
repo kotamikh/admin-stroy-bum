@@ -79,9 +79,7 @@ onChange((files) => {
 
 const onCustom = (path: string) => {
   path = path.split('/').join(',')
-
   store.getImagesByFolder(path)
-  console.log(path, store.getImagesByFolder(path))
 }
 
 store.getFolders()

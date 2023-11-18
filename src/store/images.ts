@@ -26,6 +26,7 @@ export const useImagesStore = defineStore("images", () => {
     }
 
     const getImagesByFolder = (folderName: string) => {
+      console.log(folderName)
       fetch(BASE_URL + `?path=${ folderName }`, {
         method: "GET"
       }).then((response) => {
@@ -33,7 +34,6 @@ export const useImagesStore = defineStore("images", () => {
           folderImages.value = [];
           for (let r of res) {
             if (!r.endsWith('/')) {
-              console.log(r)
               r = YANDEX_CLOUD + r
               folderImages.value.push(r)
             }

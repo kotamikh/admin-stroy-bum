@@ -27,7 +27,8 @@ export const useProductsStore = defineStore("cardsStore", () => {
           for (const r of res) {
             products.value.set(r.id, r);
           }
-        });
+        })
+        return products.value
       })
       .catch((e) => {
         console.log("Error: " + e.message);
