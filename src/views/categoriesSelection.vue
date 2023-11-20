@@ -41,7 +41,7 @@
         </v-card>
       </v-dialog>
       <v-list-item
-        v-for="[id, category] in useCategoriesBrandsStore().categories"
+        v-for="[id, category] in useCategoriesBrandsStore().categoriesMap"
         :key="id"
         :id="category.id"
         :name="category.name"
@@ -98,16 +98,17 @@ const categoryDialog = ref(false);
 const imageDialog = ref(false)
 
 const insertCategory = () => {
-  categoryDialog.value = false;
   useCategoriesBrandsStore().insertCategory(category);
+  categoryDialog.value = false
   category.name = ""
   category.image = ""
 };
 
-useCategoriesBrandsStore().getAllCategories();
+useCategoriesBrandsStore().loadAllSubjects();
 
-const selectCategory = (category: ICategory) => {
-  router.push({ name: 'Category', params: { text: category.name }})
+const selectCategory = async (category: ICategory) => {
+  await useCategoriesBrandsStore().getBrandsBySubject(category.id)
+  await router.push({ name: 'Category', params: { text: category.name }})
 }
 // import siding from "@/assets/categories/сайдинг.png";
 // import additionalElements from "@/assets/categories/доборные элементы.png";

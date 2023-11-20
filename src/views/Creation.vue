@@ -227,6 +227,7 @@ const route = useRoute();
 let isEdit = false;
 
 if (route.params.id) {
+  console.log(route.params.id)
   isEdit = true;
   let productId = Number(route.params.id);
   currentProduct = JSON.parse(
@@ -307,7 +308,7 @@ const toDelete = (brand: IBrand) => {
   brandIdToDelete.value = brand.id
 }
 
-useCategoriesBrandsStore().getAllBrands()
+useCategoriesBrandsStore().loadAllBrands()
 
 const required = (v: string) => {
   return !!v || 'Заполните поле'

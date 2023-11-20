@@ -51,7 +51,8 @@ const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
 const route = useRoute()
-imagesStore.getImagesByFolder('Товары,' + route.params.text.toString())
+// console.log(route.params.text.toString())
+imagesStore.getImagesByFolder('Изображения категорий')
 
 const selectedImages = ref<Array<string>>([])
 
@@ -98,8 +99,8 @@ const sendImagesToPage = () => {
 
     .image
       text-align: center
-      .chosen
-        border: 3px solid #bfdce8
+    .chosen
+      border: 3px solid #bfdce8
 
     .image-icon
       position: absolute

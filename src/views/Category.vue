@@ -5,20 +5,23 @@
            @click.stop="router.push({name: 'Creation', params: { text: text }})">ДОБАВИТЬ ТОВАР
     </v-btn>
     <div class="cards">
-      <product-card
-          v-for="[id, product] in useProductsStore().products"
-          :key="id"
-          :id="product.id"
-          :name="product.name"
-          :images="product.images"
-          :price="product.price"
-          :stock="product.stock"
-          :discount="product.discount"
-          :category-name="text"
-      />
+      <suspense>
+        <product-card
+            v-for="[id, product] in useProductsStore().products"
+            :key="id"
+            :id="product.id"
+            :name="product.name"
+            :images="product.images"
+            :price="product.price"
+            :stock="product.stock"
+            :discount="product.discount"
+            :category-name="text"
+        />
+      </suspense>
     </div>
   </router-view>
 </template>
+
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
@@ -29,8 +32,11 @@ import router from "@/router";
 import { computed } from "vue";
 
 const route = useRoute()
+
 const text = route.params.text.toString()
-const categoryId = useCategoriesBrandsStore().findCategoryId(text)
+console.log(text)
+const categoryId = await useCategoriesBrandsStore().findCategoryId(text)
+console.log(useProductsStore().products)
 
 useProductsStore().loadAll(0, 30, categoryId)
 </script>

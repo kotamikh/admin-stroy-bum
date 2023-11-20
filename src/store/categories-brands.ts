@@ -2,105 +2,88 @@ import { defineStore } from "pinia";
 import { IBrand, ICategory, ICategoryDto } from "../../types/categoryBrand";
 import { ref } from "vue";
 import { Ref } from "vue/dist/vue";
-
-const BASE_URL = "http://localhost:8000"
-
-const ROUTES = {
-  subjects: BASE_URL + "/api/v1/subjects",
-  brands: BASE_URL + "/api/v1/brands"
-}
+import { useCategoriesBrandsApi } from "../../api/categories-brands";
 
 export const useCategoriesBrandsStore = defineStore("categoriesBrands", () => {
-  const categories: Ref<Map<number, ICategory>> = ref(new Map<number, ICategory>());
-  const brands = ref<Array<IBrand>>([])
+  const categoriesMap: Ref<Map<number, ICategory>> = ref(new Map<number, ICategory>());
+  const allBrands = ref<Array<IBrand>>([])
+  const brandsBySubject = ref<Array<IBrand>>([])
+  const api = useCategoriesBrandsApi()
 
-  const getAllCategories = (): Map<number, ICategory> => {
-    fetch(ROUTES.subjects, {
-      method: "GET",
-    }).then((response) => {
-      response.json().then((res) => {
-        categories.value.clear()
-          for (const r of res) {
-              categories.value.set(r.id, r);
-          }
-      }).catch((e) => {
-          console.log("Error: " + e.message)
-          console.log(e.response)
-      })
-    })
-    return categories.value
+  const loadAllSubjects = async (): Promise<Map<number, ICategory>> => {
+    const subjects = await api.getAllSubjects()
+    if (subjects.length > 0) {
+      categoriesMap.value.clear()
+      for (const s of subjects) {
+        categoriesMap.value.set(s.id, s)
+      }
+    }
+    return categoriesMap.value
   }
 
-  const insertCategory = (category: ICategoryDto) => {
-    fetch(ROUTES.subjects, {
-      method: "POST",
-      body: JSON.stringify(category)
-    }).then(() => {
-      getAllCategories()
-    })
+  const insertCategory = async (category: ICategoryDto) => {
+    await api.insertSubject(category).then(() => loadAllSubjects())
   }
 
-  const findCategoryId = (categoryName: string) => {
-    let categories = getAllCategories()
-    for (let [key, value] of categories.entries()) {
+  const findCategoryId = async (categoryName: string): Promise<number> => {
+    await loadAllSubjects()
+    for (let [key, value] of categoriesMap.value) {
       if (value.name === categoryName) {
         return key
       }
     }
+    return 0
   }
 
-  const deleteCategory = (id: number) => {
-    fetch(ROUTES.subjects + `?id=${id}`, {
-      method: "DELETE"
-    }).then(() =>  getAllCategories())
-        .catch((e) => {
-            console.log("Error: " + e.message);
-            console.log(e.response);
-        })
-  };
+  const deleteCategory = async (id: number) => {
+    await api.deleteSubject(id).then(() => loadAllSubjects())
+  }
 
-  const getAllBrands = (): IBrand[] => {
-    fetch(ROUTES.brands, {
-      method: "GET",
-    }).then((response) => {
-      response.json().then((res) => {
-        brands.value = res
-        return brands.value
-      })
-    })
+  const loadAllBrands = async (): Promise<Array<IBrand>> => {
+    const brands = await api.getAllBrands()
+    if (brands.length > 0) {
+      allBrands.value = brands
+      return allBrands.value
+    }
     return []
   }
 
-  const insertBrand = (name: string) => {
-    fetch(ROUTES.brands, {
-      method: "POST",
-      body: JSON.stringify({
-        name: name
-      })
-    }).then(() => {
-      getAllBrands()
-    })
+  const getBrand = async (brandId: number): Promise<IBrand> => {
+    return allBrands.value.find(b => b.id === brandId)!
   }
 
-  const deleteBrand = (id: number) => {
-    fetch(ROUTES.brands + `?id=${id}`, {
-      method: "DELETE"
-    }).then(() =>  getAllBrands())
-        .catch((e) => {
-          console.log("Error: " + e.message);
-          console.log(e.response);
-        })
+  const getBrandsBySubject = async (subject_id: number): Promise<IBrand[]> => {
+    const brandIds = await api.getBrandsBySubject(subject_id)
+    if (brandIds.length > 0) {
+      let brands: IBrand[] = []
+      for (let b of brandIds) {
+        brands.push(await getBrand(b))
+      }
+      brandsBySubject.value = brands
+      return brandsBySubject.value
+    }
+    return []
   }
 
+  const insertBrand = async (name: string) => {
+    await api.insertBrand(name)
+  }
+
+  const deleteBrand = async (id: number) => {
+    await api.deleteBrand(id)
+  }
 
   return {
-    categories,
-    brands,
-    getAllCategories,
+    categoriesMap,
+    allBrands,
+    brandsBySubject,
+    loadAllSubjects,
     insertCategory,
     findCategoryId,
     deleteCategory,
-    getAllBrands,
+    loadAllBrands,
+    getBrand,
+    getBrandsBySubject,
     insertBrand,
     deleteBrand
   };
