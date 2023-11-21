@@ -60,8 +60,9 @@
             v-model="galleryDialog"
             @update:show="galleryDialog = false"
             :product-images="product.images"
-            :edit="isEdit"
+            :folder="route.params.text"
             @update:images="onUpdateImages"
+            :edit="isEdit"
         />
       </div>
       <div class="product-information">
@@ -227,7 +228,6 @@ const route = useRoute();
 let isEdit = false;
 
 if (route.params.id) {
-  console.log(route.params.id)
   isEdit = true;
   let productId = Number(route.params.id);
   currentProduct = JSON.parse(

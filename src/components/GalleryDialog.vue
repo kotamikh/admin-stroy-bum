@@ -46,12 +46,12 @@ import { useImagesStore } from "@/store/images";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
-const props = defineProps(['showDialog', 'productImages', 'edit', 'categoryImage', 'limit'])
+const props = defineProps(['showDialog', 'productImages', 'edit', 'folder', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
 const route = useRoute()
-imagesStore.loadImagesByFolder('Изображения категорий')
+imagesStore.loadImagesByFolder('Товары,' + `${props.folder}`)
 
 const selectedImages = ref<Array<string>>([])
 
