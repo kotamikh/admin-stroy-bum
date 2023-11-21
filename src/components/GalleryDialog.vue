@@ -51,8 +51,7 @@ const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
 const route = useRoute()
-// console.log(route.params.text.toString())
-imagesStore.getImagesByFolder('Изображения категорий')
+imagesStore.loadImagesByFolder('Изображения категорий')
 
 const selectedImages = ref<Array<string>>([])
 

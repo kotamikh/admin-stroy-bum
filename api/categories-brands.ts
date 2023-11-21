@@ -14,7 +14,7 @@ const ROUTES = {
 }
 
 const getAllSubjects = async (): Promise<ICategory[]>  => {
-    const { data, error } = await useHttpGet<ICategory[]>({ url: ROUTES.subjects })
+  const { data, error } = await useHttpGet<ICategory[]>({ url: ROUTES.subjects })
   if (data) {
     return data
   } else {
@@ -65,7 +65,6 @@ const insertBrand = async (name: string) => {
 
 const deleteBrand = async (id: number)=> {
   const { data, error } = await useHttpDelete({ url: ROUTES.brands, params: { id: id } })
-    console.log(id)
   if (data) {
     return data
   } else  {

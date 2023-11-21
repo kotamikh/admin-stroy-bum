@@ -1,7 +1,7 @@
-// const для ссылки
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { IFolder} from "../../types/galleryFolder";
+import { useImagesApi } from "../../api/images";
 
 const BASE_URL = "http://localhost:8000/api/v1/images";
 const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
@@ -10,69 +10,37 @@ export const useImagesStore = defineStore("images", () => {
     const images = ref<Array<string>>([])
     const folderImages = ref<Array<string>>([])
     const folders = ref<Array<IFolder>>([])
+    const api = useImagesApi()
 
-    const getFolders = () => {
-      fetch(BASE_URL + `/folders`, {
-        method: "GET"
-      }).then((response) => {
-        response.json().then((res: Array<IFolder>) => {
-          folders.value = []
-          for (let r of res) {
-            folders.value.push(r)
-          }
-        })
-      })
+    const loadFolders = async () => {
+      folders.value  = await api.getAllFolders()
       return folders.value
     }
 
-    const getImagesByFolder = (folderName: string) => {
-      console.log(folderName)
-      fetch(BASE_URL + `?path=${ folderName }`, {
-        method: "GET"
-      }).then((response) => {
-        response.json().then((res: Array<string>) => {
-          folderImages.value = [];
-          for (let r of res) {
-            if (!r.endsWith('/')) {
-              r = YANDEX_CLOUD + r
-              folderImages.value.push(r)
-            }
-          }
-        })
-      })
+    const loadImagesByFolder = async (folderName: string) => {
+      const images = await api.getImagesByFolder(folderName)
+      folderImages.value = []
+      for (let i of images) {
+        if (!i.endsWith('/')) {
+          i = YANDEX_CLOUD + i
+          folderImages.value.push(i)
+        }
+      }
       return folderImages.value
     }
 
-    const getAllImages = () => {
-      fetch(BASE_URL, {
-        method: "GET",
-      }).then((response) => {
-        response.json().then((res) => {
-          let arrOfImages = [];
-          for (let r of res) {
-            arrOfImages.push(YANDEX_CLOUD + `${ r }`);
-          }
-          images.value = arrOfImages
-        })
-      })
+    const loadImages = async () => {
+      images.value  = await api.getAllImages()
+      return images.value
     }
 
-    const addImage = (file: File) => {
-      fetch(BASE_URL + `?name=${ file.name }`, {
-        method: "POST",
-        body: file,
-      }).then(() => getAllImages());
+    const addImage = async (file: File, folderName: string) => {
+      await api.addImage(folderName, file).then(() => loadImagesByFolder(folderName))
     };
 
-    const deleteImage = (image: string) => {
-      console.log(image)
-      const name = image.replace(YANDEX_CLOUD, "");
-      let folderArray = name.split('/')
-      let folderName = folderArray.splice(folderArray.length - 1).join(',')
-
-      fetch(BASE_URL + `?name=${ name }`, {
-        method: "DELETE",
-      }).then(() => getImagesByFolder(folderName));
+    const deleteImage = async (image: string, folderName: string) => {
+      const imageName = image.replace(YANDEX_CLOUD, "")
+      await api.deleteImage(imageName).then(() => loadImagesByFolder(folderName))
     };
 
     const showName = (image: string) => {
@@ -84,9 +52,9 @@ export const useImagesStore = defineStore("images", () => {
       images,
       folders,
       folderImages,
-      getFolders,
-      getImagesByFolder,
-      getAllImages,
+      loadFolders,
+      loadImagesByFolder,
+      loadImages,
       addImage,
       deleteImage,
       showName

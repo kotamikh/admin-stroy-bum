@@ -64,7 +64,6 @@ const store = useImagesStore()
 const folders = computed(() => store.folders)
 const folderImages = computed(() => store.folderImages)
 const selectedFolder = ref('')
-console.log(folderImages)
 
 const { files, open, reset, onChange } = useFileDialog({
   accept: "image/*"
@@ -73,21 +72,21 @@ const { files, open, reset, onChange } = useFileDialog({
 onChange((files) => {
   if (files) {
     const file = files[0]
-    store.addImage(file)
+    store.addImage(file, selectedFolder.value)
   }
 })
 
 const onCustom = (path: string) => {
   path = path.split('/').join(',')
-  store.getImagesByFolder(path)
+  store.loadImagesByFolder(path)
 }
 
-store.getFolders()
+store.loadFolders()
 
 const confirmDelete = (i: string) => {
   let confirmation = confirm("Хотите удалить эту картинку?")
   if (confirmation) {
-    store.deleteImage(i)
+    store.deleteImage(i, selectedFolder.value)
   }
 }
 </script>

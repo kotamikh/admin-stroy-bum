@@ -34,9 +34,11 @@ const useCustomFetch = async <T>(requestParams: RequestParameters): Promise<Resp
           data: await response.json(),
           error: null
         }
-    }
-    else if (requestParams.method === "POST" || "DELETE") {
-      return
+    } else if (requestParams.method === "POST" || "DELETE") {
+      return {
+          data: requestParams.method,
+          error: null
+      }
     }
 
     else return {
