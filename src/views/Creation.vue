@@ -75,7 +75,7 @@
         <div class="brands">
           <v-select
               label="Имя бренда"
-              :items="useCategoriesBrandsStore().brands"
+              :items="useCategoriesBrandsStore().brandsBySubject"
               v-model="product.brand"
               item-title="name"
               item-value="id"
@@ -111,7 +111,7 @@
             <v-card class="pa-5">
               <v-card-title>Выберите бренд для удаления</v-card-title>
               <v-list>
-                <template v-for="brand in useCategoriesBrandsStore().brands"
+                <template v-for="brand in useCategoriesBrandsStore().allBrands"
                           :key="brand.id"
                 >
                   <v-list-item
@@ -235,7 +235,7 @@ if (route.params.id) {
   );
 }
 
-const subjectId = useCategoriesBrandsStore().findCategoryId(route.params.text.toString())
+const subjectId = useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => useCategoriesBrandsStore().getBrandsBySubject(id))
 
 const product = reactive<IProduct>(
     Object.assign(

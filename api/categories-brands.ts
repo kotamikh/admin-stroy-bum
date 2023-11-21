@@ -51,6 +51,7 @@ const getBrandsBySubject = async (subject_id: number): Promise<number[]> => {
     }
 }
 
+// выводить обновлённые бренды
 const insertBrand = async (name: string) => {
   const { data, error } = await useHttpPost({ url: ROUTES.brands, body: JSON.stringify({
       name: name
@@ -63,8 +64,9 @@ const insertBrand = async (name: string) => {
   }
 }
 
+// выводить обновлённые бренды
 const deleteBrand = async (id: number)=> {
-  const { data, error } = await useHttpDelete({ url: ROUTES.brands, params: { id: id } })
+  const { data, error } = await useHttpDelete({ url: ROUTES.brands + `?id=${ id }` })
   if (data) {
     return data
   } else  {
