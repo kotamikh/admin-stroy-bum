@@ -1,5 +1,12 @@
 <template xmlns="http://www.w3.org/1999/html">
   <h2>Галерея</h2>
+  <div v-if="!selectedFolder"
+       class="mb-4 font-weight-medium d-flex align-center gap-">
+    <v-icon icon="mdi-alert-circle-outline"
+    class="text-red-lighten-2 mr-1"
+    ></v-icon>
+    Выберите папку из списка, чтобы посмотреть изображения
+  </div>
   <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #bfdce8">
     <div v-for="(item, index) in folders" :key="index">
       <Folder :name="item.name" :nested="item.nested" @click="selectedFolder = item.name" @addFolders="onCustom">
@@ -64,6 +71,7 @@ const store = useImagesStore()
 const folders = computed(() => store.folders)
 const folderImages = computed(() => store.folderImages)
 const selectedFolder = ref('')
+const foldersPath = ref('')
 
 const { files, open, reset, onChange } = useFileDialog({
   accept: "image/*"
@@ -72,11 +80,13 @@ const { files, open, reset, onChange } = useFileDialog({
 onChange((files) => {
   if (files) {
     const file = files[0]
-    store.addImage(file, selectedFolder.value)
+    console.log(foldersPath.value)
+    store.addImage(file, foldersPath.value)
   }
 })
 
 const onCustom = (path: string) => {
+  foldersPath.value = path
   path = path.split('/').join(',')
   store.loadImagesByFolder(path)
 }

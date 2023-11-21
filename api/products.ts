@@ -8,8 +8,10 @@ export type GetAllRequest = {
     brand?: number,
 }
 
+const BASE_URL = "http://localhost:8000";
+
 const ROUTES = {
-    products: "/api/v1/products"
+    products: BASE_URL + "/api/v1/products"
 }
 
 const getDefaultProduct = (): IProduct => {
@@ -31,8 +33,13 @@ const getDefaultImage = (): string => {
     return "https://www.eclosio.ong/wp-content/uploads/2018/08/default.png"
 }
 
-const getAll = async (request: GetAllRequest): Promise<IProduct[]> => {
-    const { data, error } = await useHttpGet<IProduct[]>({ url: ROUTES.products, params: request })
+const getAll = async (params: URLSearchParams): Promise<IProduct[]> => {
+    let paramsString = ''
+    for (let [key, value] of params.entries()) {
+      paramsString += key + '=' + value + '&'
+    }
+    paramsString = paramsString.slice(0, -1)
+    const { data, error } = await useHttpGet<IProduct[]>({ url: ROUTES.products + '?' + paramsString})
     if (data) {
         return data
     } else {

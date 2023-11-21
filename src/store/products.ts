@@ -1,16 +1,19 @@
 import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 import { IProduct, IProductDto } from "../../types/product";
+import { useProductsApi } from "../../api/products";
 
 const BASE_URL = "http://localhost:8000";
 
 const ROUTES = {
   products: BASE_URL + "/api/v1/products",
-};
-export const useProductsStore = defineStore("cardsStore", () => {
-  const products: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>());
+}
 
-  const loadAll = (offset: number, limit: number, subject?: number, brand?: number) => {
+export const useProductsStore = defineStore("cardsStore", () => {
+  const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>());
+  const api = useProductsApi()
+
+  const loadAll = async (offset: number, limit: number, subject?: number, brand?: number)=> {
     const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
     if (subject) {
       params.append('subject', subject.toString())
@@ -18,23 +21,17 @@ export const useProductsStore = defineStore("cardsStore", () => {
     if (brand) {
       params.append('brand', brand.toString())
     }
-    fetch(ROUTES.products + "?" + params, {
-      method: "GET",
+
+    await api.getAll(params).then((response) => {
+      if (response.length > 0) {
+        productsMap.value.clear()
+        for (const p of response) {
+          productsMap.value.set(p.id, p)
+        }
+      }
     })
-      .then((response) => {
-        response.json().then((res) => {
-          products.value.clear();
-          for (const r of res) {
-            products.value.set(r.id, r);
-          }
-        })
-        return products.value
-      })
-      .catch((e) => {
-        console.log("Error: " + e.message);
-        console.log(e.response);
-      })
-  };
+    return productsMap.value
+  }
 
   const insertCard = (product: IProductDto, isEdit: boolean) => {
     fetch(ROUTES.products + `?edit=${isEdit}`, {
@@ -43,7 +40,7 @@ export const useProductsStore = defineStore("cardsStore", () => {
     })
       .then(() => {
         loadAll(0, 30)
-        console.log(products.value)
+        console.log(productsMap.value)
       })
       .catch((e) => {
         console.log("Error: " + e.message);
@@ -63,7 +60,7 @@ export const useProductsStore = defineStore("cardsStore", () => {
   };
 
   return {
-    products,
+    productsMap,
     insertCard,
     loadAll,
     deleteCard,

@@ -231,7 +231,7 @@ if (route.params.id) {
   isEdit = true;
   let productId = Number(route.params.id);
   currentProduct = JSON.parse(
-      JSON.stringify(useProductsStore().products.get(productId))
+      JSON.stringify(useProductsStore().productsMap.get(productId))
   );
 }
 

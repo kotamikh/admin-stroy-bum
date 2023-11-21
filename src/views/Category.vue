@@ -6,7 +6,7 @@
     </v-btn>
     <div class="cards">
       <product-card
-        v-for="[id, product] in useProductsStore().products"
+        v-for="[id, product] in useProductsStore().productsMap"
         :key="id"
         :id="product.id"
         :name="product.name"
@@ -27,7 +27,6 @@ import { useProductsStore } from "@/store/products";
 import ProductCard from "@/components/ProductCard.vue";
 import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import router from "@/router";
-import { computed } from "vue";
 
 const route = useRoute()
 

@@ -1,9 +1,7 @@
 import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
-import { ICategory } from "../types/categoryBrand";
 import { IFolder } from "../types/galleryFolder";
 
 const BASE_URL = "http://localhost:8000/api/v1/images";
-const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
 
 const ROUTES = {
   folders: BASE_URL + '/folders'
@@ -39,8 +37,8 @@ const getAllImages = async (): Promise<Array<string>> => {
   }
 }
 
-const addImage = async (folderName: string, file: File) => {
-  await useHttpPost({url: BASE_URL + `?name=${folderName}/${ file.name }`, body: file})
+const addImage = async (foldersPath: string, file: File) => {
+  await useHttpPost({url: BASE_URL + `?path=${ foldersPath }&name=${ file.name }`, body: file})
 }
 
 const deleteImage = async (imageName: string) => {

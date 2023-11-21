@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { IFolder} from "../../types/galleryFolder";
 import { useImagesApi } from "../../api/images";
 
-const BASE_URL = "http://localhost:8000/api/v1/images";
 const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
 
 export const useImagesStore = defineStore("images", () => {
@@ -34,8 +33,9 @@ export const useImagesStore = defineStore("images", () => {
       return images.value
     }
 
-    const addImage = async (file: File, folderName: string) => {
-      await api.addImage(folderName, file).then(() => loadImagesByFolder(folderName))
+    const addImage = async (file: File, foldersPath: string) => {
+      console.log(file.name, foldersPath)
+      await api.addImage(foldersPath, file).then(() => loadImagesByFolder(foldersPath))
     };
 
     const deleteImage = async (image: string, folderName: string) => {
