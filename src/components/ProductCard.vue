@@ -53,9 +53,10 @@
 
 <script setup lang="ts">
 import { IProduct, StockType } from "../../types/product";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
+import { useCategoriesBrandsStore } from "@/store/categories-brands";
 
 export interface Props extends IProduct {
   id: number,
@@ -79,11 +80,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mainImage = props.images.length === 0 ? defaultImg : props.images[0]
 const countDiscount = computed(() => Math.ceil(props.price / (100 - props.discount) * 100))
+const subjectId = ref<null | number>(null)
+useCategoriesBrandsStore().findCategoryId(props.categoryName).then((id) => { subjectId.value = id })
 
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить этот товар?")
   if (confirmation) {
-     useProductsStore().deleteCard(id)
+     useProductsStore().deleteCard(id).then(() => useProductsStore().loadAll(0, 100, subjectId.value))
   }
 }
 </script>

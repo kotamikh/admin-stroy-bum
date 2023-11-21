@@ -1,5 +1,5 @@
-import { IProduct } from "../types/product";
-import { useHttpGet } from "./base";
+import { IProduct, IProductDto } from "../types/product";
+import { useHttpDelete, useHttpGet, useHttpPut } from "./base";
 
 export type GetAllRequest = {
     offset: number,
@@ -48,21 +48,21 @@ const getAll = async (params: URLSearchParams): Promise<IProduct[]> => {
     }
 }
 
-const getById = async (id: number): Promise<IProduct> => {
-    const { data, error } = await useHttpGet<IProduct>({ url: ROUTES.products, params: { id } })
-    if (data) {
-        return data
-    } else {
-        // TODO: log error
-        return getDefaultProduct()
-    }
+const insertProduct = async (product: IProductDto, isEdit: boolean) => {
+    console.log(product, isEdit)
+  await useHttpPut({ url: ROUTES.products + `?edit=${isEdit}`, body: JSON.stringify(product)})
+}
+
+const deleteProduct = async (id: number) => {
+  await useHttpDelete({ url: ROUTES.products + `?id=${id}` })
 }
 
 export const useProductsApi = () => {
     return {
-        getAll,
-        getById,
         getDefaultProduct,
-        getDefaultImage
+        getDefaultImage,
+        getAll,
+        insertProduct,
+        deleteProduct
     }
 }

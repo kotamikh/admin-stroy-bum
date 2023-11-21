@@ -13,18 +13,19 @@ export const useImagesStore = defineStore("images", () => {
 
     const loadFolders = async () => {
       folders.value  = await api.getAllFolders()
-      return folders.value
+      return folders.value.sort()
     }
 
     const loadImagesByFolder = async (folderName: string) => {
-      const images = await api.getImagesByFolder(folderName)
-      folderImages.value = []
-      for (let i of images) {
-        if (!i.endsWith('/')) {
-          i = YANDEX_CLOUD + i
-          folderImages.value.push(i)
-        }
-      }
+      await api.getImagesByFolder(folderName).then((images) => {
+          folderImages.value = []
+          for (let i of images) {
+              if (!i.endsWith('/')) {
+                  i = YANDEX_CLOUD + i
+                  folderImages.value.push(i)
+              }
+          }
+      })
       return folderImages.value
     }
 

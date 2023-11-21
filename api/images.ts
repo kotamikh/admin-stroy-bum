@@ -38,7 +38,7 @@ const getAllImages = async (): Promise<Array<string>> => {
 }
 
 const addImage = async (foldersPath: string, file: File) => {
-  await useHttpPost({url: BASE_URL + `?path=${ foldersPath }&name=${ file.name }`, body: file})
+  await useHttpPost({url: BASE_URL + `?name=${ foldersPath + '/' +  file.name }`, body: file})
 }
 
 const deleteImage = async (imageName: string) => {

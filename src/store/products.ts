@@ -3,12 +3,6 @@ import { ref, Ref } from "vue";
 import { IProduct, IProductDto } from "../../types/product";
 import { useProductsApi } from "../../api/products";
 
-const BASE_URL = "http://localhost:8000";
-
-const ROUTES = {
-  products: BASE_URL + "/api/v1/products",
-}
-
 export const useProductsStore = defineStore("cardsStore", () => {
   const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>());
   const api = useProductsApi()
@@ -33,31 +27,13 @@ export const useProductsStore = defineStore("cardsStore", () => {
     return productsMap.value
   }
 
-  const insertCard = (product: IProductDto, isEdit: boolean) => {
-    fetch(ROUTES.products + `?edit=${isEdit}`, {
-      method: "PUT",
-      body: JSON.stringify(product),
-    })
-      .then(() => {
-        loadAll(0, 30)
-        console.log(productsMap.value)
-      })
-      .catch((e) => {
-        console.log("Error: " + e.message);
-        console.log(e.response);
-      });
-  };
+  const insertCard = async (product: IProductDto, isEdit: boolean) => {
+    await api.insertProduct(product, isEdit)
+  }
 
-  const deleteCard = (id: number) => {
-    fetch(ROUTES.products + `?id=${id}`, {
-      method: "DELETE",
-    })
-      .then(() => loadAll(0, 30))
-      .catch((e) => {
-        console.log("Error: " + e.message);
-        console.log(e.response);
-      })
-  };
+  const deleteCard = async (id: number) => {
+    await api.deleteProduct(id).then(() => loadAll(0, 100))
+  }
 
   return {
     productsMap,

@@ -20,14 +20,13 @@
                  @click="open"
                  v-bind="props"
           >
-            <v-img src="@/assets/add-img.avif"
-            >
+            <v-img src="@/assets/add-img.avif" style="cursor: pointer">
               <v-overlay :model-value="isHovering"
                          contained
                          scrim="#5C8AAFFF"
                          class="justify-center align-center font-weight-bold"
               >
-                <div class="overlay-clue">ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                <div class="overlay-clue ">ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
               </v-overlay>
             </v-img>
           </v-col>
@@ -85,10 +84,11 @@ onChange((files) => {
   }
 })
 
-const onCustom = (path: string) => {
+const onCustom = async (path: string) => {
   foldersPath.value = path
   path = path.split('/').join(',')
-  store.loadImagesByFolder(path)
+  await store.loadImagesByFolder(path)
+  console.log(folderImages.value)
 }
 
 store.loadFolders()

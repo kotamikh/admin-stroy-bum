@@ -235,7 +235,9 @@ if (route.params.id) {
   );
 }
 
-const subjectId = useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => useCategoriesBrandsStore().getBrandsBySubject(id))
+const subjectId = ref<null | number>(null)
+useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => useCategoriesBrandsStore().getBrandsBySubject(id))
+useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => { subjectId.value = id })
 
 const product = reactive<IProduct>(
     Object.assign(
@@ -313,10 +315,9 @@ useCategoriesBrandsStore().loadAllBrands()
 const required = (v: string) => {
   return !!v || 'Заполните поле'
 }
-const createCard = () => {
+const createCard = async () => {
   if (product.name && product.price && product.brand) {
-    useProductsStore().insertCard(product, isEdit);
-    router.push({ name: "Category", params: { text: route.params.text } });
+    await useProductsStore().insertCard(product, isEdit).then(() => router.push({ name: "Category", params: { text: route.params.text } }))
   } else {
     alert("Необходимо заполнить обязательные поля")
   }

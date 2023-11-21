@@ -34,7 +34,7 @@ const useCustomFetch = async <T>(requestParams: RequestParameters): Promise<Resp
           data: await response.json(),
           error: null
         }
-    } else if (requestParams.method === "POST" || "DELETE") {
+    } else if (requestParams.method === "POST" || "PUT" || "DELETE") {
       return {
           data: requestParams.method,
           error: null
@@ -57,6 +57,13 @@ export const useHttpGet = async <T>(requestParams: Omit<RequestParameters, "meth
 export const useHttpPost = async <T>(requestParams: Omit<RequestParameters, "method">): Promise<ResponseWithError<T>> => {
     return useCustomFetch<T>({
         method: "POST",
+        ...requestParams
+    })
+}
+
+export const useHttpPut = async <T>(requestParams: Omit<RequestParameters, "method">): Promise<ResponseWithError<T>> => {
+    return useCustomFetch<T>({
+        method: "PUT",
         ...requestParams
     })
 }
