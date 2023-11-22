@@ -42,11 +42,10 @@ const onAddFolder = (path: string) => {
   height: 100%
   display: block
   cursor: pointer
-  font-weight: bold
   padding-inline-start: 15px
 
   &:hover
-    background-color: #bfdce8
+    background-color: rgba(165, 181, 204, 0.5)
 
 .list-item
   padding-inline-start: 15px

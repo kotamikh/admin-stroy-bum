@@ -4,8 +4,9 @@
       <v-btn
         @click="categoryDialog = true"
         prepend-icon="mdi-plus"
-        variant="tonal"
+        variant="outlined"
         width="fit-content"
+        style="border: 2px solid #a5b5cc; background-color: #A5B5CC4D"
         >Добавить категорию</v-btn>
       <v-dialog width="500" v-model="categoryDialog">
         <v-card>
@@ -62,9 +63,10 @@
         <div style="display: flex; gap: 20px">
           <p class="text">{{ category.name }}</p>
           <v-btn
-            variant="tonal"
-            class="hidden"
-            @click.stop="useCategoriesBrandsStore().deleteCategory(category.id)"
+            size="small"
+            variant="plain"
+            class="delete-btn hidden"
+            @click.stop="confirmDelete(category.id)"
             ><v-icon icon="mdi-delete"
           /></v-btn>
         </div>
@@ -110,27 +112,14 @@ const selectCategory = async (category: ICategory) => {
   await useCategoriesBrandsStore().getBrandsBySubject(category.id)
   await router.push({ name: 'Category', params: { text: category.name }})
 }
-// import siding from "@/assets/categories/сайдинг.png";
-// import additionalElements from "@/assets/categories/доборные элементы.png";
-// import decking from "@/assets/categories/террасная доска.png";
-// import facadePanels from "@/assets/categories/фасадные панели.png";
-// import windowSills from "@/assets/categories/подоконник.png";
-// import roof from "@/assets/categories/кровля.png";
-// import batteryScreens from "@/assets/categories/радиатор.png";
-// import insulation from "@/assets/categories/утеплители.png";
-// import ceilings from "@/assets/categories/потолки.png";
-// import foamSealant from "@/assets/categories/пена герметик.png";
-// import waterDisposal from "@/assets/categories/водоотведение.png";
-// import other from "@/assets/categories/прочее.png";
 
-// const categories: Record<
-//   string,
-//   {
-//     text: string;
-//     image: string;
-//     path: string;
-//   }
-// > = {
+const confirmDelete = (id: number) => {
+  let confirmation = confirm("Хотите удалить эту категорию?")
+  if (confirmation) {
+    useCategoriesBrandsStore().deleteCategory(id)
+  }
+}
+
 //   siding: {
 //     text: "Сайдинг",
 //     image: siding,
@@ -204,20 +193,26 @@ const selectCategory = async (category: ICategory) => {
 
   .category
     display: flex
+    border-radius: 5px
 
     .text
       font-size: 18px
       font-weight: bold
+      transition: all 0.1s ease
+      background-color: transparent
 
     .hidden
-      top: 23px
-      right: 5px
-      opacity: 0
+      top: 0
+      right: -52px
+      z-index: 9999
+      height: 100%
       position: absolute
       visibility: hidden
-      transition: all 0.1s ease
+      border: 1px solid #a5b5cc
 
     &:hover
+      background-color: rgba(165, 181, 204, 0.3)
+
       .hidden
         opacity: 100%
         visibility: visible

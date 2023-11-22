@@ -13,17 +13,18 @@ export const useImagesStore = defineStore("images", () => {
 
     const loadFolders = async () => {
       folders.value  = await api.getAllFolders()
-      return folders.value.sort()
+      folders.value.sort((f1, f2) => f1.name > f2.name ? 1 : -1)
+      return folders.value
     }
 
     const loadImagesByFolder = async (folderName: string) => {
       await api.getImagesByFolder(folderName).then((images) => {
           folderImages.value = []
           for (let i of images) {
-              if (!i.endsWith('/')) {
-                  i = YANDEX_CLOUD + i
-                  folderImages.value.push(i)
-              }
+            if (!i.endsWith('/')) {
+              i = YANDEX_CLOUD + i
+              folderImages.value.push(i)
+            }
           }
       })
       return folderImages.value
@@ -35,7 +36,6 @@ export const useImagesStore = defineStore("images", () => {
     }
 
     const addImage = async (file: File, foldersPath: string) => {
-      console.log(file.name, foldersPath)
       await api.addImage(foldersPath, file).then(() => loadImagesByFolder(foldersPath))
     };
 

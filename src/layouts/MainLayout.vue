@@ -9,7 +9,8 @@
       </div>
       <v-btn
           class="button"
-          variant="tonal"
+          variant="outlined"
+          style="border: 2px solid #a5b5cc; background-color: #A5B5CC4D"
           append-icon="mdi-exit-to-app">Выйти
       </v-btn>
     </div>
@@ -41,4 +42,5 @@ import Navigation from "@/components/Navigation.vue";
 
       h1
         font-size: 24px
+        font-weight: normal
 </style>

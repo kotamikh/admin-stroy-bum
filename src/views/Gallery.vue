@@ -1,18 +1,18 @@
 <template xmlns="http://www.w3.org/1999/html">
-  <h2>Галерея</h2>
-  <div v-if="!selectedFolder"
+  <h2>Галерея изображений</h2>
+  <div v-if="!foldersPath"
        class="mb-4 font-weight-medium d-flex align-center gap-">
     <v-icon icon="mdi-alert-circle-outline"
     class="text-red-lighten-2 mr-1"
     ></v-icon>
     Выберите папку из списка, чтобы посмотреть изображения
   </div>
-  <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #bfdce8">
+  <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #a5b5cc; border-radius: 7px">
     <div v-for="(item, index) in folders" :key="index">
-      <Folder :name="item.name" :nested="item.nested" @click="selectedFolder = item.name" @addFolders="onCustom">
+      <Folder :name="item.name" :nested="item.nested" @addFolders="onCustom">
         {{ item.name }}
       </Folder>
-      <v-row v-if="selectedFolder === item.name"
+      <v-row v-if="foldersPath"
              style="top: 0; left: 110%; width: 60vw"
              class="position-absolute d-flex">
         <v-hover v-slot="{ isHovering, props }">
@@ -23,33 +23,34 @@
             <v-img src="@/assets/add-img.avif" style="cursor: pointer">
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="#5C8AAFFF"
-                         class="justify-center align-center font-weight-bold"
+                         scrim="#a5b5ccFF"
+                         style="border-radius: 5px"
+                         class="justify-center align-center"
               >
-                <div class="overlay-clue ">ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                <div class="overlay-clue">ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
               </v-overlay>
             </v-img>
           </v-col>
         </v-hover>
-        <v-col v-for="i in folderImages"
+        <v-col v-for="i in store.folderImages"
                :key="i"
                cols="3">
           <v-hover v-slot="{ isHovering, props }">
             <v-img :src="i"
                    v-bind="props"
                    style="aspect-ratio: 1 / 1;">
-              <v-btn @click="confirmDelete(i)"
-                     size="small"
-                     color="white"
-                     variant="tonal"
-                     class="delete-btn button">
+              <v-btn size="small"
+                     variant="plain"
+                     class="delete-btn"
+                     @click="confirmDelete(i)">
                 <v-icon size="x-large" icon="mdi-delete"/>
               </v-btn>
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="rgb(30, 30, 30)"
-                         class="justify-center align-center font-weight-bold"
-              ><p style="color: white; font-size: 18px; text-align: center">{{ store.showName(i) }}</p>
+                         scrim="#a5b5ccFF"
+                         style="border-radius: 5px"
+                         class="justify-center align-center"
+              ><p style="color: #808080; font-size: 18px; background-color: white; padding: 0 10px">{{ store.showName(i) }}</p>
               </v-overlay>
             </v-img>
           </v-hover>
@@ -68,8 +69,6 @@ import Folder from "@/components/Folder.vue";
 const store = useImagesStore()
 
 const folders = computed(() => store.folders)
-const folderImages = computed(() => store.folderImages)
-const selectedFolder = ref('')
 const foldersPath = ref('')
 
 const { files, open, reset, onChange } = useFileDialog({
@@ -79,7 +78,6 @@ const { files, open, reset, onChange } = useFileDialog({
 onChange((files) => {
   if (files) {
     const file = files[0]
-    console.log(foldersPath.value)
     store.addImage(file, foldersPath.value)
   }
 })
@@ -88,15 +86,14 @@ const onCustom = async (path: string) => {
   foldersPath.value = path
   path = path.split('/').join(',')
   await store.loadImagesByFolder(path)
-  console.log(folderImages.value)
 }
 
 store.loadFolders()
 
-const confirmDelete = (i: string) => {
+const confirmDelete = (img: string) => {
   let confirmation = confirm("Хотите удалить эту картинку?")
   if (confirmation) {
-    store.deleteImage(i, selectedFolder.value)
+    store.deleteImage(img, foldersPath.value)
   }
 }
 </script>
@@ -104,10 +101,8 @@ const confirmDelete = (i: string) => {
 
 <style scoped lang="sass">
 .overlay-clue
-  padding: 0 5px
-  color: #5C8AAFFF
+  color: #808080
   text-align: center
-  border-radius: 2px
   background-color: white
 
 .delete-btn

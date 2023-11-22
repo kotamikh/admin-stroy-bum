@@ -10,7 +10,7 @@ const ROUTES = {
 const getAllFolders = async (): Promise<Array<IFolder>> => {
   const { data, error } = await useHttpGet({ url: ROUTES.folders })
   if (data) {
-    return data
+    return data.sort()
   } else {
     // TODO: log error
     return []
