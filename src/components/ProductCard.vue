@@ -29,18 +29,18 @@
       </div>
       <v-overlay :model-value="isHovering"
                  contained
-                 scrim="#C8C8C8B3"
+                 scrim="var(--scrim)"
                  class="justify-center pt-16 font-weight-bold"
       >
         <div class="overlay-clue">
           <v-btn variant="flat"
-                 color="#E3DD5F"
+                 color="var(--yellow)"
                  prepend-icon="mdi-lead-pencil"
                  :to="{name: 'Creation', params: {text: props.categoryName, id: props.id}}"
           >ИЗМЕНИТЬ
           </v-btn>
           <v-btn variant="flat"
-                 color="8C8C8CFF"
+                 color="white"
                  prepend-icon="mdi-trash-can-outline"
                  @click="confirmDelete(id)"
           >УДАЛИТЬ
@@ -145,14 +145,14 @@ const confirmDelete = (id: number) => {
       text-align: center
       position: absolute
       border-radius: 12px
-      background-color: #E3DD5F
+      background-color: var(--yellow)
 
     .fav-mark
       top: 3px
       right: 3px
       cursor: pointer
       position: absolute
-      fill: #808080
+      fill: var(--middle-grey)
 
   .price-stock
     gap: 10px
@@ -165,7 +165,7 @@ const confirmDelete = (id: number) => {
 
     .old-price
       font-size: 0.9rem
-      color: #808080
+      color: var(--middle-grey)
       text-decoration: line-through
 
     p > .rub
@@ -194,8 +194,8 @@ const confirmDelete = (id: number) => {
     margin-left: auto
     margin-top: auto
     padding: 5px 20px
-    color: #555555
+    color: var(--grey)
     width: fit-content
     border-radius: 12px
-    background-color: #E3DD5F
+    background-color: var(--yellow)
 </style>

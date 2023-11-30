@@ -6,7 +6,7 @@
         prepend-icon="mdi-plus"
         variant="outlined"
         width="fit-content"
-        style="border: 2px solid #a5b5cc; background-color: #A5B5CC4D"
+        style="border: 2px solid var(--dark-blue); background-color: #A5B5CC4D"
         >Добавить категорию</v-btn>
       <v-dialog width="500" v-model="categoryDialog">
         <v-card>
@@ -208,7 +208,7 @@ const confirmDelete = (id: number) => {
       height: 100%
       position: absolute
       visibility: hidden
-      border: 1px solid #a5b5cc
+      border: 1px solid var(--dark-blue)
 
     &:hover
       background-color: rgba(165, 181, 204, 0.3)

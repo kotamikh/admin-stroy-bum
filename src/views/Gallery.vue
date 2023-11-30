@@ -7,7 +7,7 @@
     ></v-icon>
     Выберите папку из списка, чтобы посмотреть изображения
   </div>
-  <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid #a5b5cc; border-radius: 7px">
+  <div class="folders-box" style="height: fit-content; width: 25%; position: relative; border: 2px solid var(--dark-blue); border-radius: 7px">
     <div v-for="(item, index) in folders" :key="index">
       <Folder :name="item.name" :nested="item.nested" @addFolders="onCustom">
         {{ item.name }}
@@ -23,7 +23,7 @@
             <v-img src="@/assets/add-img.avif" style="cursor: pointer">
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="#a5b5ccFF"
+                         scrim="var(--scrim)"
                          style="border-radius: 5px"
                          class="justify-center align-center"
               >
@@ -47,7 +47,7 @@
               </v-btn>
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="#a5b5ccFF"
+                         scrim="var(--scrim)"
                          style="border-radius: 5px"
                          class="justify-center align-center"
               ><p style="color: #808080; font-size: 18px; background-color: white; padding: 0 10px">{{ store.showName(i) }}</p>
@@ -101,9 +101,9 @@ const confirmDelete = (img: string) => {
 
 <style scoped lang="sass">
 .overlay-clue
-  color: #808080
   text-align: center
   background-color: white
+  color: var(--middle-grey)
 
 .delete-btn
   top: 2px

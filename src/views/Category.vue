@@ -1,7 +1,7 @@
 <template>
   <router-view>
     <h2>{{ text }}</h2>
-    <v-btn variant="flat" prepend-icon="mdi-plus" color="#E3DD5F" class="mb-8"
+    <v-btn variant="flat" prepend-icon="mdi-plus" color="var(--yellow)" class="mb-8"
            @click.stop="router.push({name: 'Creation', params: { text: text }})">ДОБАВИТЬ ТОВАР
     </v-btn>
     <div class="cards">

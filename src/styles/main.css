@@ -1,5 +1,12 @@
 * {
-  color: #555555
+  --grey: #555555;
+  --green: #49AE66;
+  --yellow: #FFF176;
+  --scrim: #a5b5ccFF;
+  --dark-blue: #a5b5cc;
+  --light-blue: #bfdce8;
+  --middle-grey: #808080;
+  color: var(--grey);
 }
 
 h2 {

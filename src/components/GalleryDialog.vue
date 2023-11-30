@@ -18,13 +18,13 @@
                 @click="toggleSelected(i)">
               <v-icon icon="mdi-check-circle"
                       v-if="isImageSelected(i)"
-                      color="#bfdce8"
+                      color="var(--light-blue)"
                       size="large"
                       class="image-icon"
               ></v-icon>
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="rgb(30, 30, 30)"
+                         scrim="var(--scrim)"
                          class="justify-center align-center font-weight-bold"
               ><p style="color: white; font-size: 18px">{{ useImagesStore().showName(i) }}</p>
               </v-overlay>
@@ -98,8 +98,9 @@ const sendImagesToPage = () => {
 
     .image
       text-align: center
+
     .chosen
-      border: 3px solid #bfdce8
+      border: 3px solid var(--light-blue)
 
     .image-icon
       position: absolute
@@ -113,5 +114,5 @@ const sendImagesToPage = () => {
   color: white
   position: fixed
   align-self: center
-  background-color: #bfdce8
+  background-color: var(--light-blue)
 </style>

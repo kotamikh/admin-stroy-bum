@@ -69,7 +69,7 @@
         <v-text-field
             label="Наименование товара"
             variant="underlined"
-            color="#E3DD5F"
+            color="var(--yellow)"
             v-model="product.name"
             :rules="[required]"
         />
@@ -81,7 +81,7 @@
               item-title="name"
               item-value="id"
               variant="underlined"
-              color="#E3DD5F"
+              color="var(--yellow)"
               :rules="[required]"
           >
           </v-select>
@@ -138,7 +138,7 @@
               { title: 'Под заказ', value: 0 },
             ]"
               variant="underlined"
-              color="#E3DD5F"
+              color="var(--yellow)"
               v-model="product.stock"
           />
         </div>
@@ -147,7 +147,7 @@
             <v-text-field
                 label="Цена"
                 variant="underlined"
-                color="#E3DD5F"
+                color="var(--yellow)"
                 class="w-33"
                 :rules="[required]"
                 v-model.number="product.price"
@@ -165,7 +165,7 @@
                 type="number"
                 autofocus
                 variant="underlined"
-                color="#E3DD5F"
+                color="var(--yellow)"
                 class="discount"
                 v-model.number="product.discount"
                 hide-details
@@ -189,7 +189,7 @@
         <h3>Описание:</h3>
         <v-text-field
             variant="filled"
-            color="#E3DD5F"
+            color="var(--yellow)"
             class="input-description"
             v-model="product.description"
         ></v-text-field>
@@ -197,7 +197,7 @@
     </div>
   </div>
   <v-btn
-      color="#49AE66"
+      color="var(--green)"
       variant="outlined"
       style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
       prepend-icon="mdi-check"
@@ -331,7 +331,7 @@ const createCard = async () => {
 
   .main-information
     display: flex
-    color: #808080
+    color: var(--middle-grey)
     margin-bottom: 70px
     justify-content: space-between
 
@@ -354,7 +354,7 @@ const createCard = async () => {
           transform: translate(-50%, -50%)
 
           svg > path
-            fill: #808080
+            fill: var(--middle-grey)
 
         .up-button
           top: -12px
