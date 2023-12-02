@@ -1,6 +1,6 @@
 export interface IProductDto {
     name: string,
-    images: string[],
+    images: string[] | null,
     price: number,
     stock: StockType,
     discount: number,

@@ -4,6 +4,7 @@ const routes = [
   {
     path: "/",
     component: () => import("@/layouts/MainLayout.vue"),
+    redirect: { name: 'Categories' },
     children: [
       {
         path: "gallery",

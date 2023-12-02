@@ -16,7 +16,7 @@
           <div class="slider-gallery">
             <div class="slider-track" ref="track">
               <div
-                  v-if="product.images.length === 0"
+                  v-if="product.images?.length === 0"
                   v-for="img in 3"
                   :key="img"
                   class="default-img"
@@ -47,13 +47,13 @@
           </button>
         </div>
         <div class="current-photo" @click="galleryDialog = true">
-          <div v-if="product.images.length === 0" class="default-img">
+          <div v-if="product.images?.length === 0" class="default-img">
             <v-icon icon="mdi-camera" size="100"></v-icon>
           </div>
           <v-img
               v-else
               class="image"
-              :src="product.images[currentImageIndex]"
+              :src="currentImageSrc"
           />
         </div>
         <gallery-dialog
@@ -69,7 +69,7 @@
         <v-text-field
             label="Наименование товара"
             variant="underlined"
-            color="var(--yellow)"
+            color="var(--grey)"
             v-model="product.name"
             :rules="[required]"
         />
@@ -81,7 +81,7 @@
               item-title="name"
               item-value="id"
               variant="underlined"
-              color="var(--yellow)"
+              color="var(--grey)"
               :rules="[required]"
           >
           </v-select>
@@ -138,7 +138,7 @@
               { title: 'Под заказ', value: 0 },
             ]"
               variant="underlined"
-              color="var(--yellow)"
+              color="var(--grey)"
               v-model="product.stock"
           />
         </div>
@@ -147,7 +147,7 @@
             <v-text-field
                 label="Цена"
                 variant="underlined"
-                color="var(--yellow)"
+                color="var(--grey)"
                 class="w-33"
                 :rules="[required]"
                 v-model.number="product.price"
@@ -165,7 +165,7 @@
                 type="number"
                 autofocus
                 variant="underlined"
-                color="var(--yellow)"
+                color="var(--grey)"
                 class="discount"
                 v-model.number="product.discount"
                 hide-details
@@ -208,10 +208,10 @@
 
 <script setup lang="ts">
 import { VNodeRef } from "@vue/runtime-core";
-import { reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Characteristics from "@/components/Characteristics.vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
-import { IProduct, StockType } from "../../types/product";
+import { IProduct, IProductDto, StockType } from "../../types/product";
 import { useProductsStore } from "@/store/products";
 import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import router from "@/router";
@@ -219,11 +219,19 @@ import * as path from "path";
 import { useRoute } from "vue-router";
 import { IBrand } from "../../types/categoryBrand";
 
-window.onbeforeunload = function() {
-    return "Перезагрузить сайт? Изменения могут не сохраниться"
+window.onbeforeunload = function () {
+  return "Перезагрузить сайт? Изменения могут не сохраниться"
 }
 
-let currentProduct;
+const currentImageSrc = computed<string>(() => {
+  if (product.value.images && product.value.images.length > 0) {
+    return product.value.images[currentImageIndex.value]
+  }
+
+  return ""
+})
+
+let currentProduct: IProduct;
 const route = useRoute();
 let isEdit = false;
 
@@ -237,30 +245,39 @@ if (route.params.id) {
 
 const subjectId = ref<null | number>(null)
 useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => useCategoriesBrandsStore().getBrandsBySubject(id))
-useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => { subjectId.value = id })
+useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => {
+  subjectId.value = id
+})
 
-const product = reactive<IProduct>(
-    Object.assign(
-        {
-          name: "",
-          images: [],
-          stock: StockType.InStock,
-          price: 0,
-          discount: 0,
-          description: "",
-          characteristics: [],
-          subject: subjectId,
-          brand: null
-        },
-        currentProduct
-    )
+const product = computed<IProductDto>(() => {
+      const result = Object.assign<IProductDto, IProductDto>(
+          {
+            name: "",
+            images: [],
+            stock: StockType.InStock,
+            price: 0,
+            discount: 0,
+            description: "",
+            characteristics: [],
+            subject: subjectId.value || 0,
+            brand: 0,
+          },
+          currentProduct
+      )
+
+      if (result.images === null) {
+        result.images = []
+      }
+
+      return result
+    }
 );
 
 const galleryDialog = ref(false);
 
 const currentImageIndex = ref<number>(0);
 
-const discountExist = ref(product.discount !== 0)
+const discountExist = ref(product.value.discount !== 0)
 
 const isCurrent = (index: number) => {
   return index === currentImageIndex.value;
@@ -270,7 +287,11 @@ const track: VNodeRef = ref<VNodeRef | undefined>();
 const trackTranslate = ref(0);
 
 const countLimit = () => {
-  return -(product.images.length - 3) * 140;
+  if (product.value.images) {
+    return -(product.value.images.length - 3) * 140;
+  }
+
+  return 0
 };
 
 const moveToTop = () => {
@@ -288,7 +309,7 @@ const moveToDown = () => {
 };
 
 const onUpdateImages = (data: Array<string>) => {
-  product.images = JSON.parse(JSON.stringify(data)).data;
+  product.value.images = JSON.parse(JSON.stringify(data)).data;
 };
 
 const newBrandDialog = ref(false)
@@ -316,8 +337,8 @@ const required = (v: string) => {
   return !!v || 'Заполните поле'
 }
 const createCard = async () => {
-  if (product.name && product.price && product.brand) {
-    await useProductsStore().insertCard(product, isEdit).then(() => router.push({ name: "Category", params: { text: route.params.text } }))
+  if (product.value.name && product.value.price && product.value.brand) {
+    await useProductsStore().insertCard(product.value, isEdit).then(() => router.push({ name: "Category", params: { text: route.params.text } }))
   } else {
     alert("Необходимо заполнить обязательные поля")
   }
