@@ -1,77 +1,26 @@
 <template>
   <div class="product-card">
     <div class="main-information">
-      <div class="product-images">
-        <div class="gallery-wrapper">
-          <button class="up-button" @click="moveToTop">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-            >
-              <path d="m12 10.8l-4.6 4.6L6 14l6-6l6 6l-1.4 1.4l-4.6-4.6Z"/>
-            </svg>
-          </button>
-          <div class="slider-gallery">
-            <div class="slider-track" ref="track">
-              <div
-                  v-if="product.images?.length === 0"
-                  v-for="img in 3"
-                  :key="img"
-                  class="default-img"
-                  style="background-color: #eeeeee"
-              >
-                <v-icon icon="mdi-camera" size="x-large"></v-icon>
-              </div>
-              <img
-                  v-else
-                  v-for="(image, index) in product.images"
-                  :src="image"
-                  :key="index"
-                  alt="image"
-                  :class="[{ current: isCurrent(index) }, 'image']"
-                  @click="currentImageIndex = index"
-              />
-            </div>
-          </div>
-          <button class="down-button" @click="moveToDown">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-            >
-              <path d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4l-6 6Z"/>
-            </svg>
-          </button>
-        </div>
-        <div class="current-photo" @click="galleryDialog = true">
-          <div v-if="product.images?.length === 0" class="default-img">
-            <v-icon icon="mdi-camera" size="100"></v-icon>
-          </div>
-          <v-img
-              v-else
-              class="image"
-              :src="currentImageSrc"
-          />
-        </div>
-        <gallery-dialog
-            v-model="galleryDialog"
-            @update:show="galleryDialog = false"
-            :product-images="product.images"
-            :folder="route.params.text"
-            @update:images="onUpdateImages"
-            :edit="isEdit"
-        />
-      </div>
+      <creation-images-and-track :images="product.images"
+                                 :isEdit="isEdit"
+                                 :folder="route.params.subjectName"
+                                 @update:galleryDialog="isGalleryDialogOpened = true"
+      />
+      <gallery-dialog
+          v-model="isGalleryDialogOpened"
+          @update:show="isGalleryDialogOpened = false"
+          :product-images="product.images"
+          :folder="route.params.subjectName"
+          @update:images="onUpdateImages"
+          :edit="isEdit"
+      />
       <div class="product-information">
         <v-text-field
             label="Наименование товара"
             variant="underlined"
             color="var(--grey)"
             v-model="product.name"
-            :rules="[required]"
+            :rules="[requiredField]"
         />
         <div class="brands">
           <v-select
@@ -82,22 +31,22 @@
               item-value="id"
               variant="underlined"
               color="var(--grey)"
-              :rules="[required]"
+              :rules="[requiredField]"
           >
           </v-select>
           <div style="display: flex; flex-direction: column; gap: 10px">
             <v-btn variant="tonal"
                    size="small"
-                   @click="newBrandDialog = true"
+                   @click="isNewBrandDialogOpened = true"
             >Добавить бренд
             </v-btn>
             <v-btn variant="tonal"
                    size="small"
-                   @click="deleteBrandDialog = true"
+                   @click="isDeleteBrandDialogOpened = true"
             >Удалить бренд
             </v-btn>
           </div>
-          <v-dialog width="500" v-model="newBrandDialog">
+          <v-dialog width="500" v-model="isNewBrandDialogOpened">
             <v-card>
               <v-card-text class="d-flex align-center">
                 <v-text-field label="Название бренда" v-model="brandName" variant="underlined"></v-text-field>
@@ -108,7 +57,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog width="500" v-model="deleteBrandDialog">
+          <v-dialog width="500" v-model="isDeleteBrandDialogOpened">
             <v-card class="pa-5">
               <v-card-title>Выберите бренд для удаления</v-card-title>
               <v-list>
@@ -120,7 +69,7 @@
                       v-text="brand.name"
                       style="cursor: pointer"
                       color="grey"
-                      @click="toDelete(brand)"
+                      @click="setBrandToDelete(brand)"
                   ></v-list-item>
                 </template>
               </v-list>
@@ -149,7 +98,7 @@
                 variant="underlined"
                 color="var(--grey)"
                 class="w-33"
-                :rules="[required]"
+                :rules="[requiredField]"
                 v-model.number="product.price"
             />
             <p>руб/шт.</p>
@@ -207,7 +156,6 @@
 </template>
 
 <script setup lang="ts">
-import * as path from "path";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
@@ -218,6 +166,7 @@ import { useProductsApi } from "../../api/products";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
 
 window.onbeforeunload = function () {
   return "Перезагрузить сайт? Изменения могут не сохраниться"
@@ -227,11 +176,10 @@ const route = useRoute()
 const subjectId = computed<number>(() => {
   if (route.params.subjectName) {
     return useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
-  }
-  else {
+  } else {
     console.log('Error: Категория неопределена')
     return 0
-   }
+  }
 })
 
 let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
@@ -247,49 +195,9 @@ if (route.params.id) {
   }
 }
 
-const currentImageSrc = computed<string>(() => {
-  if (product.value.images && product.value.images.length > 0) {
-    return product.value.images[currentImageIndex.value]
-  }
-  return ""
-})
-
-const currentImageIndex = ref<number>(0)
 const discountExist = ref(product.value.discount !== 0)
 
-const isCurrent = (index: number) => {
-  return index === currentImageIndex.value
-};
-
-const track = ref<HTMLDivElement | undefined>()
-const trackTranslate = ref(0)
-
-const countLimit = () => {
-  if (product.value.images) {
-    return -(product.value.images.length - 3) * 140
-  }
-  return 0
-}
-
-const moveToTop = () => {
-  if (trackTranslate.value < 0) {
-    trackTranslate.value += 140
-    if (track.value) {
-      track.value.style.transform = `translateY(${ trackTranslate.value }px)`
-    }
-  }
-}
-
-const moveToDown = () => {
-  if (trackTranslate.value > countLimit()) {
-    trackTranslate.value -= 140
-    if (track.value) {
-      track.value.style.transform = `translateY(${ trackTranslate.value }px)`
-    }
-  }
-}
-
-const galleryDialog = ref(false)
+const isGalleryDialogOpened = ref(false)
 const onUpdateImages = (data: Array<string>) => {
   product.value.images = JSON.parse(JSON.stringify(data)).data
 }
@@ -297,31 +205,31 @@ const onUpdateImages = (data: Array<string>) => {
 const brandIdToDelete = ref()
 const brandName = ref("")
 const brandToDelete = ref("")
-const newBrandDialog = ref(false)
-const deleteBrandDialog = ref(false)
+const isNewBrandDialogOpened = ref(false)
+const isDeleteBrandDialogOpened = ref(false)
 useSubjectsBrandsStore().loadAllBrands().then(() => useSubjectsBrandsStore().getBrandsBySubject(subjectId.value))
 
 const insertBrand = () => {
   if (brandName.value) {
     useSubjectsBrandsStore().insertBrand(brandName.value)
-    newBrandDialog.value = false
+    isNewBrandDialogOpened.value = false
     brandName.value = ""
   }
 }
 
-const toDelete = (brand: IBrand) => {
+const setBrandToDelete = (brand: IBrand) => {
   brandToDelete.value = brand.name
   brandIdToDelete.value = brand.id
 }
 
-const required = (v: string) => {
+const requiredField = (v: string) => {
   return !!v || 'Заполните поле'
 }
 
 const createCard = async () => {
   if (product.value.name && product.value.price && product.value.brand) {
     await useProductsStore().insertProduct(product.value, isEdit.value)
-    await router.push({ name : "Category", params: { subjectName : route.params.subjectName } })
+    await router.push({ name: "Category", params: { subjectName: route.params.subjectName } })
   } else {
     alert("Необходимо заполнить обязательные поля")
   }
@@ -338,86 +246,6 @@ const createCard = async () => {
     color: var(--middle-grey)
     margin-bottom: 70px
     justify-content: space-between
-
-    .product-images
-      gap: 20px
-      height: 450px
-      display: flex
-
-      .gallery-wrapper
-        display: flex
-        height: 450px
-        position: relative
-
-        .up-button,
-        .down-button
-          left: 50%
-          border: none
-          position: absolute
-          background-color: transparent
-          transform: translate(-50%, -50%)
-
-          svg > path
-            fill: var(--middle-grey)
-
-        .up-button
-          top: -12px
-
-        .down-button
-          bottom: -60px
-
-        .slider-gallery
-          width: 150px
-          height: 450px
-          padding: 15px
-          overflow: hidden
-          align-self: center
-
-          .slider-track
-            transition: all 0.2s ease
-
-            .default-img
-              display: flex
-              width: 100%
-              height: 130px
-              border-radius: 5px
-              align-items: center
-              margin-bottom: 15px
-              justify-content: center
-
-            .image
-              display: flex
-              padding: 2%
-              width: 100%
-              height: 130px
-              border-radius: 5px
-              object-fit: contain
-              margin-bottom: 15px
-              align-items: center
-              justify-content: center
-              transition: scale 0.2s ease
-
-            .current
-              transform: scale(1.2)
-              border: 1.5px solid rgba(128, 128, 128, 0.4)
-
-      .current-photo
-        display: flex
-        width: 450px
-        height: 450px
-        padding: 2%
-        border-radius: 10px
-        align-items: center
-        justify-content: center
-        border: 2px solid rgba(128, 128, 128, 0.4)
-
-        .default-img
-          display: flex
-          width: 400px
-          height: 400px
-          align-items: center
-          justify-content: center
-          background-color: #eeeeee
 
     .product-information
       width: 40%

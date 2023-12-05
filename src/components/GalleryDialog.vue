@@ -42,15 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { useImagesStore } from "@/store/images";
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useImagesStore } from "@/store/images";
 
 const props = defineProps(['showDialog', 'productImages', 'edit', 'folder', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
-const route = useRoute()
 imagesStore.loadImagesByFolder('Товары,' + `${props.folder}`)
 
 const selectedImages = ref<Array<string>>([])
