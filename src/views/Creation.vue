@@ -210,7 +210,7 @@
 import * as path from "path";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { IProductDto } from "../../types/product";
 import { IBrand } from "../../types/subjectBrand";
 import { useProductsStore } from "@/store/products";
@@ -234,30 +234,28 @@ const subjectId = computed<number>(() => {
    }
 })
 
-let currentProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
-let isEdit = false
+let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
+const product = ref<IProductDto>(defaultProduct)
+let isEdit = ref(false)
 
 if (route.params.id) {
-  isEdit = true
+  isEdit.value = true
   let productId = Number(route.params.id)
-  currentProduct = JSON.parse(
-      JSON.stringify(useProductsStore().productsMap.get(productId))
-  )
+  let editableProduct = JSON.parse(JSON.stringify(useProductsStore().productsMap.get(productId)))
+  if (editableProduct) {
+    product.value = Object.assign(product.value, editableProduct)
+  }
 }
 
-const product = reactive<IProductDto>(
-    Object.assign(useProductsApi().getDefaultProduct(subjectId.value), currentProduct)
-)
-
 const currentImageSrc = computed<string>(() => {
-  if (product.images && product.images.length > 0) {
-    return product.images[currentImageIndex.value]
+  if (product.value.images && product.value.images.length > 0) {
+    return product.value.images[currentImageIndex.value]
   }
   return ""
 })
 
 const currentImageIndex = ref<number>(0)
-const discountExist = ref(product.discount !== 0)
+const discountExist = ref(product.value.discount !== 0)
 
 const isCurrent = (index: number) => {
   return index === currentImageIndex.value
@@ -267,8 +265,8 @@ const track = ref<HTMLDivElement | undefined>()
 const trackTranslate = ref(0)
 
 const countLimit = () => {
-  if (product.images) {
-    return -(product.images.length - 3) * 140
+  if (product.value.images) {
+    return -(product.value.images.length - 3) * 140
   }
   return 0
 }
@@ -293,7 +291,7 @@ const moveToDown = () => {
 
 const galleryDialog = ref(false)
 const onUpdateImages = (data: Array<string>) => {
-  product.images = JSON.parse(JSON.stringify(data)).data
+  product.value.images = JSON.parse(JSON.stringify(data)).data
 }
 
 const brandIdToDelete = ref()
@@ -321,9 +319,8 @@ const required = (v: string) => {
 }
 
 const createCard = async () => {
-  if (product.name && product.price && product.brand) {
-    console.log(product)
-    await useProductsStore().insertProduct(product, isEdit)
+  if (product.value.name && product.value.price && product.value.brand) {
+    await useProductsStore().insertProduct(product.value, isEdit.value)
     await router.push({ name : "Category", params: { subjectName : route.params.subjectName } })
   } else {
     alert("Необходимо заполнить обязательные поля")
