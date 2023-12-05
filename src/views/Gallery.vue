@@ -32,7 +32,7 @@
             </v-img>
           </v-col>
         </v-hover>
-        <v-col v-for="i in store.folderImages"
+        <v-col v-for="i in store.imagesLinks"
                :key="i"
                cols="3">
           <v-hover v-slot="{ isHovering, props }">
@@ -50,7 +50,7 @@
                          scrim="var(--scrim)"
                          style="border-radius: 5px"
                          class="justify-center align-center"
-              ><p style="color: #808080; font-size: 18px; background-color: white; padding: 0 10px">{{ store.showName(i) }}</p>
+              ><p style="color: #808080; font-size: 18px; background-color: white; padding: 0 10px">{{ store.getImageName(i) }}</p>
               </v-overlay>
             </v-img>
           </v-hover>
@@ -78,7 +78,7 @@ const { files, open, reset, onChange } = useFileDialog({
 onChange((files) => {
   if (files) {
     const file = files[0]
-    store.addImage(file, foldersPath.value)
+    store.addImage(file, foldersPath.value).then(() => store.loadImagesByFolder(foldersPath.value))
   }
 })
 
@@ -93,7 +93,7 @@ store.loadFolders()
 const confirmDelete = (img: string) => {
   let confirmation = confirm("Хотите удалить эту картинку?")
   if (confirmation) {
-    store.deleteImage(img, foldersPath.value)
+    store.deleteImage(img).then(() => store.loadImagesByFolder(foldersPath.value))
   }
 }
 </script>

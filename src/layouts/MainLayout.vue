@@ -2,10 +2,7 @@
   <div class="layout">
     <div class="header">
       <div class="title">
-        <v-icon icon="mdi-account-cog-outline"
-                size="x-large"
-        />
-        <h1>Страница администратора</h1>
+        <h1><span class="logo">Строй<span>Бум</span></span> | Страница администратора</h1>
       </div>
       <v-btn
           class="button"
@@ -27,6 +24,8 @@ import Navigation from "@/components/Navigation.vue";
 </script>
 
 <style scoped lang="sass">
+@import url('https://fonts.cdnfonts.com/css/russo-one')
+
 .layout
   width: 80%
   margin: 30px auto
@@ -35,12 +34,26 @@ import Navigation from "@/components/Navigation.vue";
     display: flex
     justify-content: space-between
 
+    h1
+      font-weight: normal
+      color: var(--middle-grey)
+      font-size: calc((100vw - 320px) / (1280 - 320) * (20 - 18) + 18px)
+
     .title
       gap: 10px
       display: flex
       align-items: center
 
-      h1
-        font-size: 24px
-        font-weight: normal
+      .logo
+        color: #9E9E9E
+        font-family: 'Russo One', sans-serif
+        font-size: calc((100vw - 320px) / (1280 - 320) * (24 - 20) + 20px)
+
+        @media screen and (max-width: 849px)
+          margin-right: 20px
+
+        span
+          color: var(--yellow)
+          font-family: 'Russo One', sans-serif
+          text-shadow: 1px 0 #9B9B9B, -1px 0 #9B9B9B, 0 1px #9B9B9B, 0 -1px #9B9B9B, 1px 1px #9B9B9B, -1px -1px #9B9B9B, 1px -1px #9B9B9B, -1px 1px #9B9B9B
 </style>

@@ -8,23 +8,22 @@ export type GetAllRequest = {
     brand?: number,
 }
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:8000"
 
 const ROUTES = {
     products: BASE_URL + "/api/v1/products"
 }
 
-const getDefaultProduct = (): IProduct => {
+const getDefaultProduct = (subjectId: number): IProductDto => {
     return {
-        id: 0,
-        name: "unknown",
+        name: "",
         images: [],
         price: 0,
-        stock: 0,
+        stock: 1,
         discount: 0,
         description: "",
         characteristics: [],
-        subject: 0,
+        subject: subjectId,
         brand: 0,
     }
 }
@@ -49,7 +48,6 @@ const getAll = async (params: URLSearchParams): Promise<IProduct[]> => {
 }
 
 const insertProduct = async (product: IProductDto, isEdit: boolean) => {
-    console.log(product, isEdit)
   await useHttpPut({ url: ROUTES.products + `?edit=${isEdit}`, body: JSON.stringify(product)})
 }
 
@@ -59,10 +57,10 @@ const deleteProduct = async (id: number) => {
 
 export const useProductsApi = () => {
     return {
-        getDefaultProduct,
-        getDefaultImage,
         getAll,
         insertProduct,
-        deleteProduct
+        deleteProduct,
+        getDefaultImage,
+        getDefaultProduct
     }
 }

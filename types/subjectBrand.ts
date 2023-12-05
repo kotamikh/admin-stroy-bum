@@ -1,9 +1,9 @@
-export interface ICategoryDto {
+export interface ISubjectDto {
   name: string;
   image: string;
 }
 
-export interface ICategory extends ICategoryDto {
+export interface ISubject extends ISubjectDto {
   id: number;
 }
 

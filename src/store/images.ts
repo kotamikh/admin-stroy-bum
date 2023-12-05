@@ -1,15 +1,14 @@
-import { defineStore } from "pinia";
 import { ref } from "vue";
-import { IFolder} from "../../types/galleryFolder";
+import { defineStore } from "pinia";
 import { useImagesApi } from "../../api/images";
+import { IFolder} from "../../types/galleryFolder";
 
-const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/";
+const YANDEX_CLOUD = "https://storage.yandexcloud.net/boom-images/"
 
 export const useImagesStore = defineStore("images", () => {
-    const images = ref<Array<string>>([])
-    const folderImages = ref<Array<string>>([])
-    const folders = ref<Array<IFolder>>([])
     const api = useImagesApi()
+    const imagesLinks = ref<Array<string>>([])
+    const folders = ref<Array<IFolder>>([])
 
     const loadFolders = async () => {
       folders.value  = await api.getAllFolders()
@@ -19,46 +18,38 @@ export const useImagesStore = defineStore("images", () => {
 
     const loadImagesByFolder = async (folderName: string) => {
       await api.getImagesByFolder(folderName).then((images) => {
-          folderImages.value = []
-          for (let i of images) {
-            if (!i.endsWith('/')) {
-              i = YANDEX_CLOUD + i
-              folderImages.value.push(i)
+          imagesLinks.value = []
+          for (let imageName of images) {
+            if (!imageName.endsWith('/')) {
+              imageName = YANDEX_CLOUD + imageName
+              imagesLinks.value.push(imageName)
             }
           }
       })
-      return folderImages.value
-    }
-
-    const loadImages = async () => {
-      images.value  = await api.getAllImages()
-      return images.value
+      return imagesLinks.value
     }
 
     const addImage = async (file: File, foldersPath: string) => {
-      await api.addImage(foldersPath, file).then(() => loadImagesByFolder(foldersPath))
-    };
+      await api.addImage(foldersPath, file)
+    }
 
-    const deleteImage = async (image: string, folderName: string) => {
+    const deleteImage = async (image: string) => {
       const imageName = image.replace(YANDEX_CLOUD, "")
-      await api.deleteImage(imageName).then(() => loadImagesByFolder(folderName))
-    };
+      await api.deleteImage(imageName)
+    }
 
-    const showName = (image: string) => {
-      const name = image.split('/');
-      return name[name.length - 1];
-    };
+    const getImageName = (image: string) => {
+      const name = image.split('/')
+      return name[name.length - 1]
+    }
 
     return {
-      images,
       folders,
-      folderImages,
-      loadFolders,
-      loadImagesByFolder,
-      loadImages,
+      getImageName,
       addImage,
+      loadFolders,
       deleteImage,
-      showName
-    };
+      imagesLinks,
+      loadImagesByFolder
+    }
   })
-;

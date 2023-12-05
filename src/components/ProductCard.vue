@@ -9,21 +9,21 @@
             <path
               d="M240 98a57.63 57.63 0 0 1-17 41l-89.3 90.62a8 8 0 0 1-11.4 0L33 139a58 58 0 0 1 82-82.1l13 12.15l13.09-12.19A58 58 0 0 1 240 98Z"/>
           </svg>
-          <div class="discount-mark" v-if="discount !== 0">- {{ discount }}%</div>
+          <div class="discount-mark" v-if="product.discount !== 0">- {{ product.discount }}%</div>
           <img :src="mainImage" class="product-img" alt="product-img"/>
         </div>
         <div class="price-stock">
           <div class="price">
-            <p style="font-size: 1.2rem">{{ price }} <span class="rub">Р</span></p>
-            <p v-if="discount !== 0" class="old-price">
+            <p style="font-size: 1.2rem">{{ product.price }} <span class="rub">Р</span></p>
+            <p v-if="product.discount !== 0" class="old-price">
               {{ countDiscount }}
               <span class="rub">Р</span></p>
           </div>
           <p class="stock">{{
-              props.stock === 1 ? 'В наличии' : 'Под заказ'
+              product.stock === 1 ? 'В наличии' : 'Под заказ'
             }}</p>
         </div>
-        <p class="product-name">{{ name }}</p>
+        <p class="product-name">{{ product.name }}</p>
         <button class="cart-btn">В корзину</button>
       </div>
       <v-overlay :model-value="isHovering"
@@ -35,13 +35,13 @@
           <v-btn variant="flat"
                  color="var(--yellow)"
                  prepend-icon="mdi-lead-pencil"
-                 :to="{name: 'Creation', params: {text: props.categoryName, id: props.id}}"
+                 :to="{name: 'Creation', params: {subjectName: useSubjectsBrandsStore().findSubjectName(product.subject), id: product.id}}"
           >ИЗМЕНИТЬ
           </v-btn>
           <v-btn variant="flat"
                  color="white"
                  prepend-icon="mdi-trash-can-outline"
-                 @click="confirmDelete(id)"
+                 @click="confirmDelete(product.id)"
           >УДАЛИТЬ
           </v-btn>
         </div>
@@ -51,20 +51,22 @@
 </template>
 
 <script setup lang="ts">
-import { IProduct, StockType } from "../../types/product";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
-import { useCategoriesBrandsStore } from "@/store/categories-brands";
+import { IProduct, StockType } from "../../types/product";
+import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
 export interface Props extends IProduct {
-  id: number,
-  name: string,
-  images: Array<string>,
-  price: number,
-  stock: StockType,
-  discount: number,
-  categoryName: string
+  product: {
+    id: number,
+    name: string,
+    images: Array<string> | null,
+    price: number,
+    stock: StockType,
+    discount: number,
+    subject: number
+  }
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -74,24 +76,24 @@ const props = withDefaults(defineProps<Props>(), {
   price: 0,
   stock: StockType.OnOrder,
   discount: 0,
-  categoryName: 'unknown'
+  subject: 0
 });
 
 const mainImage = computed(() => {
-  if (props.images && props.images.length > 0) {
-    return props.images[0]
+  if (props.product.images && props.product.images.length > 0) {
+    return props.product.images[0]
   }
   return defaultImg
 })
 
-const countDiscount = computed(() => Math.ceil(props.price / (100 - props.discount) * 100))
-const subjectId = ref<null | number>(null)
-useCategoriesBrandsStore().findCategoryId(props.categoryName).then((id) => { subjectId.value = id })
+const countDiscount = computed(() => Math.ceil(props.product.price / (100 - props.product.discount) * 100))
+const subjectId = props.product.subject
+let productsLimit = 100
 
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить этот товар?")
   if (confirmation) {
-     useProductsStore().deleteCard(id).then(() => useProductsStore().loadAll(0, 100, subjectId.value))
+     useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAll(0, productsLimit, subjectId))
   }
 }
 </script>

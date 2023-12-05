@@ -15,22 +15,22 @@
                      class="mr-4"
                      @click="imageDialog = true"
               ><v-icon icon="mdi-paperclip"/></v-btn>
-            <v-img v-if="category.image"
-            :src="category.image"
+            <v-img v-if="subject.image"
+            :src="subject.image"
             width="20px"
             class="mr-4"
             ></v-img>
             <gallery-dialog
               v-model="imageDialog"
               @update:show="imageDialog = false"
-              :category-image="category.image"
+              :category-image="subject.image"
               :limit="1"
               @update:images="onUpdateImages"
             />
             <v-text-field
               style="width: 60%"
               label="Название категории"
-              v-model="category.name"
+              v-model="subject.name"
               @keyup.enter="insertCategory"
               variant="underlined"
             ></v-text-field>
@@ -42,31 +42,31 @@
         </v-card>
       </v-dialog>
       <v-list-item
-        v-for="[id, category] in useCategoriesBrandsStore().categoriesMap"
+        v-for="[id, subject] in useSubjectsBrandsStore().subjectsMap"
         :key="id"
-        :id="category.id"
-        :name="category.name"
-        :image="category.image"
-        :category="category"
+        :id="subject.id"
+        :name="subject.name"
+        :image="subject.image"
+        :category="subject"
         width="300px"
         height="80px"
         class="category"
-        @click="selectCategory(category)"
+        @click="selectCategory(subject)"
       >
         <template v-slot:prepend>
           <img
-            :src="category.image"
+            :src="subject.image"
             alt="img"
             style="width: 3rem; margin-right: 10px"
           />
         </template>
         <div style="display: flex; gap: 20px">
-          <p class="text">{{ category.name }}</p>
+          <p class="text">{{ subject.name }}</p>
           <v-btn
             size="small"
             variant="plain"
             class="delete-btn hidden"
-            @click.stop="confirmDelete(category.id)"
+            @click.stop="confirmDelete(subject.id)"
             ><v-icon icon="mdi-delete"
           /></v-btn>
         </div>
@@ -75,48 +75,48 @@
 </template>
 
 <script setup lang="ts">
-import { useCategoriesBrandsStore } from "@/store/categories-brands";
 import { ref } from "vue";
 import router from "@/router";
-import GalleryDialog from "@/components/GalleryDialog.vue";
 import { reactive } from "vue";
-import { ICategory, ICategoryDto } from "../../types/categoryBrand";
+import GalleryDialog from "@/components/GalleryDialog.vue";
+import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import { ISubject, ISubjectDto } from "../../types/subjectBrand";
 
-const category = reactive<ICategoryDto>({
+const subject = reactive<ISubjectDto>({
   name: "",
   image: ""
 })
 
 const onUpdateImages = (data: string) => {
   if (JSON.parse(JSON.stringify(data)).data.length === 1) {
-    category.image = JSON.parse(JSON.stringify(data)).data[0]
+    subject.image = JSON.parse(JSON.stringify(data)).data[0]
   }
   else {
    alert('Выберите одно изображение')
   }
 };
 
-const categoryDialog = ref(false);
+const categoryDialog = ref(false)
 const imageDialog = ref(false)
 
 const insertCategory = () => {
-  useCategoriesBrandsStore().insertCategory(category);
+  useSubjectsBrandsStore().insertSubject(subject).then(() => useSubjectsBrandsStore().loadAllSubjects())
   categoryDialog.value = false
-  category.name = ""
-  category.image = ""
+  subject.name = ""
+  subject.image = ""
 };
 
-useCategoriesBrandsStore().loadAllSubjects();
+useSubjectsBrandsStore().loadAllSubjects();
 
-const selectCategory = async (category: ICategory) => {
-  await useCategoriesBrandsStore().getBrandsBySubject(category.id)
-  await router.push({ name: 'Category', params: { text: category.name }})
+const selectCategory = async (subject: ISubject) => {
+  await useSubjectsBrandsStore().getBrandsBySubject(subject.id)
+  await router.push({ name: 'Category', params: { subjectName: subject.name }})
 }
 
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить эту категорию?")
   if (confirmation) {
-    useCategoriesBrandsStore().deleteCategory(id)
+    useSubjectsBrandsStore().deleteSubject(id).then(() => useSubjectsBrandsStore().loadAllSubjects())
   }
 }
 

@@ -1,5 +1,5 @@
 import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
-import { IBrand, ICategory, ICategoryDto } from "../types/categoryBrand";
+import { IBrand, ISubject, ISubjectDto } from "../types/subjectBrand";
 
 const BASE_URL = "http://localhost:8000"
 
@@ -13,8 +13,8 @@ const ROUTES = {
     brandsbysubject: BASE_URL + '/api/v1/brands-by-subject'
 }
 
-const getAllSubjects = async (): Promise<ICategory[]>  => {
-  const { data, error } = await useHttpGet<ICategory[]>({ url: ROUTES.subjects })
+const getAllSubjects = async (): Promise<ISubject[]>  => {
+  const { data, error } = await useHttpGet<ISubject[]>({ url: ROUTES.subjects })
   if (data) {
     return data
   } else {
@@ -23,8 +23,8 @@ const getAllSubjects = async (): Promise<ICategory[]>  => {
   }
 }
 
-const insertSubject = async (category: ICategoryDto) => {
-  await useHttpPost({ url: ROUTES.subjects, body: JSON.stringify(category)})
+const insertSubject = async (subject: ISubjectDto) => {
+  await useHttpPost({ url: ROUTES.subjects, body: JSON.stringify(subject)})
 }
 
 const deleteSubject = async (id: number) => {
@@ -74,14 +74,14 @@ const deleteBrand = async (id: number)=> {
   }
 }
 
-export const useCategoriesBrandsApi = () => {
+export const useSubjectsBrandsApi = () => {
     return {
-        getAllSubjects,
-        insertSubject,
-        deleteSubject,
-        getAllBrands,
-        getBrandsBySubject,
         insertBrand,
-        deleteBrand
+        deleteBrand,
+        getAllBrands,
+        deleteSubject,
+        insertSubject,
+        getAllSubjects,
+        getBrandsBySubject,
     }
 }

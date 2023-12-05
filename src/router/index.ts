@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
-    component: () => import("@/layouts/MainLayout.vue"),
     redirect: { name: 'Categories' },
     children: [
       {
@@ -17,12 +16,12 @@ const routes = [
         component: () => import("@/views/categoriesSelection.vue")
       },
       {
-        path: "category/:text",
+        path: "category/:subjectName",
         name: "Category",
         component: () => import("@/views/Category.vue")
       },
       {
-        path: "creation/:text/:id?",
+        path: "creation/:subjectName/:id?",
         name: "Creation",
         component: () => import("@/views/Creation.vue"),
       },

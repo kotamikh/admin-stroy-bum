@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
-import { IProduct, IProductDto } from "../../types/product";
+import { defineStore } from "pinia";
 import { useProductsApi } from "../../api/products";
+import { IProduct, IProductDto } from "../../types/product";
 
 export const useProductsStore = defineStore("cardsStore", () => {
-  const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>());
   const api = useProductsApi()
+  const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
 
   const loadAll = async (offset: number, limit: number, subject?: number, brand?: number)=> {
     const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
@@ -20,6 +20,9 @@ export const useProductsStore = defineStore("cardsStore", () => {
       if (response.length > 0) {
         productsMap.value.clear()
         for (const p of response) {
+          if (p.images === null) {
+            p.images = []
+          }
           productsMap.value.set(p.id, p)
         }
       }
@@ -27,18 +30,23 @@ export const useProductsStore = defineStore("cardsStore", () => {
     return productsMap.value
   }
 
-  const insertCard = async (product: IProductDto, isEdit: boolean) => {
+  const insertProduct = async (product: IProductDto, isEdit: boolean) => {
     await api.insertProduct(product, isEdit)
   }
 
-  const deleteCard = async (id: number) => {
-    await api.deleteProduct(id).then(() => loadAll(0, 100))
+  const deleteProduct = async (id: number) => {
+    await api.deleteProduct(id)
+  }
+
+  const getProductNumber = (): number => {
+    return productsMap.value.size
   }
 
   return {
-    productsMap,
-    insertCard,
     loadAll,
-    deleteCard,
-  };
-});
+    productsMap,
+    insertProduct,
+    deleteProduct,
+    getProductNumber
+  }
+})

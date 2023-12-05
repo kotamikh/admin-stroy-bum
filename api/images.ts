@@ -1,7 +1,7 @@
-import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
 import { IFolder } from "../types/galleryFolder";
+import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
 
-const BASE_URL = "http://localhost:8000/api/v1/images";
+const BASE_URL = "http://localhost:8000/api/v1/images"
 
 const ROUTES = {
   folders: BASE_URL + '/folders'
@@ -47,10 +47,10 @@ const deleteImage = async (imageName: string) => {
 
 export const useImagesApi = () => {
   return {
-    getAllFolders,
-    getImagesByFolder,
-    getAllImages,
     addImage,
-    deleteImage
+    deleteImage,
+    getAllImages,
+    getAllFolders,
+    getImagesByFolder
   }
 }

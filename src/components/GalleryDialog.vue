@@ -3,7 +3,7 @@
     <div class="dialog">
       <h3>Выберите фото</h3>
       <v-row>
-        <v-col v-for="i in useImagesStore().folderImages"
+        <v-col v-for="i in useImagesStore().imagesLinks"
                :key="i"
                cols="3"
                class="gallery"
@@ -26,7 +26,7 @@
                          contained
                          scrim="var(--scrim)"
                          class="justify-center align-center font-weight-bold"
-              ><p style="color: white; font-size: 18px">{{ useImagesStore().showName(i) }}</p>
+              ><p style="color: white; font-size: 18px">{{ useImagesStore().getImageName(i) }}</p>
               </v-overlay>
             </v-img>
           </v-hover>

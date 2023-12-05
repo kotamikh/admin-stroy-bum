@@ -76,7 +76,7 @@
         <div class="brands">
           <v-select
               label="Имя бренда"
-              :items="useCategoriesBrandsStore().brandsBySubject"
+              :items="useSubjectsBrandsStore().brandsBySubject"
               v-model="product.brand"
               item-title="name"
               item-value="id"
@@ -112,7 +112,7 @@
             <v-card class="pa-5">
               <v-card-title>Выберите бренд для удаления</v-card-title>
               <v-list>
-                <template v-for="brand in useCategoriesBrandsStore().allBrands"
+                <template v-for="brand in useSubjectsBrandsStore().allBrands"
                           :key="brand.id"
                 >
                   <v-list-item
@@ -125,7 +125,7 @@
                 </template>
               </v-list>
               <v-btn class="ml-auto" variant="tonal" width="fit-content"
-                     @click="useCategoriesBrandsStore().deleteBrand(brandIdToDelete)">Удалить {{ brandToDelete }}
+                     @click="useSubjectsBrandsStore().deleteBrand(brandIdToDelete)">Удалить {{ brandToDelete }}
               </v-btn>
             </v-card>
           </v-dialog>
@@ -207,120 +207,105 @@
 </template>
 
 <script setup lang="ts">
-import { VNodeRef } from "@vue/runtime-core";
-import { computed, ref } from "vue";
-import Characteristics from "@/components/Characteristics.vue";
-import GalleryDialog from "@/components/GalleryDialog.vue";
-import { IProduct, IProductDto, StockType } from "../../types/product";
-import { useProductsStore } from "@/store/products";
-import { useCategoriesBrandsStore } from "@/store/categories-brands";
-import router from "@/router";
 import * as path from "path";
+import router from "@/router";
 import { useRoute } from "vue-router";
-import { IBrand } from "../../types/categoryBrand";
+import { computed, reactive, ref } from "vue";
+import { IProductDto } from "../../types/product";
+import { IBrand } from "../../types/subjectBrand";
+import { useProductsStore } from "@/store/products";
+import { useProductsApi } from "../../api/products";
+import GalleryDialog from "@/components/GalleryDialog.vue";
+import Characteristics from "@/components/Characteristics.vue";
+import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
 window.onbeforeunload = function () {
   return "Перезагрузить сайт? Изменения могут не сохраниться"
 }
 
-const currentImageSrc = computed<string>(() => {
-  if (product.value.images && product.value.images.length > 0) {
-    return product.value.images[currentImageIndex.value]
+const route = useRoute()
+const subjectId = computed<number>(() => {
+  if (route.params.subjectName) {
+    return useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
   }
+  else {
+    console.log('Error: Категория неопределена')
+    return 0
+   }
+})
 
+let currentProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
+let isEdit = false
+
+if (route.params.id) {
+  isEdit = true
+  let productId = Number(route.params.id)
+  currentProduct = JSON.parse(
+      JSON.stringify(useProductsStore().productsMap.get(productId))
+  )
+}
+
+const product = reactive<IProductDto>(
+    Object.assign(useProductsApi().getDefaultProduct(subjectId.value), currentProduct)
+)
+
+const currentImageSrc = computed<string>(() => {
+  if (product.images && product.images.length > 0) {
+    return product.images[currentImageIndex.value]
+  }
   return ""
 })
 
-let currentProduct: IProduct;
-const route = useRoute();
-let isEdit = false;
-
-if (route.params.id) {
-  isEdit = true;
-  let productId = Number(route.params.id);
-  currentProduct = JSON.parse(
-      JSON.stringify(useProductsStore().productsMap.get(productId))
-  );
-}
-
-const subjectId = ref<null | number>(null)
-useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => useCategoriesBrandsStore().getBrandsBySubject(id))
-useCategoriesBrandsStore().findCategoryId(route.params.text.toString()).then((id) => {
-  subjectId.value = id
-})
-
-const product = computed<IProductDto>(() => {
-      const result = Object.assign<IProductDto, IProductDto>(
-          {
-            name: "",
-            images: [],
-            stock: StockType.InStock,
-            price: 0,
-            discount: 0,
-            description: "",
-            characteristics: [],
-            subject: subjectId.value || 0,
-            brand: 0,
-          },
-          currentProduct
-      )
-
-      if (result.images === null) {
-        result.images = []
-      }
-
-      return result
-    }
-);
-
-const galleryDialog = ref(false);
-
-const currentImageIndex = ref<number>(0);
-
-const discountExist = ref(product.value.discount !== 0)
+const currentImageIndex = ref<number>(0)
+const discountExist = ref(product.discount !== 0)
 
 const isCurrent = (index: number) => {
-  return index === currentImageIndex.value;
+  return index === currentImageIndex.value
 };
 
-const track: VNodeRef = ref<VNodeRef | undefined>();
-const trackTranslate = ref(0);
+const track = ref<HTMLDivElement | undefined>()
+const trackTranslate = ref(0)
 
 const countLimit = () => {
-  if (product.value.images) {
-    return -(product.value.images.length - 3) * 140;
+  if (product.images) {
+    return -(product.images.length - 3) * 140
   }
-
   return 0
-};
+}
 
 const moveToTop = () => {
   if (trackTranslate.value < 0) {
-    trackTranslate.value += 140;
-    track.value.style.transform = `translateY(${ trackTranslate.value }px)`;
+    trackTranslate.value += 140
+    if (track.value) {
+      track.value.style.transform = `translateY(${ trackTranslate.value }px)`
+    }
   }
-};
+}
 
 const moveToDown = () => {
   if (trackTranslate.value > countLimit()) {
-    trackTranslate.value -= 140;
-    track.value.style.transform = `translateY(${ trackTranslate.value }px)`;
+    trackTranslate.value -= 140
+    if (track.value) {
+      track.value.style.transform = `translateY(${ trackTranslate.value }px)`
+    }
   }
-};
+}
 
+const galleryDialog = ref(false)
 const onUpdateImages = (data: Array<string>) => {
-  product.value.images = JSON.parse(JSON.stringify(data)).data;
-};
+  product.images = JSON.parse(JSON.stringify(data)).data
+}
 
-const newBrandDialog = ref(false)
-const deleteBrandDialog = ref(false)
+const brandIdToDelete = ref()
 const brandName = ref("")
 const brandToDelete = ref("")
-const brandIdToDelete = ref()
+const newBrandDialog = ref(false)
+const deleteBrandDialog = ref(false)
+useSubjectsBrandsStore().loadAllBrands().then(() => useSubjectsBrandsStore().getBrandsBySubject(subjectId.value))
 
 const insertBrand = () => {
   if (brandName.value) {
-    useCategoriesBrandsStore().insertBrand(brandName.value)
+    useSubjectsBrandsStore().insertBrand(brandName.value)
     newBrandDialog.value = false
     brandName.value = ""
   }
@@ -331,14 +316,15 @@ const toDelete = (brand: IBrand) => {
   brandIdToDelete.value = brand.id
 }
 
-useCategoriesBrandsStore().loadAllBrands()
-
 const required = (v: string) => {
   return !!v || 'Заполните поле'
 }
+
 const createCard = async () => {
-  if (product.value.name && product.value.price && product.value.brand) {
-    await useProductsStore().insertCard(product.value, isEdit).then(() => router.push({ name: "Category", params: { text: route.params.text } }))
+  if (product.name && product.price && product.brand) {
+    console.log(product)
+    await useProductsStore().insertProduct(product, isEdit)
+    await router.push({ name : "Category", params: { subjectName : route.params.subjectName } })
   } else {
     alert("Необходимо заполнить обязательные поля")
   }
