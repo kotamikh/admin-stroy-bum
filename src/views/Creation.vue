@@ -8,11 +8,11 @@
       />
       <gallery-dialog
           v-model="isGalleryDialogOpened"
-          @update:show="isGalleryDialogOpened = false"
-          :product-images="product.images"
-          :folder="route.params.subjectName"
-          @update:images="onUpdateImages"
           :edit="isEdit"
+          :product-images="product.images"
+          :folderName="imageDialogFolderName"
+          @update:images="onUpdateImages"
+          @update:show="isGalleryDialogOpened = false"
       />
       <div class="product-information">
         <v-text-field
@@ -24,14 +24,14 @@
         />
         <div class="brands">
           <v-select
-              label="Имя бренда"
-              :items="useSubjectsBrandsStore().brandsBySubject"
               v-model="product.brand"
+              label="Имя бренда"
               item-title="name"
               item-value="id"
               variant="underlined"
               color="var(--grey)"
               :rules="[requiredField]"
+              :items="useSubjectsBrandsStore().brandsBySubject"
           >
           </v-select>
           <div style="display: flex; flex-direction: column; gap: 10px">
@@ -159,18 +159,14 @@
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
-import { IProductDto } from "../../types/product";
-import { IBrand } from "../../types/subjectBrand";
+import { IProductDto } from "@/types/product";
+import { IBrand } from "@/types/subjectBrand";
+import { useProductsApi } from "@/api/products";
 import { useProductsStore } from "@/store/products";
-import { useProductsApi } from "../../api/products";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
-
-window.onbeforeunload = function () {
-  return "Перезагрузить сайт? Изменения могут не сохраниться"
-}
 
 const route = useRoute()
 const subjectId = computed<number>(() => {
@@ -198,6 +194,8 @@ if (route.params.id) {
 const discountExist = ref(product.value.discount !== 0)
 
 const isGalleryDialogOpened = ref(false)
+const imageDialogFolderName = 'Товары,' + route.params.subjectName
+
 const onUpdateImages = (data: Array<string>) => {
   product.value.images = JSON.parse(JSON.stringify(data)).data
 }

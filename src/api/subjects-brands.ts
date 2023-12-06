@@ -1,5 +1,5 @@
-import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
-import { IBrand, ISubject, ISubjectDto } from "../types/subjectBrand";
+import { useHttpDelete, useHttpGet, useHttpPost } from "@/api/base";
+import { IBrand, ISubject, ISubjectDto } from "@/types/subjectBrand";
 
 const BASE_URL = "http://localhost:8000"
 

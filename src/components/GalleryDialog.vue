@@ -45,11 +45,11 @@
 import { ref } from "vue";
 import { useImagesStore } from "@/store/images";
 
-const props = defineProps(['showDialog', 'productImages', 'edit', 'folder', 'categoryImage', 'limit'])
+const props = defineProps(['showDialog', 'productImages', 'edit', 'folderName', 'categoryImage', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()
-imagesStore.loadImagesByFolder('Товары,' + `${props.folder}`)
+imagesStore.loadImagesByFolder(props.folderName)
 
 const selectedImages = ref<Array<string>>([])
 
@@ -74,7 +74,7 @@ const toggleSelected = (i: string) => {
 }
 
 const sendImagesToPage = () => {
-  emit('update:images', { data: selectedImages.value })
+  emit('update:images', { images: selectedImages.value })
   emit('update:show')
 }
 </script>

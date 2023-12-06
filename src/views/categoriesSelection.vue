@@ -22,10 +22,11 @@
             ></v-img>
             <gallery-dialog
               v-model="imageDialog"
-              @update:show="imageDialog = false"
-              :category-image="subject.image"
               :limit="1"
+              :category-image="subject.image"
+              :folderName="imageDialogFolderName"
               @update:images="onUpdateImages"
+              @update:show="imageDialog = false"
             />
             <v-text-field
               style="width: 60%"
@@ -79,34 +80,39 @@ import { ref } from "vue";
 import router from "@/router";
 import { reactive } from "vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
+import { ISubject, ISubjectDto } from "@/types/subjectBrand";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
-import { ISubject, ISubjectDto } from "../../types/subjectBrand";
+
+useSubjectsBrandsStore().loadAllSubjects()
 
 const subject = reactive<ISubjectDto>({
   name: "",
   image: ""
 })
 
-const onUpdateImages = (data: string) => {
-  if (JSON.parse(JSON.stringify(data)).data.length === 1) {
-    subject.image = JSON.parse(JSON.stringify(data)).data[0]
+const onUpdateImages = (data: { images: Array<string> }) => {
+  if (data.images.length !== 0) {
+    subject.image = JSON.parse(JSON.stringify(data)).images[0]
   }
   else {
-   alert('Выберите одно изображение')
+    alert('Выберите изображение')
   }
-};
+}
 
 const categoryDialog = ref(false)
 const imageDialog = ref(false)
+const imageDialogFolderName = 'Изображения категорий'
 
 const insertCategory = () => {
   useSubjectsBrandsStore().insertSubject(subject).then(() => useSubjectsBrandsStore().loadAllSubjects())
   categoryDialog.value = false
+  resetInputs()
+}
+
+const resetInputs = () => {
   subject.name = ""
   subject.image = ""
-};
-
-useSubjectsBrandsStore().loadAllSubjects();
+}
 
 const selectCategory = async (subject: ISubject) => {
   await useSubjectsBrandsStore().getBrandsBySubject(subject.id)

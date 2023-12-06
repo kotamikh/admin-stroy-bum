@@ -61,10 +61,10 @@
 </template>
 
 <script setup lang="ts">
-import { useFileDialog } from "@vueuse/core";
-import { useImagesStore } from "@/store/images";
 import { computed, ref } from "vue";
 import Folder from "@/components/Folder.vue";
+import { useFileDialog } from "@vueuse/core";
+import { useImagesStore } from "@/store/images";
 
 const store = useImagesStore()
 

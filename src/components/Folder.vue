@@ -14,14 +14,13 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { IFolder } from "../../types/galleryFolder";
+import { IFolder } from "@/types/galleryFolder";
 
 const emit = defineEmits(['addFolders'])
 
 interface Props {
   name: string,
-  nested: IFolder[] | null,
-  path: string,
+  nested: IFolder[] | null
 }
 const props = defineProps<Props>()
 
@@ -32,7 +31,6 @@ const onClick = () => {
 const onAddFolder = (path: string) => {
   emit('addFolders', props.name + '/' + path)
 }
-
 </script>
 
 <style scoped lang="sass">

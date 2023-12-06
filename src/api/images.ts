@@ -1,5 +1,5 @@
-import { IFolder } from "../types/galleryFolder";
-import { useHttpDelete, useHttpGet, useHttpPost } from "./base";
+import { IFolder } from "@/types/galleryFolder";
+import { useHttpDelete, useHttpGet, useHttpPost } from "@/api/base";
 
 const BASE_URL = "http://localhost:8000/api/v1/images"
 

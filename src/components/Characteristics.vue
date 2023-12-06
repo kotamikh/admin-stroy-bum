@@ -5,7 +5,7 @@
              size="small"
              class="ml-4"
              color="var(--yellow)"
-             @click="addChar"
+             @click="addCharacteristic"
       >Добавить
       </v-btn>
     </h3>
@@ -22,7 +22,7 @@
                                           color="var(--grey)"
                                           hide-details
                                           v-model="char[1]"/></span>
-          <v-icon class="delete-icon" icon="mdi-close-circle-outline" @click="deleteChar(char)"></v-icon>
+          <v-icon class="delete-icon" icon="mdi-close-circle-outline" @click="deleteCharacteristic(char)"></v-icon>
       </li>
     </ul>
   </div>
@@ -39,21 +39,20 @@ const emit = defineEmits(['update:modelValue'])
 
 const data = useVModel(props, 'modelValue', emit, { deep: true })
 
-const createChar = () => {
+const createCharacteristic = () => {
   return (['', ''])
 }
 
-const addChar = () => {
+const addCharacteristic = () => {
   if (!data.value.length || !data.value[data.value.length - 1].includes('')) {
-      let newChar = createChar()
+      let newChar = createCharacteristic()
       data.value.push(newChar)
   }
 }
 
-const deleteChar = (char: string[]) => {
+const deleteCharacteristic = (char: string[]) => {
   data.value = data.value.filter(el => el !== char)
 }
-
 </script>
 
 <style scoped lang="sass">

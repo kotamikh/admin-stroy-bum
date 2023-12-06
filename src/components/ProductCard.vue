@@ -54,7 +54,7 @@
 import { computed } from "vue";
 import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
-import { IProduct, StockType } from "../../types/product";
+import { IProduct, StockType } from "@/types/product";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
 export interface Props extends IProduct {
@@ -77,7 +77,7 @@ const props = withDefaults(defineProps<Props>(), {
   stock: StockType.OnOrder,
   discount: 0,
   subject: 0
-});
+})
 
 const mainImage = computed(() => {
   if (props.product.images && props.product.images.length > 0) {

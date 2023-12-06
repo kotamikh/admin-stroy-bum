@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { Ref } from "vue/dist/vue";
 import { defineStore } from "pinia";
-import { useSubjectsBrandsApi } from "../../api/subjects-brands";
-import { IBrand, ISubject, ISubjectDto } from "../../types/subjectBrand";
+import { useSubjectsBrandsApi } from "@/api/subjects-brands";
+import { IBrand, ISubject, ISubjectDto } from "@/types/subjectBrand";
 
 export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
   const api = useSubjectsBrandsApi()

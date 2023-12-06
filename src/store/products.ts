@@ -1,7 +1,7 @@
 import { ref, Ref } from "vue";
 import { defineStore } from "pinia";
-import { useProductsApi } from "../../api/products";
-import { IProduct, IProductDto } from "../../types/product";
+import { useProductsApi } from "@/api/products";
+import { IProduct, IProductDto } from "@/types/product";
 
 export const useProductsStore = defineStore("cardsStore", () => {
   const api = useProductsApi()

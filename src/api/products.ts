@@ -1,5 +1,5 @@
-import { IProduct, IProductDto } from "../types/product";
-import { useHttpDelete, useHttpGet, useHttpPut } from "./base";
+import { IProduct, IProductDto } from "@/types/product";
+import { useHttpDelete, useHttpGet, useHttpPut } from "@/api/base";
 
 export type GetAllRequest = {
     offset: number,
