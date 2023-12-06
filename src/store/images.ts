@@ -12,7 +12,7 @@ export const useImagesStore = defineStore("images", () => {
 
     const loadFolders = async () => {
       folders.value  = await api.getAllFolders()
-      folders.value.sort((f1, f2) => f1.name > f2.name ? -1 : 1)
+      folders.value.sort((f1, f2) => f1.name > f2.name ? 1 : -1)
       return folders.value
     }
 
