@@ -173,7 +173,7 @@ const subjectId = computed<number>(() => {
   if (route.params.subjectName) {
     return useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
   } else {
-    console.log('Error: Категория неопределена')
+    new Error('Категория не определена')
     return 0
   }
 })

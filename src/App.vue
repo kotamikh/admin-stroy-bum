@@ -8,8 +8,11 @@
 
 <script lang="ts" setup>
 import MainLayout from "@/layouts/MainLayout.vue";
+import { useProductsStore } from "@/store/products";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
+let productsLimit = 100
+useProductsStore().loadAll(0, productsLimit)
 useSubjectsBrandsStore().loadAllSubjects()
 
 window.onbeforeunload = function () {

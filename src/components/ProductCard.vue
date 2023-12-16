@@ -35,7 +35,7 @@
           <v-btn variant="flat"
                  color="var(--yellow)"
                  prepend-icon="mdi-lead-pencil"
-                 :to="{name: 'Creation', params: {subjectName: useSubjectsBrandsStore().findSubjectName(product.subject), id: product.id}}"
+                 @click="openCreationPage"
           >ИЗМЕНИТЬ
           </v-btn>
           <v-btn variant="flat"
@@ -56,6 +56,7 @@ import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
 import { IProduct, StockType } from "@/types/product";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import router from "@/router";
 
 export interface Props extends IProduct {
   product: {
@@ -87,6 +88,10 @@ const mainImage = computed(() => {
 })
 
 const countDiscount = computed(() => Math.ceil(props.product.price / (100 - props.product.discount) * 100))
+
+const openCreationPage = () => {
+  router.push({name: 'Creation', params: {subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), id: props.product.id}})
+}
 const subjectId = props.product.subject
 let productsLimit = 100
 

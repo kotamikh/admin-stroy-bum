@@ -44,7 +44,7 @@ import Navigation from "@/components/Navigation.vue";
       align-items: center
 
       .logo
-        color: #9E9E9E
+        color: #969696
         font-family: 'Russo One', sans-serif
         font-size: calc((100vw - 320px) / (1280 - 320) * (24 - 20) + 20px)
 
@@ -54,5 +54,4 @@ import Navigation from "@/components/Navigation.vue";
         span
           color: var(--yellow)
           font-family: 'Russo One', sans-serif
-          text-shadow: 1px 0 #9B9B9B, -1px 0 #9B9B9B, 0 1px #9B9B9B, 0 -1px #9B9B9B, 1px 1px #9B9B9B, -1px -1px #9B9B9B, 1px -1px #9B9B9B, -1px 1px #9B9B9B
 </style>

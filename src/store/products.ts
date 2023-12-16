@@ -30,6 +30,13 @@ export const useProductsStore = defineStore("cardsStore", () => {
     return productsMap.value
   }
 
+  const getProduct = (id: number) => {
+    let p = productsMap.value.get(id)
+    if (p) {
+      return p
+    }
+  }
+
   const insertProduct = async (product: IProductDto, isEdit: boolean) => {
     await api.insertProduct(product, isEdit)
   }
@@ -44,6 +51,7 @@ export const useProductsStore = defineStore("cardsStore", () => {
 
   return {
     loadAll,
+    getProduct,
     productsMap,
     insertProduct,
     deleteProduct,
