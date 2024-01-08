@@ -22,16 +22,18 @@
             v-model="product.name"
             :rules="[requiredField]"
         />
-        <select-and-dialogs :name="`бренд`"
-                            :item="useSubjectsBrandsStore().allBrands.find(item => item.id === product.brand)"
-                            :items-list="useSubjectsBrandsStore().allBrands"
+        <select-and-dialogs name="бренд"
+                            :value="chosenBrandName"
+                            @change="product.brand = $event"
+                            :items="useSubjectsBrandsStore().allBrands"
                             :deleteFunction="useSubjectsBrandsStore().deleteBrand"
                             :insertFunction="useSubjectsBrandsStore().insertBrand"
                             @update-items="useSubjectsBrandsStore().loadAllBrands"
         ></select-and-dialogs>
-        <select-and-dialogs :name="`валюта`"
-                            :item="product.currency"
-                            :itemsList="useCurrencyStore().allCurrencies"
+        <select-and-dialogs name="валюта"
+                            :value="chosenCurrencyName"
+                            @change="product.currency = $event"
+                            :items="useCurrencyStore().allCurrencies"
                             :deleteFunction="useCurrencyStore().deleteCurrency"
                             :insertFunction="useCurrencyStore().insertCurrency"
                             @update-items="useCurrencyStore().loadAllCurrencies"
@@ -125,6 +127,27 @@ import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 import SelectAndDialogs from "@/components/SelectAndDialogs.vue";
 import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
+
+const brandStore = useSubjectsBrandsStore()
+const currencyStore = useCurrencyStore()
+
+const chosenBrandName = computed<string>(() => {
+  const brand = brandStore.allBrands.find(b => b.id == product.value.brand)
+  if (brand) {
+    return brand.name
+  }
+
+  return ""
+})
+
+const chosenCurrencyName = computed<string>(() => {
+  const currency = currencyStore.allCurrencies.find(c => c.id == product.value.currency)
+  if (currency) {
+    return currency.name
+  }
+
+  return ""
+})
 
 const route = useRoute()
 const subjectId = computed<number>(() => {

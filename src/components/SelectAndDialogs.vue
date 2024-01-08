@@ -1,14 +1,15 @@
 <template>
   <div class="select-dialogs">
     <v-select
-      :label= "`Имя ${name}`"
+      :label="`Имя ${name}`"
       item-title="name"
       item-value="id"
       variant="underlined"
       color="var(--grey)"
-      @change="updateSelect"
       :rules="[requiredField]"
-      :items="itemsList"
+      :items="items"
+      :model-value="props.value"
+      @update:model-value="emit('change', $event)"
     >
     </v-select>
     <div style="display: flex; flex-direction: column; gap: 10px">
@@ -38,7 +39,7 @@
       <v-card class="pa-5">
         <v-card-title>Выберите {{ props.name }} для удаления</v-card-title>
         <v-list>
-          <template v-for="item in props.itemsList"
+          <template v-for="item in props.items"
                     :key="item.id"
           >
             <v-list-item
@@ -63,18 +64,28 @@ import { ref } from "vue";
 import { IBrand } from "@/types/subjectBrand";
 import { ICurrency } from "@/types/currency";
 
-const props = defineProps(['name', 'item', 'itemsList', 'deleteFunction', 'insertFunction'])
-const emit = defineEmits(['updateItems', 'updateSelect'])
+const props = withDefaults(defineProps<{
+  name: string,
+  value: string,
+  items: Array<{ id: number, name: string }>,
+  deleteFunction: Function,
+  insertFunction: Function,
+}>(), {
+  name: "undefined",
+  items: () => [],
+  deleteFunction: () => {
+  },
+  insertFunction: () => {
+  },
+})
+
+const emit = defineEmits(['updateItems', 'change'])
 
 const newName = ref("")
 const itemIdToDelete = ref()
 const itemToDelete = ref("")
 const isNewDialogOpened = ref(false)
 const isDeleteDialogOpened = ref(false)
-
-const updateSelect = () => {
-    emit('updateSelect', )
-}
 
 const requiredField = (v: string) => {
   return !!v || 'Заполните поле'
