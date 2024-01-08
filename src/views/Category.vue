@@ -24,7 +24,7 @@ import ProductCard from "@/components/ProductCard.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
 const route = useRoute()
-let productsLimit = 100
+let productsLimit = useProductsStore().getProductNumber()
 let subjectName = ref<string>(route.params.subjectName.toString())
 
 if (subjectName) {

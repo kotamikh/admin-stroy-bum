@@ -22,63 +22,20 @@
             v-model="product.name"
             :rules="[requiredField]"
         />
-        <div class="brands">
-          <v-select
-              v-model="product.brand"
-              label="Имя бренда"
-              item-title="name"
-              item-value="id"
-              variant="underlined"
-              color="var(--grey)"
-              :rules="[requiredField]"
-              :items="useSubjectsBrandsStore().brandsBySubject"
-          >
-          </v-select>
-          <div style="display: flex; flex-direction: column; gap: 10px">
-            <v-btn variant="tonal"
-                   size="small"
-                   @click="isNewBrandDialogOpened = true"
-            >Добавить бренд
-            </v-btn>
-            <v-btn variant="tonal"
-                   size="small"
-                   @click="isDeleteBrandDialogOpened = true"
-            >Удалить бренд
-            </v-btn>
-          </div>
-          <v-dialog width="500" v-model="isNewBrandDialogOpened">
-            <v-card>
-              <v-card-text class="d-flex align-center">
-                <v-text-field label="Название бренда" v-model="brandName" variant="underlined"></v-text-field>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn text="Готово" @click="insertBrand"></v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog width="500" v-model="isDeleteBrandDialogOpened">
-            <v-card class="pa-5">
-              <v-card-title>Выберите бренд для удаления</v-card-title>
-              <v-list>
-                <template v-for="brand in useSubjectsBrandsStore().allBrands"
-                          :key="brand.id"
-                >
-                  <v-list-item
-                      :value="brand.id"
-                      v-text="brand.name"
-                      style="cursor: pointer"
-                      color="grey"
-                      @click="setBrandToDelete(brand)"
-                  ></v-list-item>
-                </template>
-              </v-list>
-              <v-btn class="ml-auto" variant="tonal" width="fit-content"
-                     @click="useSubjectsBrandsStore().deleteBrand(brandIdToDelete)">Удалить {{ brandToDelete }}
-              </v-btn>
-            </v-card>
-          </v-dialog>
-        </div>
+        <select-and-dialogs :name="`бренд`"
+                            :item="useSubjectsBrandsStore().allBrands.find(item => item.id === product.brand)"
+                            :items-list="useSubjectsBrandsStore().allBrands"
+                            :deleteFunction="useSubjectsBrandsStore().deleteBrand"
+                            :insertFunction="useSubjectsBrandsStore().insertBrand"
+                            @update-items="useSubjectsBrandsStore().loadAllBrands"
+        ></select-and-dialogs>
+        <select-and-dialogs :name="`валюта`"
+                            :item="product.currency"
+                            :itemsList="useCurrencyStore().allCurrencies"
+                            :deleteFunction="useCurrencyStore().deleteCurrency"
+                            :insertFunction="useCurrencyStore().insertCurrency"
+                            @update-items="useCurrencyStore().loadAllCurrencies"
+        ></select-and-dialogs>
         <div class="stock">
           <v-select
               label="Наличие товара"
@@ -160,12 +117,13 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { IProductDto } from "@/types/product";
-import { IBrand } from "@/types/subjectBrand";
 import { useProductsApi } from "@/api/products";
 import { useProductsStore } from "@/store/products";
+import { useCurrencyStore } from "@/store/currency";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import SelectAndDialogs from "@/components/SelectAndDialogs.vue";
 import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
 
 const route = useRoute()
@@ -200,25 +158,8 @@ const onUpdateImages = (data: Array<string>) => {
   product.value.images = JSON.parse(JSON.stringify(data)).data
 }
 
-const brandIdToDelete = ref()
-const brandName = ref("")
-const brandToDelete = ref("")
-const isNewBrandDialogOpened = ref(false)
-const isDeleteBrandDialogOpened = ref(false)
-useSubjectsBrandsStore().loadAllBrands().then(() => useSubjectsBrandsStore().getBrandsBySubject(subjectId.value))
-
-const insertBrand = () => {
-  if (brandName.value) {
-    useSubjectsBrandsStore().insertBrand(brandName.value)
-    isNewBrandDialogOpened.value = false
-    brandName.value = ""
-  }
-}
-
-const setBrandToDelete = (brand: IBrand) => {
-  brandToDelete.value = brand.name
-  brandIdToDelete.value = brand.id
-}
+useSubjectsBrandsStore().loadAllBrands()
+useCurrencyStore().loadAllCurrencies()
 
 const requiredField = (v: string) => {
   return !!v || 'Заполните поле'
@@ -247,11 +188,6 @@ const createCard = async () => {
 
     .product-information
       width: 40%
-
-      .brands
-        gap: 20px
-        display: flex
-        margin: 20px 0
 
       .stock
         width: 40%

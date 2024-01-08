@@ -25,6 +25,7 @@ const getDefaultProduct = (subjectId: number): IProductDto => {
         characteristics: [],
         subject: subjectId,
         brand: 0,
+        currency: 0
     }
 }
 

@@ -7,7 +7,8 @@ export interface IProductDto {
     description: string,
     characteristics: string[][],
     subject: number,
-    brand: number
+    brand: number,
+    currency: number
 }
 
 export interface IProduct extends IProductDto {
