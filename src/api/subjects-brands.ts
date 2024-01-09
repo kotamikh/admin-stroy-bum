@@ -8,7 +8,7 @@ export type brandsBySubject = {
 }
 
 const ROUTES = {
-    subjects: BASE_URL + "/api/v1/subjects",
+    subjects: BASE_URL + "/api/v2/subjects",
     brands: BASE_URL + "/api/v1/brands",
     brandsbysubject: BASE_URL + '/api/v1/brands-by-subject'
 }

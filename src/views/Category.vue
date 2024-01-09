@@ -6,7 +6,7 @@
     </v-btn>
     <div class="cards">
       <product-card
-        v-for="[id, product] in useProductsStore().productsMap"
+        v-for="[id, product] in useProductsStore().currentProducts"
         :key="id"
         :product="{...product}"
       />
@@ -29,7 +29,8 @@ let subjectName = ref<string>(route.params.subjectName.toString())
 
 if (subjectName) {
   const subjectId = useSubjectsBrandsStore().findSubjectId(subjectName.value)
-  onMounted(() => {useProductsStore().loadAll(0, productsLimit, subjectId)})
+  onMounted(() => {
+    useProductsStore().loadAllWithParams(0, productsLimit, subjectId)})
 }
 
 useCurrencyStore().loadAllCurrencies()

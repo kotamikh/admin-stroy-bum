@@ -82,12 +82,12 @@ import { reactive } from "vue";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { ISubject, ISubjectDto } from "@/types/subjectBrand";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
-
-useSubjectsBrandsStore().loadAllSubjects()
+import { useProductsStore } from "@/store/products";
 
 const subject = reactive<ISubjectDto>({
   name: "",
-  image: ""
+  image: "",
+  parentId: 0
 })
 
 const onUpdateImages = (data: { images: Array<string> }) => {
@@ -115,7 +115,8 @@ const resetInputs = () => {
 }
 
 const selectCategory = async (subject: ISubject) => {
-  await useSubjectsBrandsStore().getBrandsBySubject(subject.id)
+  const subjectId = useSubjectsBrandsStore().findSubjectId(subject.name)
+  await useProductsStore().loadAllWithParams(0, 100, subjectId)
   await router.push({ name: 'Category', params: { subjectName: subject.name }})
 }
 

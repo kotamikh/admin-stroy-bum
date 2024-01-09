@@ -1,6 +1,7 @@
 export interface ISubjectDto {
   name: string;
   image: string;
+  parentId: number;
 }
 
 export interface ISubject extends ISubjectDto {

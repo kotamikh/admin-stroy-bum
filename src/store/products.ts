@@ -6,6 +6,7 @@ import { IProduct, IProductDto } from "@/types/product";
 export const useProductsStore = defineStore("cardsStore", () => {
   const api = useProductsApi()
   const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
+  const currentProducts: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
 
   const loadAll = async (offset: number, limit: number, subject?: number, brand?: number)=> {
     const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
@@ -25,9 +26,33 @@ export const useProductsStore = defineStore("cardsStore", () => {
           }
           productsMap.value.set(p.id, p)
         }
+        return productsMap.value
       }
     })
-    return productsMap.value
+  }
+
+  const loadAllWithParams = async (offset: number, limit: number, subject?: number, brand?: number)=> {
+    const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
+    if (subject) {
+      params.append('subject', subject.toString())
+    }
+    if (brand) {
+      params.append('brand', brand.toString())
+    }
+
+    await api.getAll(params).then((response) => {
+      currentProducts.value.clear()
+      if (response.length > 0) {
+        currentProducts.value.clear()
+        for (const p of response) {
+          if (p.images === null) {
+            p.images = []
+          }
+          currentProducts.value.set(p.id, p)
+        }
+        return currentProducts.value
+      }
+    })
   }
 
   const getProduct = (id: number) => {
@@ -55,6 +80,8 @@ export const useProductsStore = defineStore("cardsStore", () => {
     productsMap,
     insertProduct,
     deleteProduct,
-    getProductNumber
+    currentProducts,
+    getProductNumber,
+    loadAllWithParams
   }
 })
