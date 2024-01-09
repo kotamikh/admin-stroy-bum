@@ -23,7 +23,7 @@
             <v-img src="@/assets/add-img.avif" style="cursor: pointer">
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="var(--scrim)"
+                         scrim="#A5B5CC"
                          style="border-radius: 5px"
                          class="justify-center align-center"
               >
@@ -47,7 +47,7 @@
               </v-btn>
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="var(--scrim)"
+                         scrim="#A5B5CC"
                          style="border-radius: 5px"
                          class="justify-center align-center"
               ><p style="color: #808080; font-size: 18px; background-color: white; padding: 0 10px">{{ store.getImageName(i) }}</p>

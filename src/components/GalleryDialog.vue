@@ -24,7 +24,7 @@
               ></v-icon>
               <v-overlay :model-value="isHovering"
                          contained
-                         scrim="var(--scrim)"
+                         scrim="#A5B5CC"
                          class="justify-center align-center font-weight-bold"
               ><p style="color: white; font-size: 18px">{{ useImagesStore().getImageName(i) }}</p>
               </v-overlay>

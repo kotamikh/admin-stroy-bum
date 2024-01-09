@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useCurrencyApi } from "@/api/currency";
-import { ICurrency, ICurrencyDto } from "@/types/currency";
+import { ICurrency } from "@/types/currency";
 
 export const useCurrencyStore = defineStore("currency", () => {
   const api = useCurrencyApi()

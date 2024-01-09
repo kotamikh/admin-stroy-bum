@@ -4,7 +4,7 @@
       <v-btn variant="outlined"
              size="small"
              class="ml-4"
-             color="var(--yellow)"
+             color="#FFDF3C"
              @click="addCharacteristic"
       >Добавить
       </v-btn>
@@ -13,13 +13,13 @@
       <li class="list-item" v-for="char in data">
       <span class="label"><v-text-field label="Характеристика"
                                         variant="underlined"
-                                        color="var(--grey)"
+                                        color="#555555"
                                         hide-details
                                         autofocus
                                         v-model="char[0]"/></span>
         <span class="value"><v-text-field label="Значение"
                                           variant="underlined"
-                                          color="var(--grey)"
+                                          color="#555555"
                                           hide-details
                                           v-model="char[1]"/></span>
           <v-icon class="delete-icon" icon="mdi-close-circle-outline" @click="deleteCharacteristic(char)"></v-icon>

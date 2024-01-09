@@ -1,15 +1,15 @@
 <template>
   <div class="select-dialogs">
     <v-select
-      :label="`Имя ${name}`"
-      item-title="name"
-      item-value="id"
-      variant="underlined"
-      color="var(--grey)"
-      :rules="[requiredField]"
-      :items="items"
-      :model-value="props.value"
-      @update:model-value="emit('change', $event)"
+        :label="`Имя ${name}`"
+        item-title="name"
+        item-value="id"
+        variant="underlined"
+        color="#555555"
+        :rules="[requiredField]"
+        :items="items"
+        :model-value="props.value"
+        @update:model-value="emit('change', $event)"
     >
     </v-select>
     <div style="display: flex; flex-direction: column; gap: 10px">

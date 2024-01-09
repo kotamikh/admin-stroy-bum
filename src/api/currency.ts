@@ -1,5 +1,5 @@
 import { IBrand } from "@/types/subjectBrand";
-import { ICurrency, ICurrencyDto } from "@/types/currency";
+import { ICurrency } from "@/types/currency";
 import { useHttpDelete, useHttpGet, useHttpPut } from "@/api/base";
 
 const BASE_URL = "http://localhost:8000"

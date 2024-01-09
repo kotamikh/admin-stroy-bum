@@ -7,33 +7,32 @@
         <div class="img-holder">
           <svg class="fav-mark" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 256 256">
             <path
-              d="M240 98a57.63 57.63 0 0 1-17 41l-89.3 90.62a8 8 0 0 1-11.4 0L33 139a58 58 0 0 1 82-82.1l13 12.15l13.09-12.19A58 58 0 0 1 240 98Z"/>
+                d="M240 98a57.63 57.63 0 0 1-17 41l-89.3 90.62a8 8 0 0 1-11.4 0L33 139a58 58 0 0 1 82-82.1l13 12.15l13.09-12.19A58 58 0 0 1 240 98Z"/>
           </svg>
           <div class="discount-mark" v-if="product.discount !== 0">- {{ product.discount }}%</div>
           <img :src="mainImage" class="product-img" alt="product-img"/>
         </div>
-        <div class="price-stock">
-          <div class="price">
-            <p style="font-size: 1.2rem">{{ product.price }} <span class="rub">Р</span></p>
-            <p v-if="product.discount !== 0" class="old-price">
-              {{ countDiscount }}
-              <span class="rub">Р</span></p>
-          </div>
+        <div class="price">
+          <p style="font-size: 1.2rem">{{ product.price }} <span class="currency">{{ chosenCurrencyName }}</span></p>
+          <p v-if="product.discount !== 0" class="old-price">
+            {{ countDiscount }} {{ chosenCurrencyName }}</p>
+        </div>
+        <p class="product-name">{{ product.name }}</p>
+        <div class="stock-cart">
           <p class="stock">{{
               product.stock === 1 ? 'В наличии' : 'Под заказ'
             }}</p>
+          <button class="cart-btn">В корзину</button>
         </div>
-        <p class="product-name">{{ product.name }}</p>
-        <button class="cart-btn">В корзину</button>
       </div>
       <v-overlay :model-value="isHovering"
                  contained
-                 scrim="var(--scrim)"
+                 scrim="#A5B5CC"
                  class="justify-center pt-16 font-weight-bold"
       >
         <div class="overlay-clue">
           <v-btn variant="flat"
-                 color="var(--yellow)"
+                 color="#FFDF3C"
                  prepend-icon="mdi-lead-pencil"
                  @click="openCreationPage"
           >ИЗМЕНИТЬ
@@ -41,7 +40,7 @@
           <v-btn variant="flat"
                  color="white"
                  prepend-icon="mdi-trash-can-outline"
-                 @click="confirmDelete(product.id)"
+                 @click="confirmDelete(id)"
           >УДАЛИТЬ
           </v-btn>
         </div>
@@ -51,12 +50,13 @@
 </template>
 
 <script setup lang="ts">
+import router from "@/router";
 import { computed } from "vue";
 import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
 import { IProduct, StockType } from "@/types/product";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
-import router from "@/router";
+import { useCurrencyStore } from "@/store/currency";
 
 export interface Props extends IProduct {
   product: {
@@ -66,7 +66,8 @@ export interface Props extends IProduct {
     price: number,
     stock: StockType,
     discount: number,
-    subject: number
+    subject: number,
+    currency: number
   }
 }
 
@@ -77,7 +78,16 @@ const props = withDefaults(defineProps<Props>(), {
   price: 0,
   stock: StockType.OnOrder,
   discount: 0,
-  subject: 0
+  subject: 0,
+  currency: 0
+})
+
+const chosenCurrencyName = computed<string>(() => {
+  const currency = useCurrencyStore().allCurrencies.find(c => c.id == props.product.currency)
+  if (currency) {
+    return currency.name
+  }
+  return ""
 })
 
 const mainImage = computed(() => {
@@ -90,7 +100,7 @@ const mainImage = computed(() => {
 const countDiscount = computed(() => Math.ceil(props.product.price / (100 - props.product.discount) * 100))
 
 const openCreationPage = () => {
-  router.push({name: 'Creation', params: {subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), id: props.product.id}})
+  router.push({ name: 'Creation', params: { subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), id: props.product.id } })
 }
 const subjectId = props.product.subject
 let productsLimit = 100
@@ -98,7 +108,7 @@ let productsLimit = 100
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить этот товар?")
   if (confirmation) {
-     useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAll(0, productsLimit, subjectId))
+    useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAll(0, productsLimit, subjectId))
   }
 }
 </script>
@@ -166,32 +176,18 @@ const confirmDelete = (id: number) => {
       position: absolute
       fill: rgba(128, 128, 128, 0.4)
 
-  .price-stock
-    gap: 10px
-    display: flex
-    align-items: end
 
-    .price
-      gap: 10px
-      display: flex
+  .price
+    gap: 5px
+    display: flex
+
+    .currency
+      font-size: 0.85rem
 
     .old-price
-      font-size: 0.9rem
+      font-size: 0.85rem
       color: var(--middle-grey)
       text-decoration: line-through
-
-    p > .rub
-      width: 0.5em
-      color: inherit
-      line-height: 0.2em
-      display: inline-block
-      vertical-align: middle
-      text-decoration: inherit
-      border-bottom: 0.07em solid
-
-    .stock
-      font-size: 0.85rem
-      font-weight: lighter
 
   .product-name
     overflow: hidden
@@ -200,14 +196,23 @@ const confirmDelete = (id: number) => {
     -webkit-line-clamp: 2
     -webkit-box-orient: vertical
 
-  .cart-btn
-    border: none
-    cursor: pointer
-    margin-left: auto
+  .stock-cart
+    display: flex
     margin-top: auto
-    padding: 5px 20px
-    color: var(--grey)
-    width: fit-content
-    border-radius: 12px
-    background-color: var(--yellow)
+    justify-content: space-between
+
+    .stock
+      align-self: center
+      font-weight: lighter
+
+    .cart-btn
+      border: none
+      cursor: pointer
+      margin-left: auto
+      margin-top: auto
+      padding: 5px 20px
+      color: var(--grey)
+      width: fit-content
+      border-radius: 12px
+      background-color: var(--yellow)
 </style>

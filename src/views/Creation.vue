@@ -18,7 +18,7 @@
         <v-text-field
             label="Наименование товара"
             variant="underlined"
-            color="var(--grey)"
+            color="#555555"
             v-model="product.name"
             :rules="[requiredField]"
         />
@@ -46,7 +46,7 @@
               { title: 'Под заказ', value: 0 },
             ]"
               variant="underlined"
-              color="var(--grey)"
+              color="#555555"
               v-model="product.stock"
           />
         </div>
@@ -55,12 +55,12 @@
             <v-text-field
                 label="Цена"
                 variant="underlined"
-                color="var(--grey)"
+                color="#555555"
                 class="w-33"
                 :rules="[requiredField]"
                 v-model.number="product.price"
             />
-            <p>руб/шт.</p>
+            <p>{{ chosenCurrencyName }}</p>
           </div>
           <v-checkbox
               label="Есть скидка"
@@ -73,7 +73,7 @@
                 type="number"
                 autofocus
                 variant="underlined"
-                color="var(--grey)"
+                color="#555555"
                 class="discount"
                 v-model.number="product.discount"
                 hide-details
@@ -83,7 +83,7 @@
             <p class="price-count">
               Старая цена:
               {{ Math.ceil((product.price / (100 - product.discount)) * 100) }}
-              руб/шт.
+              {{ chosenCurrencyName }}
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@
         <h3>Описание:</h3>
         <v-text-field
             variant="filled"
-            color="var(--yellow)"
+            color="#FFDF3C"
             class="input-description"
             v-model="product.description"
         ></v-text-field>
@@ -105,7 +105,7 @@
     </div>
   </div>
   <v-btn
-      color="var(--green)"
+      color="#49AE66"
       variant="outlined"
       style="position: absolute; bottom: 50px; right: 140px; font-weight: bold"
       prepend-icon="mdi-check"
@@ -136,7 +136,6 @@ const chosenBrandName = computed<string>(() => {
   if (brand) {
     return brand.name
   }
-
   return ""
 })
 
@@ -145,7 +144,6 @@ const chosenCurrencyName = computed<string>(() => {
   if (currency) {
     return currency.name
   }
-
   return ""
 })
 
