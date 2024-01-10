@@ -22,6 +22,16 @@
             v-model="product.name"
             :rules="[requiredField]"
         />
+        <v-select label="Категория товара"
+                  item-title="name"
+                  item-value="id"
+                  variant="underlined"
+                  color="#555555"
+                  :rules="[requiredField]"
+                  :items="subjectsToSelect"
+                  v-model="product.subject"
+
+        ></v-select>
         <select-and-dialogs name="бренд"
                             :value="chosenBrandName"
                             @change="product.brand = $event"
@@ -115,7 +125,6 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { IProductDto } from "@/types/product";
@@ -127,6 +136,7 @@ import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 import SelectAndDialogs from "@/components/SelectAndDialogs.vue";
 import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
+import router from "@/router";
 
 const brandStore = useSubjectsBrandsStore()
 const currencyStore = useCurrencyStore()
@@ -155,6 +165,25 @@ const subjectId = computed<number>(() => {
     new Error('Категория не определена')
     return 0
   }
+})
+
+const parentalSubject = useSubjectsBrandsStore().parentalSubjects.find(s => s.id === subjectId.value)
+useSubjectsBrandsStore().findSubjectsByParent(subjectId.value)
+
+const subjectsToSelect = computed(() => {
+  if (subjectId.value !== 0 && parentalSubject) {
+    const subjects = [...useSubjectsBrandsStore().childrenSubjects]
+
+    if (parentalSubject) {
+      subjects.unshift(parentalSubject)
+    }
+    return subjects
+
+  } else if (subjectId.value === 0 && parentalSubject) {
+    return parentalSubject
+  }
+
+  return []
 })
 
 let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
@@ -187,6 +216,7 @@ const requiredField = (v: string) => {
 }
 
 const createCard = async () => {
+  console.log(product.value)
   if (product.value.name && product.value.price && product.value.brand) {
     await useProductsStore().insertProduct(product.value, isEdit.value)
     await router.push({ name: "Category", params: { subjectName: route.params.subjectName } })

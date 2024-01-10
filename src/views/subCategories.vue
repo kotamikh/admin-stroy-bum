@@ -1,5 +1,4 @@
 <template>
-  <h2>Выбор подкатегории</h2>
   <v-list class="subcategories">
     <v-btn
         @click="subCategoryDialog = true"
@@ -7,7 +6,7 @@
         variant="outlined"
         width="fit-content"
         style="border: 2px solid var(--dark-blue); background-color: #A5B5CC4D"
-    >Добавить категорию</v-btn>
+    >Добавить подкатегорию</v-btn>
     <v-dialog width="500" v-model="subCategoryDialog">
       <v-card>
         <v-card-text class="d-flex justify-space-between align-center">
@@ -42,45 +41,123 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-list-item
-        v-for="[id, subject] in useSubjectsBrandsStore().subjectsMap"
-        :key="id"
-        :id="subject.id"
-        :name="subject.name"
-        :image="subject.image"
-        :category="subject"
-        width="300px"
-        height="80px"
-        class="category"
-        @click="selectCategory(subject)"
+    <v-list-item v-for="childSubject in props.childrenSubjects"
+                 :key="childSubject.id"
+                 :id="childSubject.id"
+                 class="sub-category"
+                 @click="openCategory(childSubject)"
     >
       <template v-slot:prepend>
         <img
-            :src="subject.image"
+            :src="childSubject.image"
             alt="img"
-            style="width: 3rem; margin-right: 10px"
+            style="height: 80px; width: 120px; object-fit: cover"
         />
       </template>
-      <div style="display: flex; gap: 20px">
-        <p class="text">{{ subject.name }}</p>
+      <div style="display: flex; gap: 20px; justify-content: center">
+        <p class="text">{{ childSubject.name }}</p>
         <v-btn
             size="small"
             variant="plain"
             class="delete-btn hidden"
-            @click.stop="confirmDelete(subject.id)"
-        ><v-icon icon="mdi-delete"
-        /></v-btn>
+            @click.stop="confirmDelete(childSubject.id)"
+        >
+          <v-icon icon="mdi-delete"
+          />
+        </v-btn>
       </div>
     </v-list-item>
   </v-list>
 </template>
 
 <script setup lang="ts">
-
-import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import { reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+import { ISubject, ISubjectDto } from "@/types/subjectBrand";
 import GalleryDialog from "@/components/GalleryDialog.vue";
+import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import { useProductsStore } from "@/store/products";
+import router from "@/router";
+
+const route = useRoute()
+const props = defineProps(['childrenSubjects'])
+const subjectName = ref(route.params.subjectName.toString())
+const subjectId = ref<number>(0)
+
+
+if (subjectName) {
+  subjectId.value = useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
+}
+
+const subject = reactive<ISubjectDto>({
+  name: "",
+  image: "",
+  parentId: subjectId.value
+})
+
+const subCategoryDialog = ref(false)
+const imageDialog = ref(false)
+const imageDialogFolderName = 'Изображения подкатегорий'
+
+const onUpdateImages = (data: { images: Array<string> }) => {
+  if (data.images.length !== 0) {
+    subject.image = JSON.parse(JSON.stringify(data)).images[0]
+  }
+  else {
+    alert('Выберите изображение')
+  }
+}
+
+const insertCategory = () => {
+  useSubjectsBrandsStore().insertSubject(subject).then(() => useSubjectsBrandsStore().findSubjectsByParent(subject.parentId))
+  subCategoryDialog.value = false
+  resetInputs()
+}
+
+const resetInputs = () => {
+  subject.name = ""
+  subject.image = ""
+}
+
+const openCategory = async (subject: ISubject) => {
+  await useSubjectsBrandsStore().findSubjectsByParent(subject.id)
+  await useProductsStore().loadAllWithParams(0, 100, subject.id)
+  await router.push({ name: 'Category', params: { subjectName: subject.name }})
+}
+
+const confirmDelete = (id: number) => {
+  let confirmation = confirm("Хотите удалить эту категорию?")
+  if (confirmation) {
+    useSubjectsBrandsStore().deleteSubject(id).then(() => useSubjectsBrandsStore().findSubjectsByParent(subject.parentId))
+  }
+}
 </script>
 
 <style scoped lang="sass">
+.sub-category
+  width: 400px
+  height: 100px
+  cursor: pointer
+  margin: 20px 0
 
+  .text
+    font-size: 18px
+    font-weight: bold
+    transition: all 0.1s ease
+    background-color: transparent
+
+  .hidden
+    top: 0
+    right: -52px
+    height: 100%
+    position: absolute
+    visibility: hidden
+    border: 1px solid var(--dark-blue)
+
+  &:hover
+    background-color: rgba(165, 181, 204, 0.3)
+
+    .hidden
+      opacity: 100%
+      visibility: visible
 </style>

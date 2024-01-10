@@ -9,6 +9,8 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
   const allBrands = ref<Array<IBrand>>([])
   const brandsBySubject = ref<Array<IBrand>>([])
   const subjectsMap: Ref<Map<number, ISubject>> = ref(new Map<number, ISubject>())
+  const parentalSubjects = ref<Array<ISubject>>([])
+  const childrenSubjects = ref<Array<ISubject>>([])
 
   const loadAllSubjects = async (): Promise<Map<number, ISubject>> => {
     const subjects = await api.getAllSubjects()
@@ -19,6 +21,18 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
       }
     }
     return subjectsMap.value
+  }
+
+  const findSubjectsByParent = async (subjectId: number): Promise<Array<ISubject>> => {
+    if (subjectId !== 0) {
+      childrenSubjects.value = await useSubjectsBrandsApi().getAllSubjects().then(response => response.filter(s => s.parentId === subjectId))
+      return childrenSubjects.value
+    }
+    else if (subjectId === 0){
+      parentalSubjects.value =  await useSubjectsBrandsApi().getAllSubjects().then(response => response.filter(s => s.parentId === subjectId))
+      return parentalSubjects.value
+    }
+    return []
   }
 
   const insertSubject = async (category: ISubjectDto) => {
@@ -99,6 +113,9 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
     findSubjectName,
     brandsBySubject,
     loadAllSubjects,
-    getBrandsBySubject
+    childrenSubjects,
+    parentalSubjects,
+    getBrandsBySubject,
+    findSubjectsByParent
   }
 })

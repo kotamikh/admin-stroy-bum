@@ -7,7 +7,7 @@
         variant="underlined"
         color="#555555"
         :rules="[requiredField]"
-        :items="items"
+        :items="props.items"
         :model-value="props.value"
         @update:model-value="emit('change', $event)"
     >
