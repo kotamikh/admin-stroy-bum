@@ -100,7 +100,7 @@ const mainImage = computed(() => {
 const countDiscount = computed(() => Math.ceil(props.product.price / (100 - props.product.discount) * 100))
 
 const openCreationPage = () => {
-  router.push({ name: 'Creation', params: { subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), id: props.product.id } })
+  router.push({ name: 'Creation', params: { subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), productId: props.product.id } })
 }
 const subjectId = props.product.subject
 let productsLimit = 100

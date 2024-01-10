@@ -81,18 +81,12 @@ import router from "@/router";
 
 const route = useRoute()
 const props = defineProps(['childrenSubjects'])
-const subjectName = ref(route.params.subjectName.toString())
-const subjectId = ref<number>(0)
-
-
-if (subjectName) {
-  subjectId.value = useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
-}
+const subjectId = Number(route.params.subjectId)
 
 const subject = reactive<ISubjectDto>({
   name: "",
   image: "",
-  parentId: subjectId.value
+  parentId: subjectId
 })
 
 const subCategoryDialog = ref(false)
@@ -122,7 +116,7 @@ const resetInputs = () => {
 const openCategory = async (subject: ISubject) => {
   await useSubjectsBrandsStore().findSubjectsByParent(subject.id)
   await useProductsStore().loadAllWithParams(0, 100, subject.id)
-  await router.push({ name: 'Category', params: { subjectName: subject.name }})
+  await router.push({ name: 'Category', params: { subjectId: subject.id }})
 }
 
 const confirmDelete = (id: number) => {

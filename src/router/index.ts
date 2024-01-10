@@ -16,17 +16,12 @@ const routes = [
                 component: () => import("@/views/categoriesSelection.vue")
             },
             {
-                path: "subCategories/:id",
-                name: "subCategories",
-                component: () => import("@/views/subCategories.vue")
-            },
-            {
-                path: "category/:subjectName",
+                path: "category/:subjectId",
                 name: "Category",
                 component: () => import("@/views/Category.vue")
             },
             {
-                path: "creation/:subjectName/:id?",
+                path: "creation/:subjectId/:productId?",
                 name: "Creation",
                 component: () => import("@/views/Creation.vue"),
             },

@@ -3,7 +3,7 @@
     <h2>{{ subjectName }}</h2>
     <sub-categories :childrenSubjects="useSubjectsBrandsStore().childrenSubjects"></sub-categories>
     <v-btn variant="flat" prepend-icon="mdi-plus" color="#FFDF3C" class="mb-8"
-           @click.stop="router.push({name: 'Creation', params: { subjectName: subjectName }})">ДОБАВИТЬ ТОВАР
+           @click.stop="router.push({name: 'Creation', params: { subjectId: subjectId }})">ДОБАВИТЬ ТОВАР
     </v-btn>
     <div class="cards">
       <product-card
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import router from "@/router";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useProductsStore } from "@/store/products";
 import { useCurrencyStore } from "@/store/currency";
@@ -27,10 +27,10 @@ import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 
 const route = useRoute()
 let productsLimit = useProductsStore().getProductNumber()
-let subjectName = ref(route.params.subjectName.toString())
+let subjectId = Number(route.params.subjectId)
+let subjectName = useSubjectsBrandsStore().findSubjectName(subjectId)
 
-if (subjectName) {
-  const subjectId = useSubjectsBrandsStore().findSubjectId(subjectName.value)
+if (subjectId) {
   onMounted(() => {
     useSubjectsBrandsStore().findSubjectsByParent(subjectId)
     useProductsStore().loadAllWithParams(0, productsLimit, subjectId)

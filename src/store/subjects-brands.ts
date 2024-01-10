@@ -39,15 +39,6 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
     await api.insertSubject(category)
   }
 
-  const findSubjectId = (categoryName: string): number => {
-    for (let [key, value] of subjectsMap.value) {
-      if (value.name === categoryName) {
-        return key
-      }
-    }
-    return 0
-  }
-
   const findSubjectName = (categoryId: number): string => {
     for (let [key, value] of subjectsMap.value) {
       if (value.id === categoryId) {
@@ -108,7 +99,6 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
     isBrandExist,
     loadAllBrands,
     insertSubject,
-    findSubjectId,
     deleteSubject,
     findSubjectName,
     brandsBySubject,

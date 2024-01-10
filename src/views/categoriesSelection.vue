@@ -127,70 +127,8 @@ const confirmDelete = (id: number) => {
 
 const openCategory = async (subject: ISubject) => {
   await useProductsStore().loadAllWithParams(0, 100, subject.id)
-  await router.push({ name: 'Category', params: { subjectName: subject.name }})
+  await router.push({ name: 'Category', params: { subjectId: subject.id }})
 }
-
-//   siding: {
-//     text: "Сайдинг",
-//     image: siding,
-//     path: "siding",
-//   },
-//   additionalElements: {
-//     text: "Доборные элементы сайдинга",
-//     image: additionalElements,
-//     path: "additionalElements",
-//   },
-//   decking: {
-//     text: "Террасная доска",
-//     image: decking,
-//     path: "decking",
-//   },
-//   facadePanels: {
-//     text: "Фасадные панели",
-//     image: facadePanels,
-//     path: "facadePanels",
-//   },
-//   windowSills: {
-//     text: "Подоконники",
-//     image: windowSills,
-//     path: "windowSills",
-//   },
-//   roof: {
-//     text: "Кровля",
-//     image: roof,
-//     path: "roof",
-//   },
-//   batteryScreens: {
-//     text: "Декоративные экраны для батарей",
-//     image: batteryScreens,
-//     path: "batteryScreens",
-//   },
-//   insulation: {
-//     text: "Утеплители",
-//     image: insulation,
-//     path: "insulation",
-//   },
-//   ceilings: {
-//     text: "Подвесные потолки",
-//     image: ceilings,
-//     path: "ceilings",
-//   },
-//   foamSealant: {
-//     text: "Пена герметики, пистолеты",
-//     image: foamSealant,
-//     path: "foamSealant",
-//   },
-//   waterDisposal: {
-//     text: "Водосточные системы",
-//     image: waterDisposal,
-//     path: "waterDisposal",
-//   },
-//   other: {
-//     text: "Прочее",
-//     image: other,
-//     path: "other",
-//   },
-// };
 </script>
 
 <style scoped lang="sass">
