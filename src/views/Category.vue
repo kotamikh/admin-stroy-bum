@@ -1,7 +1,7 @@
 <template>
   <router-view>
-    <h2>{{ subjectName }}</h2>
-    <sub-categories :childrenSubjects="useSubjectsBrandsStore().childrenSubjects"></sub-categories>
+    <h2>{{ subject.name }}</h2>
+    <sub-categories :childrenSubjects="useSubjectsBrandsStore().findChildrenSubjects(subject.children)"></sub-categories>
     <v-btn variant="flat" prepend-icon="mdi-plus" color="#FFDF3C" class="mb-8"
            @click.stop="router.push({name: 'Creation', params: { subjectId: subjectId }})">ДОБАВИТЬ ТОВАР
     </v-btn>
@@ -28,11 +28,11 @@ import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 const route = useRoute()
 let productsLimit = useProductsStore().getProductNumber()
 let subjectId = Number(route.params.subjectId)
-let subjectName = useSubjectsBrandsStore().findSubjectName(subjectId)
+
+const subject = useSubjectsBrandsStore().findSubjectById(subjectId)
 
 if (subjectId) {
   onMounted(() => {
-    useSubjectsBrandsStore().findSubjectsByParent(subjectId)
     useProductsStore().loadAllWithParams(0, productsLimit, subjectId)
   })
 }

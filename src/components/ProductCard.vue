@@ -52,11 +52,10 @@
 <script setup lang="ts">
 import router from "@/router";
 import { computed } from "vue";
-import defaultImg from '@/assets/default-image.jpeg'
 import { useProductsStore } from "@/store/products";
-import { IProduct, StockType } from "@/types/product";
-import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 import { useCurrencyStore } from "@/store/currency";
+import defaultImg from '@/assets/default-image.jpeg';
+import { IProduct, StockType } from "@/types/product";
 
 export interface Props extends IProduct {
   product: {
@@ -90,7 +89,7 @@ const chosenCurrencyName = computed<string>(() => {
   return ""
 })
 
-const mainImage = computed(() => {
+const mainImage = computed<string>(() => {
   if (props.product.images && props.product.images.length > 0) {
     return props.product.images[0]
   }
@@ -99,9 +98,6 @@ const mainImage = computed(() => {
 
 const countDiscount = computed(() => Math.ceil(props.product.price / (100 - props.product.discount) * 100))
 
-const openCreationPage = () => {
-  router.push({ name: 'Creation', params: { subjectName: useSubjectsBrandsStore().findSubjectName(props.product.subject), productId: props.product.id } })
-}
 const subjectId = props.product.subject
 let productsLimit = 100
 
@@ -110,6 +106,10 @@ const confirmDelete = (id: number) => {
   if (confirmation) {
     useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAll(0, productsLimit, subjectId))
   }
+}
+
+const openCreationPage = () => {
+  router.push({ name: 'Creation', params: { subjectId: subjectId, productId: props.product.id } })
 }
 </script>
 

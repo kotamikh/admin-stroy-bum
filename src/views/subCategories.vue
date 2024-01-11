@@ -43,9 +43,8 @@
     </v-dialog>
     <v-list-item v-for="childSubject in props.childrenSubjects"
                  :key="childSubject.id"
-                 :id="childSubject.id"
                  class="sub-category"
-                 @click="openCategory(childSubject)"
+                 @click="openCategory(childSubject.id)"
     >
       <template v-slot:prepend>
         <img
@@ -71,13 +70,13 @@
 </template>
 
 <script setup lang="ts">
+import router from "@/router";
 import { reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { ISubject, ISubjectDto } from "@/types/subjectBrand";
+import { ISubjectDto } from "@/types/subjectBrand";
+import { useProductsStore } from "@/store/products";
 import GalleryDialog from "@/components/GalleryDialog.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
-import { useProductsStore } from "@/store/products";
-import router from "@/router";
 
 const route = useRoute()
 const props = defineProps(['childrenSubjects'])
@@ -103,7 +102,7 @@ const onUpdateImages = (data: { images: Array<string> }) => {
 }
 
 const insertCategory = () => {
-  useSubjectsBrandsStore().insertSubject(subject).then(() => useSubjectsBrandsStore().findSubjectsByParent(subject.parentId))
+  useSubjectsBrandsStore().insertSubject(subject)
   subCategoryDialog.value = false
   resetInputs()
 }
@@ -113,16 +112,15 @@ const resetInputs = () => {
   subject.image = ""
 }
 
-const openCategory = async (subject: ISubject) => {
-  await useSubjectsBrandsStore().findSubjectsByParent(subject.id)
-  await useProductsStore().loadAllWithParams(0, 100, subject.id)
-  await router.push({ name: 'Category', params: { subjectId: subject.id }})
+const openCategory = async (subjectId: number) => {
+  await useProductsStore().loadAllWithParams(0, 100, subjectId)
+  await router.push({ name: 'Category', params: { subjectId: subjectId }})
 }
 
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить эту категорию?")
   if (confirmation) {
-    useSubjectsBrandsStore().deleteSubject(id).then(() => useSubjectsBrandsStore().findSubjectsByParent(subject.parentId))
+    useSubjectsBrandsStore().deleteSubject(id)
   }
 }
 </script>

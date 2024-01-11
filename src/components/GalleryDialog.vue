@@ -1,5 +1,5 @@
 <template>
-  <v-dialog class="d-flex" width="1100" max-height="100%" v-model="props.showDialog">
+  <v-dialog class="d-flex" width="1100" max-height="100%">
     <div class="dialog">
       <h3>Выберите фото</h3>
       <v-row>
@@ -45,7 +45,7 @@
 import { ref } from "vue";
 import { useImagesStore } from "@/store/images";
 
-const props = defineProps(['showDialog', 'productImages', 'edit', 'folderName', 'categoryImage', 'limit'])
+const props = defineProps(['productImages', 'edit', 'folderName', 'limit'])
 const emit = defineEmits(['update:show', 'update:images'])
 
 const imagesStore = useImagesStore()

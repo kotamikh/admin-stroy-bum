@@ -3,7 +3,7 @@
     <div class="main-information">
       <creation-images-and-track :images="product.images"
                                  :isEdit="isEdit"
-                                 :folder="route.params.subjectName"
+                                 :folder="subject.name"
                                  @update:galleryDialog="isGalleryDialogOpened = true"
       />
       <gallery-dialog
@@ -125,6 +125,7 @@
 </template>
 
 <script setup lang="ts">
+import router from "@/router";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { IProductDto } from "@/types/product";
@@ -136,7 +137,6 @@ import Characteristics from "@/components/Characteristics.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
 import SelectAndDialogs from "@/components/SelectAndDialogs.vue";
 import CreationImagesAndTrack from "@/components/CreationImagesAndTrack.vue";
-import router from "@/router";
 
 const brandStore = useSubjectsBrandsStore()
 const currencyStore = useCurrencyStore()
@@ -158,41 +158,31 @@ const chosenCurrencyName = computed<string>(() => {
 })
 
 const route = useRoute()
-const subjectId = computed<number>(() => {
-  if (route.params.subjectName) {
-    return useSubjectsBrandsStore().findSubjectId(route.params.subjectName.toString())
-  } else {
-    new Error('Категория не определена')
-    return 0
-  }
-})
-
-const parentalSubject = useSubjectsBrandsStore().parentalSubjects.find(s => s.id === subjectId.value)
-useSubjectsBrandsStore().findSubjectsByParent(subjectId.value)
+const subjectId = Number(route.params.subjectId)
+const subject = useSubjectsBrandsStore().findSubjectById(subjectId)
+const parentSubject = useSubjectsBrandsStore().findSubjectById(subject.parentId)
+const parentChildren = useSubjectsBrandsStore().findChildrenSubjects(parentSubject.children)
 
 const subjectsToSelect = computed(() => {
-  if (subjectId.value !== 0 && parentalSubject) {
-    const subjects = [...useSubjectsBrandsStore().childrenSubjects]
-
-    if (parentalSubject) {
-      subjects.unshift(parentalSubject)
-    }
+  if (subject.parentId !== 0) {
+    const subjects = parentChildren.concat([...useSubjectsBrandsStore().findChildrenSubjects(subject.children)])
+    subjects.unshift(parentSubject)
     return subjects
-
-  } else if (subjectId.value === 0 && parentalSubject) {
-    return parentalSubject
+  } else if (subject.parentId === 0) {
+    const subjects = [...useSubjectsBrandsStore().findChildrenSubjects(subject.children)]
+    subjects.unshift(subject)
+    return subjects
   }
-
   return []
 })
 
-let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId.value)
+let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId)
 const product = ref<IProductDto>(defaultProduct)
 let isEdit = ref(false)
 
-if (route.params.id) {
+if (route.params.productId) {
   isEdit.value = true
-  let productId = Number(route.params.id)
+  let productId = Number(route.params.productId)
   let editableProduct = JSON.parse(JSON.stringify(useProductsStore().productsMap.get(productId)))
   if (editableProduct) {
     product.value = Object.assign(product.value, editableProduct)
@@ -202,10 +192,10 @@ if (route.params.id) {
 const discountExist = ref(product.value.discount !== 0)
 
 const isGalleryDialogOpened = ref(false)
-const imageDialogFolderName = 'Товары,' + route.params.subjectName
+const imageDialogFolderName = subject.parentId === 0 ? 'Товары,' + subject.name : 'Товары,' + parentSubject.name
 
 const onUpdateImages = (data: Array<string>) => {
-  product.value.images = JSON.parse(JSON.stringify(data)).data
+  product.value.images = JSON.parse(JSON.stringify(data)).images
 }
 
 useSubjectsBrandsStore().loadAllBrands()
@@ -216,10 +206,9 @@ const requiredField = (v: string) => {
 }
 
 const createCard = async () => {
-  console.log(product.value)
   if (product.value.name && product.value.price && product.value.brand) {
     await useProductsStore().insertProduct(product.value, isEdit.value)
-    await router.push({ name: "Category", params: { subjectName: route.params.subjectName } })
+    await router.push({ name: "Category", params: { subjectId: product.value.subject } })
   } else {
     alert("Необходимо заполнить обязательные поля")
   }

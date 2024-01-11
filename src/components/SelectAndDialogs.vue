@@ -61,8 +61,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { IBrand } from "@/types/subjectBrand";
 import { ICurrency } from "@/types/currency";
+import { IBrand } from "@/types/subjectBrand";
 
 const props = withDefaults(defineProps<{
   name: string,

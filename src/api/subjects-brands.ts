@@ -1,5 +1,5 @@
 import { useHttpDelete, useHttpGet, useHttpPost } from "@/api/base";
-import { IBrand, ISubject, ISubjectDto } from "@/types/subjectBrand";
+import { IBrand, ISubjectDto, ISubjectExtended } from "@/types/subjectBrand";
 
 const BASE_URL = "http://localhost:8000"
 
@@ -13,8 +13,18 @@ const ROUTES = {
     brandsbysubject: BASE_URL + '/api/v1/brands-by-subject'
 }
 
-const getAllSubjects = async (): Promise<ISubject[]>  => {
-  const { data, error } = await useHttpGet<ISubject[]>({ url: ROUTES.subjects })
+const getDefaultSubject = (): ISubjectExtended => {
+    return {
+        id: 0,
+        name: 'unknown',
+        image: '',
+        parentId: 0,
+        children: []
+    }
+}
+
+const getAllSubjects = async (): Promise<ISubjectExtended[]>  => {
+  const { data, error } = await useHttpGet<ISubjectExtended[]>({ url: ROUTES.subjects })
   if (data) {
     return data
   } else {
@@ -82,6 +92,7 @@ export const useSubjectsBrandsApi = () => {
         deleteSubject,
         insertSubject,
         getAllSubjects,
-        getBrandsBySubject,
+        getDefaultSubject,
+        getBrandsBySubject
     }
 }

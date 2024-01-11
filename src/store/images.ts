@@ -45,11 +45,11 @@ export const useImagesStore = defineStore("images", () => {
 
     return {
       folders,
-      getImageName,
       addImage,
       loadFolders,
       deleteImage,
       imagesLinks,
+      getImageName,
       loadImagesByFolder
     }
   })

@@ -6,7 +6,7 @@
                        class="position-absolute"
   >
     <v-list density="comfortable" nav>
-      <v-list-item prepend-icon="mdi-plus-box-multiple" title="Добавить/удалить товары" :to="{name: 'Categories'}" replace>
+      <v-list-item prepend-icon="mdi-plus-box-multiple" title="Добавить/удалить товары" :to="{name: 'Categories'}">
       </v-list-item>
       <v-list-item prepend-icon="mdi-image" title="Галерея изображений" :to="{name: 'Gallery'}" replace></v-list-item>
       <v-list-item prepend-icon="mdi-message" title="Заказы и сообщения"></v-list-item>

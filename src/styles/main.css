@@ -2,11 +2,11 @@
   --grey: #555555;
   --green: #49AE66;
   --yellow: #FFDF3C;
-  --scrim: #A5B5CC;
-  --dark-blue: #A5B5CCFF;
-  --light-blue: #BFDCE8FF;
-  --middle-grey: #808080;
   color: var(--grey);
+  --dark-blue: #a5b5cc;
+  --middle-grey: #808080;
+  --light-blue: #BFDCE8FF;
+  --scrim: rgba(165, 181, 204, 0.5);
 }
 
 h2 {
