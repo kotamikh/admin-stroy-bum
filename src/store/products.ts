@@ -8,14 +8,8 @@ export const useProductsStore = defineStore("cardsStore", () => {
   const productsMap: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
   const currentProducts: Ref<Map<number, IProduct>> = ref(new Map<number, IProduct>())
 
-  const loadAll = async (offset: number, limit: number, subject?: number, brand?: number)=> {
+  const loadAll = async (offset: number, limit: number)=> {
     const params = new URLSearchParams({ offset: offset.toString(), limit: limit.toString() })
-    if (subject) {
-      params.append('subject', subject.toString())
-    }
-    if (brand) {
-      params.append('brand', brand.toString())
-    }
 
     await api.getAll(params).then((response) => {
       if (response.length > 0) {

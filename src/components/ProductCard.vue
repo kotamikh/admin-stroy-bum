@@ -104,7 +104,7 @@ let productsLimit = 100
 const confirmDelete = (id: number) => {
   let confirmation = confirm("Хотите удалить этот товар?")
   if (confirmation) {
-    useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAll(0, productsLimit, subjectId))
+    useProductsStore().deleteProduct(id).then(() => useProductsStore().loadAllWithParams(0, productsLimit, subjectId))
   }
 }
 
