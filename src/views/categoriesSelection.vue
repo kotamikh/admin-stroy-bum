@@ -1,81 +1,80 @@
 <template>
   <h2>Выбор категории</h2>
-  <v-list>
-    <v-btn
-        @click="categoryDialog = true"
-        prepend-icon="mdi-plus"
-        variant="outlined"
-        width="fit-content"
-        style="border: 2px solid var(--dark-blue); background-color: #A5B5CC4D; margin-bottom: 20px"
-    >Добавить категорию
-    </v-btn>
-    <v-dialog width="500" v-model="categoryDialog">
-      <v-card>
-        <v-card-text class="d-flex justify-space-between align-center">
-          <v-btn variant="tonal"
-                 class="mr-4"
-                 @click="imageDialog = true"
+  <v-btn
+    @click="categoryDialog = true"
+    prepend-icon="mdi-plus"
+    variant="outlined"
+    width="fit-content"
+    style="border: 2px solid var(--dark-blue); background-color: #A5B5CC4D; margin-bottom: 20px"
+  >Добавить категорию
+  </v-btn>
+  <v-dialog width="500" v-model="categoryDialog">
+    <v-card>
+      <v-card-text class="d-flex justify-space-between align-center">
+        <v-btn variant="tonal"
+               class="mr-4"
+               @click="imageDialog = true"
+        >
+          <v-icon icon="mdi-paperclip"/>
+        </v-btn>
+        <v-img v-if="subject.image"
+               :src="subject.image"
+               width="20px"
+               class="mr-4"
+        ></v-img>
+        <gallery-dialog
+          v-model="imageDialog"
+          :limit="1"
+          :category-image="subject.image"
+          :folderName="imageDialogFolderName"
+          @update:images="onUpdateImages"
+          @update:show="imageDialog = false"
+        />
+        <v-text-field
+          style="width: 60%"
+          label="Название категории"
+          v-model="subject.name"
+          @keyup.enter="insertCategory"
+          variant="underlined"
+        ></v-text-field>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn text="Готово" @click="insertCategory"></v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+  <v-list class="categories">
+    <div v-for="subject in useSubjectsBrandsStore().findParentalSubjects()"
+         :key="subject.id"
+         class="category"
+         @click="openCategory(subject)"
+    >
+      <div class="category-information">
+        <img
+          :src="subject.image"
+          alt="img"
+          style="width: 3rem; margin-right: 10px"
+        />
+        <p class="text">{{ subject.name }}
+          <v-btn
+            size="small"
+            variant="plain"
+            class="delete-btn"
+            @click.stop="confirmDelete(subject.id)"
           >
-            <v-icon icon="mdi-paperclip"/>
+            <v-icon icon="mdi-delete" class="ma-auto"
+            />
           </v-btn>
-          <v-img v-if="subject.image"
-                 :src="subject.image"
-                 width="20px"
-                 class="mr-4"
-          ></v-img>
-          <gallery-dialog
-              v-model="imageDialog"
-              :limit="1"
-              :category-image="subject.image"
-              :folderName="imageDialogFolderName"
-              @update:images="onUpdateImages"
-              @update:show="imageDialog = false"
-          />
-          <v-text-field
-              style="width: 60%"
-              label="Название категории"
-              v-model="subject.name"
-              @keyup.enter="insertCategory"
-              variant="underlined"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text="Готово" @click="insertCategory"></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <div class="categories">
-      <div v-for="subject in useSubjectsBrandsStore().findParentalSubjects()"
-           :key="subject.id"
-           class="category"
-           @click="openCategory(subject)"
-      >
-        <div class="category-information">
-          <img
-              :src="subject.image"
-              alt="img"
-              style="width: 3rem; margin-right: 10px"
-          />
-          <p class="text">{{ subject.name }}</p>
-            <v-btn
-                size="small"
-                variant="plain"
-                class="delete-btn hidden"
-                @click.stop="confirmDelete(subject.id)"
-            >
-              <v-icon icon="mdi-delete" class="ma-auto"
-              />
-            </v-btn>
-          <v-list v-if="subject.children.length > 0" class="children-categories hidden">
-            <v-list-item v-for="child in useSubjectsBrandsStore().findChildrenSubjects(subject.children)"
-                         class="child"
-                         @click.stop="openCategory(child)"
-            >{{ child.name }}
-            </v-list-item>
-          </v-list>
-        </div>
+        </p>
+        <v-list v-if="subject.children.length > 0" class="children-categories">
+          <v-list-item v-for="child in useSubjectsBrandsStore().findChildrenSubjects(subject.children)"
+                       class="child"
+                       @click.stop="openCategory(child)"
+          >{{ child.name }}
+          </v-list-item>
 
+        </v-list>
       </div>
     </div>
   </v-list>
@@ -135,53 +134,50 @@ const openCategory = async (subject: ISubject) => {
 <style scoped lang="sass">
 .categories
   display: grid
-  height: 80vh
+  height: fit-content
   grid-template-columns: repeat(2, 1fr)
 
   .category
     width: 320px
-    display: flex
-    flex-direction: column
 
     .category-information
-      display: flex
+      display: grid
       padding: 10px
       border-radius: 5px
-      position: relative
       align-items: center
+      grid-template-columns: 1fr 4fr
 
       .text
         font-size: 18px
         font-weight: bold
+        position: relative
         transition: all 0.1s ease
         background-color: transparent
 
-      .delete-btn.hidden
-        top: 0
-        left: 100%
-        height: 100%
-        display: flex
-        position: absolute
-        visibility: hidden
-        border: 2px solid var(--dark-blue)
+        .delete-btn
+          top: 50%
+          left: 114%
+          height: 68px
+          display: flex
+          position: absolute
+          visibility: hidden
+          transform: translate(-50%, -50%)
+          border: 2px solid var(--dark-blue)
 
       &:hover
         background-color: rgba(165, 181, 204, 0.3)
 
-        .delete-btn.hidden,
-        .children-categories.hidden
+        .delete-btn
           opacity: 100%
           visibility: visible
 
-      .children-categories.hidden
-        top: 0
-        left: 116%
-        z-index: 2
-        width: 180px
-        position: absolute
-        visibility: hidden
-        border-radius: 10px
-        border: 2px solid var(--dark-blue)
+      .children-categories
+        padding: 0
+        grid-area: 2 / 2 / 3 / 6
+
+        .v-list-item
+          padding: 0 10px
+          min-height: unset
 
         .child
           cursor: pointer
