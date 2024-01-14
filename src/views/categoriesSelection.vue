@@ -73,7 +73,6 @@
                        @click.stop="openCategory(child)"
           >{{ child.name }}
           </v-list-item>
-
         </v-list>
       </div>
     </div>

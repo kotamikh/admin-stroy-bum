@@ -58,15 +58,6 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
     await api.insertSubject(category)
   }
 
-  const findSubjectName = (categoryId: number): string => {
-    for (let [key, value] of subjectsMap.value) {
-      if (value.id === categoryId) {
-        return value.name
-      }
-    }
-    return ''
-  }
-
   const deleteSubject = async (id: number) => {
     await api.deleteSubject(id)
   }
@@ -119,7 +110,6 @@ export const useSubjectsBrandsStore = defineStore("subjectsBrands", () => {
     loadAllBrands,
     insertSubject,
     deleteSubject,
-    findSubjectName,
     findSubjectById,
     brandsBySubject,
     loadAllSubjects,
