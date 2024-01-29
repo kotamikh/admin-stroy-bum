@@ -156,7 +156,7 @@ const openCategory = async (subject: ISubject) => {
         .delete-btn
           top: 50%
           left: 114%
-          height: 68px
+          height: 64px
           display: flex
           position: absolute
           visibility: hidden

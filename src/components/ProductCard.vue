@@ -40,7 +40,7 @@
           <v-btn variant="flat"
                  color="white"
                  prepend-icon="mdi-trash-can-outline"
-                 @click="confirmDelete(id)"
+                 @click="confirmDelete(product.id)"
           >УДАЛИТЬ
           </v-btn>
         </div>
@@ -55,9 +55,10 @@ import { computed } from "vue";
 import { useProductsStore } from "@/store/products";
 import { useCurrencyStore } from "@/store/currency";
 import defaultImg from '@/assets/default-image.jpeg';
-import { IProduct, StockType } from "@/types/product";
+import { StockType } from "@/types/product";
+import { useProductsApi } from "@/api/products";
 
-export interface Props extends IProduct {
+export interface Props {
   product: {
     id: number,
     name: string,
@@ -71,14 +72,7 @@ export interface Props extends IProduct {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  id: 0,
-  name: 'unknown',
-  images: () => [],
-  price: 0,
-  stock: StockType.OnOrder,
-  discount: 0,
-  subject: 0,
-  currency: 0
+    product: () => useProductsApi().getDefaultProduct()
 })
 
 const chosenCurrencyName = computed<string>(() => {

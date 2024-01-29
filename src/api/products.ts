@@ -14,7 +14,22 @@ const ROUTES = {
     products: BASE_URL + "/api/v1/products"
 }
 
-const getDefaultProduct = (subjectId: number): IProductDto => {
+const getDefaultProduct = (): IProduct => {
+  return {
+    id: 0,
+    name: "",
+    images: [],
+    price: 0,
+    stock: 1,
+    discount: 0,
+    description: "",
+    characteristics: [],
+    subject: 0,
+    brand: 0,
+    currency: 0
+  }
+}
+const createNewProduct = (subjectId: number): IProductDto => {
     return {
         name: "",
         images: [],
@@ -62,6 +77,7 @@ export const useProductsApi = () => {
         insertProduct,
         deleteProduct,
         getDefaultImage,
+        createNewProduct,
         getDefaultProduct
     }
 }

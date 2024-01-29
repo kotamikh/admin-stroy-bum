@@ -176,7 +176,7 @@ const subjectsToSelect = computed(() => {
   return []
 })
 
-let defaultProduct: IProductDto = useProductsApi().getDefaultProduct(subjectId)
+let defaultProduct: IProductDto = useProductsApi().createNewProduct(subjectId)
 const product = ref<IProductDto>(defaultProduct)
 let isEdit = ref(false)
 

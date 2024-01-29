@@ -17,23 +17,30 @@
 
 <script setup lang="ts">
 import router from "@/router";
-import { onMounted } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { useProductsStore } from "@/store/products";
 import { useCurrencyStore } from "@/store/currency";
 import SubCategories from "@/views/subCategories.vue";
 import ProductCard from "@/components/ProductCard.vue";
 import { useSubjectsBrandsStore } from "@/store/subjects-brands";
+import { ISubjectExtended } from "@/types/subjectBrand";
+import { useSubjectsBrandsApi } from "@/api/subjects-brands";
 
 const route = useRoute()
 let productsLimit = useProductsStore().getProductNumber()
-let subjectId = Number(route.params.subjectId)
+let subjectId = ref<number>(0)
+const subject = ref<ISubjectExtended>(useSubjectsBrandsApi().getDefaultSubject())
 
-const subject = useSubjectsBrandsStore().findSubjectById(subjectId)
+watchEffect(() => {
+  subjectId.value = Number(route.params.subjectId)
+  subject.value = useSubjectsBrandsStore().findSubjectById(subjectId.value)
+  useProductsStore().loadAllWithParams(0, productsLimit, subjectId.value)
+})
 
-if (subjectId) {
+if (subjectId.value) {
   onMounted(() => {
-    useProductsStore().loadAllWithParams(0, productsLimit, subjectId)
+    useProductsStore().loadAllWithParams(0, productsLimit, subjectId.value)
   })
 }
 
